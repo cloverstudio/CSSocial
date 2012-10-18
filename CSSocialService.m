@@ -47,8 +47,17 @@
 -(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>) parameter
                                 response:(CSSocialResponseBlock) responseBlock
 {
-    NSAssert(NO, @"Override me");
-    return nil;
+    __block CSSocialRequest *request = [self constructRequestWithParameter:parameter];
+    request.responseBlock = responseBlock;
+    [self login:^
+     {
+         [self.requestQueue addOperation:request];
+     }
+          error:^(NSError *error) {
+              responseBlock(request, nil, error);
+          }];
+    
+    return request;
 }
 
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter

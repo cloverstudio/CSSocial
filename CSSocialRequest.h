@@ -32,8 +32,8 @@ typedef void (^CSSocialResponseBlock)(CSSocialRequest *request, id response, NSE
 
 ///HTTP method (GET, POST, PUT)
 -(id) method;
--(id) initWithService:(id) service;
-+(CSSocialRequest*) requestWithService:(id)service;
+-(id) initWithService:(id) service parameters:(NSDictionary*) parameters;
++(CSSocialRequest*) requestWithService:(id)service parameters:(NSDictionary*) parameters;
 -(void) receivedResponse;
 @end
 

@@ -27,17 +27,18 @@
     CS_SUPER_DEALLOC;
 }
 
-+(CSSocialRequest*) requestWithService:(id)service
++(CSSocialRequest*) requestWithService:(id)service parameters:(NSDictionary*) parameters
 {
-    return CS_AUTORELEASE([[self alloc] initWithService:service]);
+    return CS_AUTORELEASE([[self alloc] initWithService:service parameters:parameters]);
 }
 
--(id) initWithService:(id) service
+-(id) initWithService:(id) service parameters:(NSDictionary*) parameters
 {
     self = [super init];
     if (self) 
     {
         self.service = service;
+        self.params = parameters;
     }
     return self;
 }

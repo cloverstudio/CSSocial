@@ -110,11 +110,11 @@
 
 @implementation CSSocialRequestFacebook
 
--(id) initWithService:(id)service
+-(id) initWithService:(id) service parameters:(NSDictionary*) parameters
 {
     NSAssert([service isKindOfClass:[Facebook class]], @"Service has to be of class Facebook");
     
-    self = [super init];
+    self = [super initWithService:service parameters:parameters];
     if (self) {
         Facebook *facebook = (Facebook*) service;
         [facebook requestWithGraphPath:[self APIcall]
@@ -290,26 +290,6 @@
     [_facebook logout:self];
 }
 
--(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>) parameter
-                                response:(CSSocialResponseBlock) responseBlock
-{
-    CSSocialRequest *request = [self constructRequestWithParameter:parameter];
-    request.responseBlock = responseBlock;
-    [self login:^
-     {
-         [_facebook requestWithGraphPath:[request APIcall]
-                               andParams:[NSMutableDictionary dictionaryWithDictionary:[request params]]
-                           andHttpMethod:[request method]
-                             andDelegate:(id<FBRequestDelegate>)request];
-     }
-          error:^(NSError *error) {
-              responseBlock(request, nil, error);
-          }];
-    
-    [self.requestQueue addOperation:request];
-    return request;
-}
-
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter
 {
     CSSocialRequest *request = nil;
@@ -320,28 +300,27 @@
         case CSRequestLogout:
             break;
         case CSRequestUser:
-            request = [CSSocialRequestFacebookUser requestWithService:_facebook];
+            request = [CSSocialRequestFacebookUser requestWithService:_facebook parameters:[parameter parameters]];
             break;
         case CSRequestFriends:
-            request = [CSSocialRequestFacebookFriends requestWithService:_facebook];
+            request = [CSSocialRequestFacebookFriends requestWithService:_facebook parameters:[parameter parameters]];
             break;
         case CSRequestFriendsPaging:
-            request = [CSSocialRequestFacebookFriendsPaging requestWithService:_facebook];
+            request = [CSSocialRequestFacebookFriendsPaging requestWithService:_facebook parameters:[parameter parameters]];
             break;
         case CSRequestPostMessage:
-            request = [CSSocialRequestFacebookPostWall requestWithService:_facebook];
+            request = [CSSocialRequestFacebookPostWall requestWithService:_facebook parameters:[parameter parameters]];
             break;
         case CSRequestPostPhoto:
-            request = [CSSocialRequestFacebookPostPhoto requestWithService:_facebook];
+            request = [CSSocialRequestFacebookPostPhoto requestWithService:_facebook parameters:[parameter parameters]];
             break;
         case CSRequestGetUserImage:
-            request = [CSSocialRequestFacebookGetUserImage requestWithService:_facebook];
+            request = [CSSocialRequestFacebookGetUserImage requestWithService:_facebook parameters:[parameter parameters]];
             break;
         default:
             break;
     }
 
-    request.params = [parameter parameters];
     return request;
 }
 
@@ -430,45 +409,6 @@
 - (void)fbSessionInvalidated
 {
     //self.logoutBlock([self response:kCSSocialResponseOK]);
-}
-
-
-#pragma mark - Requests
-
--(CSSocialRequest*) requestWithName:(CSRequestName)name;
-{
-    CSSocialRequest *request = nil;
-    
-    switch (name) {
-        case CSRequestLogin:
-            break;
-        case CSRequestLogout:
-            break;
-        case CSRequestUser:
-            request = [CSSocialRequestFacebookUser requestWithService:_facebook];
-            request.params = [CSFacebookParameter user];
-            break;
-        case CSRequestFriends:
-            request = [CSSocialRequestFacebookFriends requestWithService:_facebook];
-            request.params = [CSFacebookParameter friends];
-            break;
-        case CSRequestFriendsPaging:
-            request = [CSSocialRequestFacebookFriendsPaging requestWithService:_facebook];
-            break;
-        case CSRequestPostMessage:
-            request = [CSSocialRequestFacebookPostWall requestWithService:_facebook];
-            break;
-        case CSRequestPostPhoto:
-            request = [CSSocialRequestFacebookPostPhoto requestWithService:_facebook];
-            break;
-        case CSRequestGetUserImage: 
-            request = [CSSocialRequestFacebookGetUserImage requestWithService:_facebook];
-            request.params = [CSFacebookParameter userImage];
-            break;
-        default:
-            break;
-    }
-    return request;
 }
 
 @end

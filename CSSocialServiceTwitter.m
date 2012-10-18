@@ -62,29 +62,21 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 #pragma mark - CSSocialRequestTwitter
 
 @interface CSSocialRequestTwitter : CSSocialRequest
-//@property (nonatomic, retain) TWRequest *request;
-//@property (nonatomic, retain) ACAccount *account;
 -(id) parseResponseData:(id)response error:(NSError**) error; 
 -(NSString*) paramsString;
 @end
 
 @implementation CSSocialRequestTwitter
-//@synthesize request = _request;
-//@synthesize account = _account;
 -(void) dealloc
 {
-  //  CS_RELEASE(_account);
-  //  CS_RELEASE(_request);
     CS_SUPER_DEALLOC;
 }
 
 -(void) start
 {
     [super start];
-    
-    NSString *urlString = [NSString stringWithFormat:@"%@?%@", [self APIcall], [self paramsString]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-    [NSURLConnection sendAsynchronousRequest:request
+
+    [NSURLConnection sendAsynchronousRequest:[self request]
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
      {
@@ -94,20 +86,26 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
              return;
          }
          
-         id JSON = [self parseResponseData:data error:&error];
-         if (!JSON || error)
+         id parsedResponse = [self parseResponseData:data error:&error];
+         if (!parsedResponse || error)
          {
              self.responseBlock(self, nil, error);
              return;
          }
          
-         self.responseBlock(self, [self.service usersFromResponse:JSON], nil);
-     }];
+         self.responseBlock(self, parsedResponse, nil);
+    }];
 }
 
+-(NSMutableURLRequest*) request
+{
+    NSString *urlString = [NSString stringWithFormat:@"%@?%@", [self APIcall], [self paramsString]];
+    return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+}
+
+///parse JSON by default.
 -(id) parseResponseData:(id)responseData error:(NSError**) error
 {
-    ///parse JSON by default.
     if (responseData) 
     {
         return [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:error];
@@ -134,6 +132,23 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 @end
 
+@interface CSSocialRequestTwitterMessage : CSSocialRequestTwitter
+@end
+
+@implementation CSSocialRequestTwitterMessage
+-(NSString*) APIcall {return @"https://api.twitter.com/1/statuses/update.json";}
+
+-(NSMutableURLRequest*) request
+{
+    NSString *params = [self paramsString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self APIcall]]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    [request setHTTPBody:[NSData dataWithBytes:[params UTF8String] length:params.length]];
+    return request;
+}
+@end
+
 @interface CSSocialRequestTwitterGetUserImage : CSSocialRequestTwitter
 @end
 
@@ -157,6 +172,10 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 @implementation CSSocialRequestTwitterFriends
 -(NSString*) APIcall { return @"https://api.twitter.com/1/friends/ids.json"; }
 -(id) method { return [NSNumber numberWithInteger:TWRequestMethodGET]; }
+-(id) parseResponseData:(id)responseData error:(NSError**) error
+{
+    return [CSSocialUserTwitter usersFromResponse:responseData];
+}
 @end
 
 @interface CSSocialServiceTwitter()
@@ -239,10 +258,40 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     return [self obtainAccount] != nil ? YES : NO;
 }
 
+-(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>)parameter
+{
+    CSSocialRequest *request = nil;
+    
+    switch (parameter.requestName) {
+        case CSRequestLogin:
+            break;
+        case CSRequestLogout:
+            break;
+        case CSRequestUser:
+            //request = [CSSocialRequestTwitterUser requestWithService:nil parameters:[parameter parameters]];
+            break;
+        case CSRequestFriends:
+            request = [CSSocialRequestTwitterFriends requestWithService:nil parameters:[parameter parameters]];
+            break;
+        case CSRequestPostMessage:
+            request = [CSSocialRequestTwitterMessage requestWithService:nil parameters:[parameter parameters]];
+            break;
+        case CSRequestGetUserImage:
+            request = [CSSocialRequestTwitterGetUserImage requestWithService:nil parameters:[parameter parameters]];
+            break;
+        default:
+            break;
+    }
+    
+    return request;
+
+}
+
 
 -(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock
 {
-    
+ 
+    /*
     if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0")) 
     {
         responseBlock(request, nil, [self errorUnsupportedSDK]);
@@ -327,19 +376,6 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     twRequest.account = self.twitterAccount;
     [self.requestQueue addOperation:twRequest];
     */
-}
-
--(id) parseResponseData:(id)responseData error:(NSError**) error 
-{
-    ///parse JSON by default.
-    if (responseData) 
-    {
-        return [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:error];
-    }
-    else 
-    {
-        return nil;
-    }
 }
 
 -(NSArray*) permissions {
@@ -595,51 +631,6 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 }
 
 #pragma mark - Requests
-
--(CSSocialRequest*) requestWithName:(CSRequestName)name;
-{
-    CSSocialRequest *request = nil;
-    
-    ACAccount *account = [self obtainAccount];
-    if (account == nil) {
-        return nil;
-    }
-    
-    CSLog(@"%@",[[account valueForKey:@"properties"] valueForKey:@"user_id"]);
-    
-    switch (name) {
-        case CSRequestLogin:
-            break;
-        case CSRequestLogout:
-            break;
-        case CSRequestUser:
-            //request = [CSSocialRequestFacebookUser requestWithService:self];
-            //request.params = [CSFacebookParameter user];
-            break;
-        case CSRequestFriends:
-            request = [CSSocialRequestTwitterFriends requestWithService:self];
-            request.params = [NSDictionary dictionaryWithObjectsAndKeys:
-                              account.username,   @"screen_name",
-                              @"-1",              @"cursor",
-                              nil];
-            break;
-        case CSRequestFriendsPaging:
-            //request = [CSSocialRequestFacebookFriendsPaging requestWithService:self];
-            break;
-        case CSRequestPostMessage:
-            //request = [CSSocialRequestFacebookPostWall requestWithService:self];
-            break;
-        case CSRequestPostPhoto:
-            //request = [CSSocialRequestFacebookPostPhoto requestWithService:self];
-            break;
-        case CSRequestGetUserImage:
-            request = [CSSocialRequestTwitterGetUserImage requestWithService:self];
-            break;
-        default:
-            break;
-    }
-    return request;
-}
 
 -(NSError*) errorInvalidReturnValue
 {
