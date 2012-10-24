@@ -13,6 +13,9 @@
 #import "CSRequests.h"
 #import <Twitter/Twitter.h>
 #import <Accounts/Accounts.h>
+#import "OAuth.h"
+#import "TwitterDialog.h"
+#import "SimpleKeychain.h"
 
 static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdentifier";
 
@@ -61,14 +64,19 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 #pragma mark - CSSocialRequestTwitter
 
-@interface CSSocialRequestTwitter : CSSocialRequest
+@interface CSSocialRequestTwitter : CSSocialRequest <NSURLConnectionDelegate>
+{
+    NSMutableData *_data;
+}
 -(id) parseResponseData:(id)response error:(NSError**) error; 
 -(NSString*) paramsString;
+- (NSString *)encodedURLParameterString:(NSString*) string;
 @end
 
 @implementation CSSocialRequestTwitter
 -(void) dealloc
 {
+    CS_RELEASE(_data);
     CS_SUPER_DEALLOC;
 }
 
@@ -76,25 +84,66 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 {
     [super start];
 
-    [NSURLConnection sendAsynchronousRequest:[self request]
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
-     {
-         if (error)
+    if (SYSTEM_VERSION_LESS_THAN(@"5.0"))
+    {
+        NSError *error = nil;
+        NSHTTPURLResponse *response = nil;
+        _data = (NSMutableData*)[NSURLConnection sendSynchronousRequest:[self request]
+                                                      returningResponse:&response
+                                                                  error:&error];
+        [self buildResponse:_data error:error];
+    }
+    else
+    {
+        [NSURLConnection sendAsynchronousRequest:[self request]
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
          {
-             self.responseBlock(self, nil, error);
-             return;
-         }
-         
-         id parsedResponse = [self parseResponseData:data error:&error];
-         if (!parsedResponse || error)
-         {
-             self.responseBlock(self, nil, error);
-             return;
-         }
-         
-         self.responseBlock(self, parsedResponse, nil);
-    }];
+             [self buildResponse:data error:error];
+         }];
+    }
+}
+
+-(void) buildResponse:(NSData*) data error:(NSError*) error
+{
+    if (error)
+    {
+        self.responseBlock(self, nil, error);
+        return;
+    }
+    
+    if (!data)
+    {
+        self.responseBlock(self, nil, [NSError errorWithDomain:@""
+                                                          code:0
+                                                      userInfo:[NSDictionary dictionaryWithObject:@"No data in response"
+                                                                                           forKey:NSLocalizedDescriptionKey]]);
+        return;
+    }
+    
+    id parsedResponse = [self parseResponseData:data error:&error];
+    if (!parsedResponse || error)
+    {
+        self.responseBlock(self, nil, error);
+        return;
+    }
+    
+    self.responseBlock(self, parsedResponse, nil);
+}
+
+-(void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [_data appendData:data];
+}
+
+-(void) connectionDidFinishLoading:(NSURLConnection*) connection
+{
+    [self buildResponse:_data error:nil];
+}
+
+-(void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    self.responseBlock(self, nil, error);
 }
 
 -(NSMutableURLRequest*) request
@@ -124,10 +173,20 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     for (NSString *key in keys)
     {
         keyCount++;
-        [paramsString appendFormat:@"%@=%@", key, [self.params objectForKey:key]];
+        [paramsString appendFormat:@"%@=%@", key, [self encodedURLParameterString:[self.params objectForKey:key]]];
         if (keyCount != keys.count) [paramsString appendString:@"&"];
     }
     return [NSString stringWithString:paramsString];
+}
+
+- (NSString *)encodedURLParameterString:(NSString*) string
+{
+    NSString *result = (__bridge NSString*)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                                                                           (__bridge CFStringRef)string,
+                                                                           NULL,
+                                                                           CFSTR(":/=,!$&'()*+;[]@#?"),
+                                                                           kCFStringEncodingUTF8);
+	return CS_AUTORELEASE(result);
 }
 
 @end
@@ -140,11 +199,16 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(NSMutableURLRequest*) request
 {
-    NSString *params = [self paramsString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self APIcall]]];
+    OAuth *oAuth = (OAuth*)self.service;
+    NSString *postBodyString = [self paramsString];
+    NSString *postUrl = [self APIcall];
+    NSMutableDictionary *postInfo = [NSMutableDictionary dictionaryWithDictionary:[self params]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:postUrl]];
     [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-    [request setHTTPBody:[NSData dataWithBytes:[params UTF8String] length:params.length]];
+    [request setHTTPBody:[postBodyString dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setValue:[oAuth oAuthHeaderForMethod:@"POST"
+                                           andUrl:postUrl
+                                        andParams:postInfo] forHTTPHeaderField:@"Authorization"];
     return request;
 }
 @end
@@ -186,19 +250,39 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 #pragma mark - CSSocialServiceTwitter
 
-@interface CSSocialServiceTwitter () <CSSocialService>
+@interface CSSocialServiceTwitter () <CSSocialService, TwitterLoginDialogDelegate>
+-(NSString*) consumerKey;
+-(NSString*) consumerSecret;
 @end
 
 @implementation CSSocialServiceTwitter
 {
     BOOL waitingForAccess;
+    OAuth *_oAuth;
 }
 @synthesize accountStore = _accountStore;
 @synthesize twitterAccount = _twitterAccount;
 @synthesize accounts = _accounts;
 
+-(NSString*) consumerKey
+{
+    NSString *consumerKey = [[self configDictionary] objectForKey:kCSTwitterConsumerKey];
+    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSTwitterConsumerKey];
+    NSAssert(consumerKey, message);
+    return consumerKey;
+}
+
+-(NSString*) consumerSecret
+{
+    NSString *consumerSecret = [[self configDictionary] objectForKey:kCSTwitterConsumerSecret];
+    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSTwitterConsumerSecret];
+    NSAssert(consumerSecret, message);
+    return consumerSecret;
+}
+
 -(void) dealloc
 {
+    CS_RELEASE(_oAuth);
     CS_RELEASE(_accountStore);
     CS_RELEASE(_twitterAccount);
     CS_RELEASE(_accounts);
@@ -210,6 +294,10 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     {
         self.twitterAccount = [self obtainAccountWithIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:CSTweetLastAccountIdentifier]];
         self.accountStore = CS_AUTORELEASE([[ACAccountStore alloc] init]);
+        
+        _oAuth = [[OAuth alloc] initWithConsumerKey:[self consumerKey]
+                                  andConsumerSecret:[self consumerSecret]];
+        [self loadOAuth:_oAuth];
     }
     return self;
 }
@@ -219,24 +307,37 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     self.loginSuccessBlock = success;
     self.loginFailedBlock = error;
     
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0")) 
+    if (YES)//SYSTEM_VERSION_LESS_THAN(@"5.0"))
     {
-        self.loginFailedBlock([self errorUnsupportedSDK]);
-        return;
-    }
-    
-    [self checkTwitterCredentials];
-    if ([self selectTwitterAccount])
-    {
-        [self presentTwitterAccountPicker];
+        if (![self isAuthenticated])
+        {
+            TwitterDialog *dialog = [[TwitterDialog alloc] init];
+            dialog.twitterOAuth = _oAuth;
+            dialog.logindelegate = self;
+            [dialog show];
+            CS_RELEASE(dialog);
+        }
+        else
+        {
+            self.loginSuccessBlock();
+        }
     }
     else
     {
-        _twitterAccount ?
-        self.loginSuccessBlock() :
-        self.loginFailedBlock([NSError errorWithDomain:nil
-                                                  code:0
-                                              userInfo:[NSDictionary dictionaryWithObject:@"No twitter account available" forKey:NSLocalizedDescriptionKey]]);
+    
+        [self checkTwitterCredentials];
+        if ([self selectTwitterAccount])
+        {
+            [self presentTwitterAccountPicker];
+        }
+        else
+        {
+            _twitterAccount ?
+            self.loginSuccessBlock() :
+            self.loginFailedBlock([NSError errorWithDomain:@""
+                                                      code:0
+                                                  userInfo:[NSDictionary dictionaryWithObject:@"No twitter account available" forKey:NSLocalizedDescriptionKey]]);
+        }
     }
 }
 
@@ -254,7 +355,10 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(BOOL) isAuthenticated
 {
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0")) return NO;
+    if (YES)//SYSTEM_VERSION_LESS_THAN(@"5.0"))
+    {
+        return _oAuth.oauth_token_authorized;
+    }
     return [self obtainAccount] != nil ? YES : NO;
 }
 
@@ -262,7 +366,8 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 {
     CSSocialRequest *request = nil;
     
-    switch (parameter.requestName) {
+    switch (parameter.requestName)
+    {
         case CSRequestLogin:
             break;
         case CSRequestLogout:
@@ -271,27 +376,24 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
             //request = [CSSocialRequestTwitterUser requestWithService:nil parameters:[parameter parameters]];
             break;
         case CSRequestFriends:
-            request = [CSSocialRequestTwitterFriends requestWithService:nil parameters:[parameter parameters]];
+            request = [CSSocialRequestTwitterFriends requestWithService:_oAuth parameters:[parameter parameters]];
             break;
         case CSRequestPostMessage:
-            request = [CSSocialRequestTwitterMessage requestWithService:nil parameters:[parameter parameters]];
+            request = [CSSocialRequestTwitterMessage requestWithService:_oAuth parameters:[parameter parameters]];
             break;
         case CSRequestGetUserImage:
-            request = [CSSocialRequestTwitterGetUserImage requestWithService:nil parameters:[parameter parameters]];
+            request = [CSSocialRequestTwitterGetUserImage requestWithService:_oAuth parameters:[parameter parameters]];
             break;
         default:
             break;
     }
-    
     return request;
-
 }
 
-
+/*
 -(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock
 {
  
-    /*
     if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0")) 
     {
         responseBlock(request, nil, [self errorUnsupportedSDK]);
@@ -369,14 +471,15 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     }
 
     
-    /*
+    
     //[postRequest setAccount:account];
-    CSSocialRequestTwitter *twRequest = (CSSocialRequestTwitter*) request;
-    twRequest.request = postRequest;
-    twRequest.account = self.twitterAccount;
-    [self.requestQueue addOperation:twRequest];
-    */
+//    CSSocialRequestTwitter *twRequest = (CSSocialRequestTwitter*) request;
+//    twRequest.request = postRequest;
+//    twRequest.account = self.twitterAccount;
+//    [self.requestQueue addOperation:twRequest];
+    
 }
+*/
 
 -(NSArray*) permissions {
     return nil;
@@ -630,7 +733,21 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
      */
 }
 
-#pragma mark - Requests
+#pragma mark - TwitterLoginDialogDelegate
+
+- (void)twitterDidLogin
+{
+    [self saveOAuth:_oAuth];
+    self.loginSuccessBlock();
+}
+
+- (void)twitterDidNotLogin:(BOOL)cancelled
+{
+    [self resetOAuth];
+    self.loginFailedBlock([self errorTwitterLoginFailed]);
+}
+
+#pragma mark - Errors
 
 -(NSError*) errorInvalidReturnValue
 {
@@ -645,6 +762,36 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 -(NSError*) errorUnsupportedSDK
 {
     return [self errorWithLocalizedDescription:@"Unsupported SDK"];
+}
+
+-(NSError*) errorTwitterLoginFailed
+{
+    return [self errorWithLocalizedDescription:@"Twitter login failed"];
+}
+
+#pragma mark - OAuth
+
+-(void) saveOAuth:(OAuth*) oAuth
+{
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                oAuth.oauth_token, kCSTwitterOAuthToken,
+                                oAuth.oauth_token_secret, kCSTwitterOAuthTokenSecret,
+                                NSStringFromBOOL(oAuth.oauth_token_authorized), kCSTwitterOAuthTokenAuthorized,
+                                nil];
+    [SimpleKeychain save:kCSTwitterOAuthDictionary data:dictionary];
+}
+
+-(void) loadOAuth:(OAuth*) oAuth
+{
+    NSDictionary *dictionary = [SimpleKeychain load:kCSTwitterOAuthDictionary];
+    oAuth.oauth_token = [dictionary objectForKey:kCSTwitterOAuthToken];
+    oAuth.oauth_token_secret = [dictionary objectForKey:kCSTwitterOAuthTokenSecret];
+    oAuth.oauth_token_authorized = [[dictionary objectForKey:kCSTwitterOAuthTokenAuthorized] boolValue];
+}
+
+-(void) resetOAuth
+{
+    [SimpleKeychain delete:kCSTwitterOAuthDictionary];
 }
 
 @end

@@ -66,12 +66,6 @@
     return nil;
 }
 
--(NSArray*) permissions
-{
-    NSAssert(NO, @"Override me");
-    return nil;
-}
-
 -(NSString*) serviceName
 {
     return [NSStringFromClass([self class]) stringByReplacingOccurrencesOfString:@"CSSocialService" withString:@""];
@@ -92,7 +86,7 @@
 
 -(NSError*) errorWithLocalizedDescription:(NSString*) description
 {
-    return [NSError errorWithDomain:nil code:0 userInfo:[NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey]];
+    return [NSError errorWithDomain:@"" code:0 userInfo:[NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey]];
 }
 
 @end

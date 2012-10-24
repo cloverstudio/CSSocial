@@ -218,7 +218,7 @@
 {
     UIImage *image = [UIImage imageWithData:data];
     if(image) self.responseBlock(self,image, nil);
-    else self.responseBlock(self, nil, [NSError errorWithDomain:nil
+    else self.responseBlock(self, nil, [NSError errorWithDomain:@""
                                                            code:0
                                                        userInfo:[NSDictionary dictionaryWithObject:@"Image is nil" forKey:NSLocalizedDescriptionKey]]);
     [self receivedResponse];
@@ -230,6 +230,7 @@
 
 
 @interface CSSocialServiceFacebook  () <CSSocialService, FBRequestDelegate, FBSessionDelegate>
+-(NSDictionary*) permissions;
 @end
 
 #pragma mark - CSSocialServiceFacebook
@@ -371,7 +372,7 @@
     [defaults removeObjectForKey:kCSFBExpirationDateKey];
     [defaults synchronize];
     
-    self.loginFailedBlock([NSError errorWithDomain:nil code:0 userInfo:
+    self.loginFailedBlock([NSError errorWithDomain:@"" code:0 userInfo:
                            [NSDictionary dictionaryWithObject:@"fbDidNotLogin:"
                                                        forKey:NSLocalizedDescriptionKey]]);
 }

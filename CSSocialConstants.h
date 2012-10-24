@@ -15,4 +15,12 @@
 #define kCSFacebookPermissions @"CSSOCIAL_FACEBOOK_PERMISSIONS"
 #define kCSFacebookAppID @"CSSOCIAL_FACEBOOK_APP_ID"
 
+#define kCSTwitterConsumerKey @"CSSOCIAL_TWITTER_CONSUMER_KEY"
+#define kCSTwitterConsumerSecret @"CSSOCIAL_TWITTER_CONSUMER_SECRET"
+
+#define kCSTwitterOAuthToken @"CSSocialTwitterOAuthToken"
+#define kCSTwitterOAuthTokenSecret @"CSSocialTwitterOAuthTokenSecret"
+#define kCSTwitterOAuthTokenAuthorized @"CSSocialTwitterOAuthTokenAuthorized"
+#define kCSTwitterOAuthDictionary [NSString stringWithFormat:@"%@.CSSocialTwitterOAuthDictionary", CS_BUNDLE_ID]
+
 #endif

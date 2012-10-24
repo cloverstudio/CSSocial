@@ -16,7 +16,11 @@
 
 ///private protocol classes
 @protocol CSSocialService <NSObject>
+@optional
+-(NSError*) errorWithLocalizedDescription:(NSString*) description;
+
 @required
+-(NSDictionary*) configDictionary;
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error;
 -(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock;
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter;
@@ -24,7 +28,6 @@
 -(BOOL) isAuthenticated;
 -(NSString*) serviceName;
 -(NSArray*) permissions;
--(NSDictionary*) configDictionary;
 
 -(NSError*) errorWithLocalizedDescription:(NSString*) description;
 @end
