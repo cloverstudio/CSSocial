@@ -267,7 +267,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 -(NSString*) consumerKey
 {
     NSString *consumerKey = [[self configDictionary] objectForKey:kCSTwitterConsumerKey];
-    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSTwitterConsumerKey];
+    NSString *message = [NSString stringWithFormat:@"Add Consumer Key with %@ key to CSSocial.plist", kCSTwitterConsumerKey];
     NSAssert(consumerKey, message);
     return consumerKey;
 }
@@ -275,7 +275,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 -(NSString*) consumerSecret
 {
     NSString *consumerSecret = [[self configDictionary] objectForKey:kCSTwitterConsumerSecret];
-    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSTwitterConsumerSecret];
+    NSString *message = [NSString stringWithFormat:@"Add Consumer Secret with %@ key to CSSocial.plist", kCSTwitterConsumerSecret];
     NSAssert(consumerSecret, message);
     return consumerSecret;
 }

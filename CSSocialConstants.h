@@ -23,4 +23,8 @@
 #define kCSTwitterOAuthTokenAuthorized @"CSSocialTwitterOAuthTokenAuthorized"
 #define kCSTwitterOAuthDictionary [NSString stringWithFormat:@"%@.CSSocialTwitterOAuthDictionary", CS_BUNDLE_ID]
 
+#define CSFacebook (CSSocialServiceFacebook*)[CSSocial facebook]
+#define CSTwitter (CSSocialServiceTwitter*)[CSSocial twitter]
+
+
 #endif

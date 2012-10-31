@@ -11,6 +11,7 @@
 
 @interface CSSocialServiceFacebook : CSSocialService
 {
+    
 }
 
 @end

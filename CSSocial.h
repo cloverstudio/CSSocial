@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "CSConstants.h"
+#import "CSSocialServiceFacebook.h"
+#import "CSSocialServiceTwitter.h"
 #import "CSSocialConstants.h"
 #import "CSSocialUser.h"
 #import "CSSocialRequest.h"
@@ -34,3 +36,26 @@
 +(BOOL) handleOpenURL:(NSURL *)url;
 +(void) setDataSource:(id<CSSocialManagerDataSource>) dataSource;
 @end
+
+
+@interface CSSocialServiceFacebook (Helper)
+///postToWall:completionBlock:
+///posts a simple message to the facebook wall
+///@param message message to post to wall
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) postToWall:(NSString*) message completionBlock:(CSSocialResponseBlock) responseBlock;
+
+///postPhoto:completionBlock:
+///posts a photo to facebook photo album
+///@param photo photo to post to album
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) postPhoto:(UIImage*) phot completionBlock:(CSSocialResponseBlock) responseBlock;
+@end
+
+@interface CSSocialServiceTwitter (Helper)
+///tweet:completionBlock:
+///posts a simple tweet to selected Twitter account
+///@param tweet tweet to post
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) tweet:(NSString*) tweet  completionBlock:(CSSocialResponseBlock) responseBlock;
+@end    

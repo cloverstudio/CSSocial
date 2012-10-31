@@ -27,9 +27,6 @@
 
 -(BOOL) isAuthenticated;
 -(NSString*) serviceName;
--(NSArray*) permissions;
-
--(NSError*) errorWithLocalizedDescription:(NSString*) description;
 @end
 
 @interface CSSocialService : NSObject 

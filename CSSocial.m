@@ -88,20 +88,65 @@
     return service;
 }
 
-/*
-+(CSSocialService*) mixi
+@end
+
+#pragma mark - Helpers
+#pragma mark Facebook
+@implementation CSSocialServiceFacebook (Helper)
+
+///postToWall:completionBlock:
+///posts a simple message to the facebook wall
+///@param message message to post to wall
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) postToWall:(NSString*) message completionBlock:(CSSocialResponseBlock) responseBlock
 {
-    CSSocial *manager = [CSSocial sharedManager];
-    CSSocialService *service = [manager.services objectForKey:@"CSSocialServiceMixi"];
-    if (!service)
-    {
-        service = CS_AUTORELEASE([[CSSocialServiceMixi alloc] init]);
-        [manager.services setObject:service forKey:@"CSSocialServiceMixi"];
-    }
-    return service;
+    [CSFacebook requestWithParameter:[CSFacebookParameter message:message
+                                                             name:nil
+                                                             link:nil
+                                                       pictureURL:nil
+                                                          caption:nil
+                                                      description:nil
+                                                             icon:nil]
+                            response:^(CSSocialRequest *request, id response, NSError *error)
+     {
+         responseBlock(request, response, error);
+     }];
 }
- */
 
-
+///postPhoto:completionBlock:
+///posts a photo to facebook photo album
+///@param photo photo to post to album
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock
+{
+    CSFacebookParameter *parameter = [CSFacebookParameter photo:photo
+                                                        message:nil];
+    [CSFacebook requestWithParameter:parameter
+                            response:^(CSSocialRequest *request, id response, NSError *error)
+     {
+         responseBlock(request, response, error);
+     }];
+}
 
 @end
+
+#pragma mark Twitter
+@implementation CSSocialServiceTwitter (Helper)
+
+///tweet:completionBlock:
+///posts a simple tweet to selected Twitter account
+///@param tweet tweet to post
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) tweet:(NSString*) tweet completionBlock:(CSSocialResponseBlock) responseBlock
+{
+    CSTwitterParameter *parameter = [CSTwitterParameter message:tweet];
+    [CSTwitter requestWithParameter:parameter
+                           response:^(CSSocialRequest *request, id response, NSError *error)
+     {
+         responseBlock(request, response, error);
+     }];
+}
+
+@end
+
+
