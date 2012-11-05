@@ -39,6 +39,9 @@
     {
         self.service = service;
         self.params = parameters;
+        _cancelled = NO;
+        _executing = NO;
+        _finished = NO;
     }
     return self;
 }

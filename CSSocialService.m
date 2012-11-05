@@ -21,8 +21,9 @@
 -(id) init
 {
     self = [super init];
-    if (self) {
-        self.requestQueue = CS_AUTORELEASE([[NSOperationQueue alloc] init]);
+    if (self)
+    {
+        self.requestQueue = [NSOperationQueue mainQueue];
     }
     return self;
 }

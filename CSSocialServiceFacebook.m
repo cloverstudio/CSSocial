@@ -116,13 +116,20 @@
     
     self = [super initWithService:service parameters:parameters];
     if (self) {
-        Facebook *facebook = (Facebook*) service;
-        [facebook requestWithGraphPath:[self APIcall]
-                             andParams:[NSMutableDictionary dictionaryWithDictionary:[self params]] 
-                         andHttpMethod:[self method]
-                           andDelegate:self];
+
     }
     return self;
+}
+
+-(void) start
+{
+    [super start];
+
+    Facebook *facebook = (Facebook*) self.service;
+    [facebook requestWithGraphPath:[self APIcall]
+                         andParams:[NSMutableDictionary dictionaryWithDictionary:[self params]]
+                     andHttpMethod:[self method]
+                       andDelegate:self];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error
@@ -230,7 +237,7 @@
 
 
 @interface CSSocialServiceFacebook  () <CSSocialService, FBRequestDelegate, FBSessionDelegate>
--(NSDictionary*) permissions;
+-(NSArray*) permissions;
 @end
 
 #pragma mark - CSSocialServiceFacebook
@@ -361,6 +368,7 @@
     
     self.loginSuccessBlock();
 }
+
 
 /**
  * Called when the user dismissed the dialog without logging in.

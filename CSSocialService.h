@@ -30,7 +30,7 @@
 @end
 
 @interface CSSocialService : NSObject 
-@property (nonatomic, retain) NSOperationQueue *requestQueue;
+@property (nonatomic, strong) NSOperationQueue *requestQueue;
 @property (nonatomic, copy) CSVoidBlock loginSuccessBlock;
 @property (nonatomic, copy) CSErrorBlock loginFailedBlock;
 
