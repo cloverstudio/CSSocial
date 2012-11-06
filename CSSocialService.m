@@ -23,9 +23,14 @@
     self = [super init];
     if (self)
     {
-        self.requestQueue = [NSOperationQueue mainQueue];
+        self.requestQueue = [self operationQueue];
     }
     return self;
+}
+
+-(NSOperationQueue*) operationQueue
+{
+    return [NSOperationQueue mainQueue];
 }
 
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error

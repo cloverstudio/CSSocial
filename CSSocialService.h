@@ -20,6 +20,7 @@
 -(NSError*) errorWithLocalizedDescription:(NSString*) description;
 
 @required
+-(NSOperationQueue*) operationQueue;
 -(NSDictionary*) configDictionary;
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error;
 -(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock;

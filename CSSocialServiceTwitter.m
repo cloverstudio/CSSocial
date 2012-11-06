@@ -302,6 +302,11 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     return self;
 }
 
+-(NSOperationQueue*) operationQueue
+{
+    return CS_AUTORELEASE([[NSOperationQueue alloc] init]);
+}
+
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error
 {
     self.loginSuccessBlock = success;
