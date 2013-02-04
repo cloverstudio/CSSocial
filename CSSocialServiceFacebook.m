@@ -219,9 +219,10 @@
     [defaults removeObjectForKey:kCSFBExpirationDateKey];
     [defaults synchronize];
     
-    self.loginFailedBlock([NSError errorWithDomain:@"" code:0 userInfo:
-                           [NSDictionary dictionaryWithObject:@"fbDidNotLogin:"
-                                                       forKey:NSLocalizedDescriptionKey]]);
+    self.loginFailedBlock([NSError errorWithDomain:@""
+                                              code:cancelled ? CSSocialErrorCodeUserCancelled : CSSocialErrorCodeLoginFailed
+                                          userInfo:[NSDictionary dictionaryWithObject:@"fbDidNotLogin:"
+                                                                               forKey:NSLocalizedDescriptionKey]]);
 }
 
 /**

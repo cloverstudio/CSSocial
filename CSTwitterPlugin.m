@@ -116,9 +116,14 @@
 
 #pragma mark - Errors
 
+-(NSError*) errorWithLocalizedDescription:(NSString*) description errorCode:(NSInteger) errorCode
+{
+    return [NSError errorWithDomain:@"" code:errorCode userInfo:[NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey]];
+}
+
 -(NSError*) errorWithLocalizedDescription:(NSString*) description
 {
-    return [NSError errorWithDomain:@"" code:0 userInfo:[NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey]];
+    return [self errorWithLocalizedDescription:description errorCode:0];
 }
 
 -(NSError*) errorInvalidReturnValue
@@ -138,7 +143,12 @@
 
 -(NSError*) errorTwitterLoginFailed
 {
-    return [self errorWithLocalizedDescription:@"Twitter login failed"];
+    return [self errorWithLocalizedDescription:@"Twitter login failed" errorCode:CSSocialErrorCodeLoginFailed];
+}
+
+-(NSError*) errorTwitterUserCancelled
+{
+    return [self errorWithLocalizedDescription:@"Twitter user cancelled" errorCode:CSSocialErrorCodeUserCancelled];
 }
 
 @end

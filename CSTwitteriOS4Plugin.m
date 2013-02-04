@@ -45,8 +45,7 @@
 {
     
     [self resetOAuth];
-    self.loginFailedBlock([self errorTwitterLoginFailed]);
-    self.loginFailedBlock(nil);
+    self.loginFailedBlock(cancelled ? [self errorTwitterUserCancelled] : [self errorTwitterLoginFailed]);
 }
 
 @end
