@@ -35,6 +35,7 @@
 //+(CSSocialService*) mixi;
 +(BOOL) handleOpenURL:(NSURL *)url;
 +(void) setDataSource:(id<CSSocialManagerDataSource>) dataSource;
++(NSDictionary*) configDictionary;
 @end
 
 
@@ -49,7 +50,7 @@
 ///posts a photo to facebook photo album
 ///@param photo photo to post to album
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
--(void) postPhoto:(UIImage*) phot completionBlock:(CSSocialResponseBlock) responseBlock;
+-(void) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock;
 @end
 
 @interface CSSocialServiceTwitter (Helper)

@@ -88,6 +88,13 @@
     return service;
 }
 
++(NSDictionary*) configDictionary
+{
+    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"CSSocial" ofType:@"plist"]];
+    NSAssert(plist, @"CSSocial.plist not found. Please read the manual to learn how to set up the CSSocial.framework");
+    return plist;
+}
+
 @end
 
 #pragma mark - Helpers
@@ -109,7 +116,7 @@
                                                              icon:nil]
                             response:^(CSSocialRequest *request, id response, NSError *error)
      {
-         responseBlock(request, response, error);
+         if(responseBlock)responseBlock(request, response, error);
      }];
 }
 
@@ -124,7 +131,7 @@
     [CSFacebook requestWithParameter:parameter
                             response:^(CSSocialRequest *request, id response, NSError *error)
      {
-         responseBlock(request, response, error);
+         if(responseBlock)responseBlock(request, response, error);
      }];
 }
 
@@ -143,7 +150,7 @@
     [CSTwitter requestWithParameter:parameter
                            response:^(CSSocialRequest *request, id response, NSError *error)
      {
-         responseBlock(request, response, error);
+         if(responseBlock)responseBlock(request, response, error);
      }];
 }
 

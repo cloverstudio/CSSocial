@@ -26,5 +26,4 @@
 #define CSFacebook (CSSocialServiceFacebook*)[CSSocial facebook]
 #define CSTwitter (CSSocialServiceTwitter*)[CSSocial twitter]
 
-
 #endif

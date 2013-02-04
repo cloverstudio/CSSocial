@@ -83,13 +83,6 @@
     return NO;
 }
 
--(NSDictionary*) configDictionary
-{
-    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"CSSocial" ofType:@"plist"]];
-    NSAssert(plist, @"CSSocial.plist not found. Please read the manual to learn how to set up the CSSocial.framework");
-    return plist;
-}
-
 -(NSError*) errorWithLocalizedDescription:(NSString*) description
 {
     return [NSError errorWithDomain:@"" code:0 userInfo:[NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey]];

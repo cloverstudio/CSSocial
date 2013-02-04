@@ -32,7 +32,14 @@
 @property (nonatomic, retain) NSURL *photoURL;
 @property (nonatomic, retain) NSURL *pageURL;
 
+///initializes a user based on the response
+///@param response a response obtained when calling an API on a social service
+///@return a CSSocialUser instance
 -(id) initWithResponse:(id) response;
+
+///initializes a user based on the response
+///@param response a response obtained when calling an API on a social service
+///@return a CSSocialUser instance
 +(id) userWithResponse:(id) response;
 
 ///returns an array of users from response

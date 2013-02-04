@@ -14,249 +14,25 @@
 #import <Twitter/Twitter.h>
 #import <Accounts/Accounts.h>
 #import "OAuth.h"
-#import "TwitterDialog.h"
 #import "SimpleKeychain.h"
+#import "CSTwitterPlugin.h"
+#import "CSSocialRequestTwitter.h"
 
 static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdentifier";
 
-#pragma mark - CSSocialUserTwitter
-
-@interface CSSocialUserTwitter : CSSocialUser
-@end
-
-@implementation CSSocialUserTwitter
--(id) initWithResponse:(id) response
-{
-    self = [super init];
-    if (self)
-    {        
-        if ([response isKindOfClass:[NSArray class]])
-        {
-            NSDictionary *dict = [response objectAtIndex:0];
-            if ([dict isKindOfClass:[NSDictionary class]])
-            {
-                self.name = [dict objectForKey:@"screen_name"];
-                self.ID = [dict objectForKey:@"id_str"];
-            }
-        }
-        else
-        {
-            self.ID = [response stringValue];
-        }
-    }
-    return self;
-}
-
-+(NSArray*) usersFromResponse:(id) response
-{
-    NSMutableArray *array = [NSMutableArray array];
-    if ([response isKindOfClass:[NSDictionary class]])
-    {
-        for (NSDictionary *userDict in [response objectForKey:@"ids"])
-        {
-            [array addObject:[CSSocialUserTwitter userWithResponse:userDict]];
-        }
-    }
-    return (NSArray*)array;
-}
-
-@end
-
-#pragma mark - CSSocialRequestTwitter
-
-@interface CSSocialRequestTwitter : CSSocialRequest <NSURLConnectionDelegate>
-{
-    NSMutableData *_data;
-}
--(id) parseResponseData:(id)response error:(NSError**) error; 
--(NSString*) paramsString;
-- (NSString *)encodedURLParameterString:(NSString*) string;
-@end
-
-@implementation CSSocialRequestTwitter
--(void) dealloc
-{
-    CS_RELEASE(_data);
-    CS_SUPER_DEALLOC;
-}
-
--(void) start
-{
-    [super start];
-
-    if (SYSTEM_VERSION_LESS_THAN(@"5.0"))
-    {
-        NSError *error = nil;
-        NSHTTPURLResponse *response = nil;
-        _data = (NSMutableData*)[NSURLConnection sendSynchronousRequest:[self request]
-                                                      returningResponse:&response
-                                                                  error:&error];
-        [self buildResponse:_data error:error];
-    }
-    else
-    {
-        [NSURLConnection sendAsynchronousRequest:[self request]
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
-         {
-             [self buildResponse:data error:error];
-         }];
-    }
-}
-
--(void) buildResponse:(NSData*) data error:(NSError*) error
-{
-    if (error)
-    {
-        self.responseBlock(self, nil, error);
-        return;
-    }
-    
-    if (!data)
-    {
-        self.responseBlock(self, nil, [NSError errorWithDomain:@""
-                                                          code:0
-                                                      userInfo:[NSDictionary dictionaryWithObject:@"No data in response"
-                                                                                           forKey:NSLocalizedDescriptionKey]]);
-        return;
-    }
-    
-    id parsedResponse = [self parseResponseData:data error:&error];
-    if (!parsedResponse || error)
-    {
-        self.responseBlock(self, nil, error);
-        return;
-    }
-    
-    self.responseBlock(self, parsedResponse, nil);
-}
-
--(void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [_data appendData:data];
-}
-
--(void) connectionDidFinishLoading:(NSURLConnection*) connection
-{
-    [self buildResponse:_data error:nil];
-}
-
--(void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    self.responseBlock(self, nil, error);
-}
-
--(NSMutableURLRequest*) request
-{
-    NSString *urlString = [NSString stringWithFormat:@"%@?%@", [self APIcall], [self paramsString]];
-    return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-}
-
-///parse JSON by default.
--(id) parseResponseData:(id)responseData error:(NSError**) error
-{
-    if (responseData) 
-    {
-        return [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:error];
-    }
-    else
-    {
-        return nil;
-    }
-}
-
--(NSString*) paramsString
-{
-    NSMutableString *paramsString = [NSMutableString string];
-    NSInteger keyCount = 0;
-    NSArray *keys = [self.params allKeys];
-    for (NSString *key in keys)
-    {
-        keyCount++;
-        [paramsString appendFormat:@"%@=%@", key, [self encodedURLParameterString:[self.params objectForKey:key]]];
-        if (keyCount != keys.count) [paramsString appendString:@"&"];
-    }
-    return [NSString stringWithString:paramsString];
-}
-
-- (NSString *)encodedURLParameterString:(NSString*) string
-{
-    NSString *result = (__bridge NSString*)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                           (__bridge CFStringRef)string,
-                                                                           NULL,
-                                                                           CFSTR(":/=,!$&'()*+;[]@#?"),
-                                                                           kCFStringEncodingUTF8);
-	return CS_AUTORELEASE(result);
-}
-
-@end
-
-@interface CSSocialRequestTwitterMessage : CSSocialRequestTwitter
-@end
-
-@implementation CSSocialRequestTwitterMessage
--(NSString*) APIcall {return @"https://api.twitter.com/1/statuses/update.json";}
-
--(NSMutableURLRequest*) request
-{
-    OAuth *oAuth = (OAuth*)self.service;
-    NSString *postBodyString = [self paramsString];
-    NSString *postUrl = [self APIcall];
-    NSMutableDictionary *postInfo = [NSMutableDictionary dictionaryWithDictionary:[self params]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:postUrl]];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:[postBodyString dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setValue:[oAuth oAuthHeaderForMethod:@"POST"
-                                           andUrl:postUrl
-                                        andParams:postInfo] forHTTPHeaderField:@"Authorization"];
-    return request;
-}
-@end
-
-@interface CSSocialRequestTwitterGetUserImage : CSSocialRequestTwitter
-@end
-
-@implementation CSSocialRequestTwitterGetUserImage
--(NSString*) APIcall { return @"https://api.twitter.com/1/users/profile_image"; }
--(id) method { return [NSNumber numberWithInteger:TWRequestMethodGET]; }
--(id) parseResponseData:(id)responseData error:(NSError**) error 
-{
-    UIImage *image = [UIImage imageWithData:responseData];
-    if (!image) {
-        *error = [NSError errorWithDomain:@"com.clover-studio" code:100 userInfo:nil];
-        return nil;
-    }
-    return image;
-}
-@end
-
-@interface CSSocialRequestTwitterFriends : CSSocialRequestTwitter
-@end
-
-@implementation CSSocialRequestTwitterFriends
--(NSString*) APIcall { return @"https://api.twitter.com/1/friends/ids.json"; }
--(id) method { return [NSNumber numberWithInteger:TWRequestMethodGET]; }
--(id) parseResponseData:(id)responseData error:(NSError**) error
-{
-    return [CSSocialUserTwitter usersFromResponse:responseData];
-}
-@end
+#pragma mark - CSSocialServiceTwitter
 
 @interface CSSocialServiceTwitter()
+-(NSString*) consumerKey;
+-(NSString*) consumerSecret;
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) ACAccount *twitterAccount;
 @property (nonatomic, retain) NSArray *accounts;
 @end
 
-#pragma mark - CSSocialServiceTwitter
-
-@interface CSSocialServiceTwitter () <CSSocialService, TwitterLoginDialogDelegate>
--(NSString*) consumerKey;
--(NSString*) consumerSecret;
-@end
-
 @implementation CSSocialServiceTwitter
 {
+    CSTwitterPlugin *_plugin;
     BOOL waitingForAccess;
     OAuth *_oAuth;
 }
@@ -266,7 +42,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(NSString*) consumerKey
 {
-    NSString *consumerKey = [[self configDictionary] objectForKey:kCSTwitterConsumerKey];
+    NSString *consumerKey = [[CSSocial configDictionary] objectForKey:kCSTwitterConsumerKey];
     NSString *message = [NSString stringWithFormat:@"Add Consumer Key with %@ key to CSSocial.plist", kCSTwitterConsumerKey];
     NSAssert(consumerKey, message);
     return consumerKey;
@@ -274,7 +50,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(NSString*) consumerSecret
 {
-    NSString *consumerSecret = [[self configDictionary] objectForKey:kCSTwitterConsumerSecret];
+    NSString *consumerSecret = [[CSSocial configDictionary] objectForKey:kCSTwitterConsumerSecret];
     NSString *message = [NSString stringWithFormat:@"Add Consumer Secret with %@ key to CSSocial.plist", kCSTwitterConsumerSecret];
     NSAssert(consumerSecret, message);
     return consumerSecret;
@@ -295,9 +71,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
         self.twitterAccount = [self obtainAccountWithIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:CSTweetLastAccountIdentifier]];
         self.accountStore = CS_AUTORELEASE([[ACAccountStore alloc] init]);
         
-        _oAuth = [[OAuth alloc] initWithConsumerKey:[self consumerKey]
-                                  andConsumerSecret:[self consumerSecret]];
-        [self loadOAuth:_oAuth];
+        _plugin = [CSTwitterPlugin plugin];
     }
     return self;
 }
@@ -314,18 +88,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     
     if (YES)//SYSTEM_VERSION_LESS_THAN(@"5.0"))
     {
-        if (![self isAuthenticated])
-        {
-            TwitterDialog *dialog = [[TwitterDialog alloc] init];
-            dialog.twitterOAuth = _oAuth;
-            dialog.logindelegate = self;
-            [dialog show];
-            CS_RELEASE(dialog);
-        }
-        else
-        {
-            self.loginSuccessBlock();
-        }
+        [_plugin login:success error:error];
     }
     else
     {
@@ -348,23 +111,12 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(void) logout
 {
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0"))
-    {
-        //self.logoutBlock([self response:kCSSocialResponseError]);
-        return;
-    }
-    
-    self.twitterAccount = nil;
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:CSTweetLastAccountIdentifier];
+    [_plugin logout];
 }
 
 -(BOOL) isAuthenticated
 {
-    if (YES)//SYSTEM_VERSION_LESS_THAN(@"5.0"))
-    {
-        return _oAuth.oauth_token_authorized;
-    }
-    return [self obtainAccount] != nil ? YES : NO;
+    return [_plugin isAuthenticated];
 }
 
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>)parameter
@@ -381,13 +133,13 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
             //request = [CSSocialRequestTwitterUser requestWithService:nil parameters:[parameter parameters]];
             break;
         case CSRequestFriends:
-            request = [CSSocialRequestTwitterFriends requestWithService:_oAuth parameters:[parameter parameters]];
+            request = [CSSocialRequestTwitterFriends requestWithService:_plugin.oAuth parameters:[parameter parameters]];
             break;
         case CSRequestPostMessage:
-            request = [CSSocialRequestTwitterMessage requestWithService:_oAuth parameters:[parameter parameters]];
+            request = [CSSocialRequestTwitterMessage requestWithService:_plugin.oAuth parameters:[parameter parameters]];
             break;
         case CSRequestGetUserImage:
-            request = [CSSocialRequestTwitterGetUserImage requestWithService:_oAuth parameters:[parameter parameters]];
+            request = [CSSocialRequestTwitterGetUserImage requestWithService:_plugin.oAuth parameters:[parameter parameters]];
             break;
         default:
             break;
@@ -508,7 +260,8 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     return accessGranted;
 }
 
--(void) checkTwitterCredentials {
+-(void) checkTwitterCredentials
+{
     if ([self canAccessTwitterAccounts]) {
         ACAccountType *twitterAccountType = [_accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
         NSArray *twitterAccounts = [_accountStore accountsWithAccountType:twitterAccountType];
@@ -740,17 +493,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 #pragma mark - TwitterLoginDialogDelegate
 
-- (void)twitterDidLogin
-{
-    [self saveOAuth:_oAuth];
-    self.loginSuccessBlock();
-}
 
-- (void)twitterDidNotLogin:(BOOL)cancelled
-{
-    [self resetOAuth];
-    self.loginFailedBlock([self errorTwitterLoginFailed]);
-}
 
 #pragma mark - Errors
 

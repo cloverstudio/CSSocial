@@ -12,6 +12,8 @@
 #import "CSSocialParameter.h"
 #import "CSFacebookParameter.h"
 #import "Facebook.h"
+#import "CSSocial.h"
+#import "CSSocialRequestFacebook.h"
 //#import "FBRequest.h"
 
 #define kFBAppID @"490866077597155"
@@ -68,179 +70,12 @@
 #define kCSFBAccessTokenKey @"FBAccessTokenKey"
 #define kCSFBExpirationDateKey @"FBExpirationDateKey"
 
-///graph paths
-#define kCSGraphPathMe @"me"
-#define kCSGraphPathFriends @"me/friends"
-#define kCSGraphPathFeed @"me/feed"
-#define kCSGraphPathPhotos @"me/photos"
-#define kCSGraphPathUserImage @"me/picture"
-
-#pragma mark - Custom User
-
-@interface CSSocialUserFacebook : CSSocialUser
-@end
-
-@implementation CSSocialUserFacebook
--(id) initWithResponse:(id) response
-{
-    self = [super init];
-    if (self) 
-    {
-        if ([response isKindOfClass:[NSDictionary class]]) 
-        {
-            CSLog(@"%@", response);
-            self.name = [response objectForKey:@"name"];
-            self.firstName = [response objectForKey:@"first_name"];
-            self.lastName = [response objectForKey:@"last_name"];
-            self.userName = [response objectForKey:@"username"];
-            self.location = [response objectForKey:@"location"];
-            self.gender = [response objectForKey:@"gender"];
-            self.ID = [response objectForKey:@"id"];
-            self.pageURL = [response objectForKey:@"link"];
-        }
-    }
-    return self;
-}
-@end
-
-#pragma mark - Custom Requests
-
-@interface CSSocialRequestFacebook : CSSocialRequest <FBRequestDelegate>
-@end
-
-@implementation CSSocialRequestFacebook
-
--(id) initWithService:(id) service parameters:(NSDictionary*) parameters
-{
-    NSAssert([service isKindOfClass:[Facebook class]], @"Service has to be of class Facebook");
-    
-    self = [super initWithService:service parameters:parameters];
-    if (self) {
-
-    }
-    return self;
-}
-
--(void) start
-{
-    [super start];
-
-    Facebook *facebook = (Facebook*) self.service;
-    [facebook requestWithGraphPath:[self APIcall]
-                         andParams:[NSMutableDictionary dictionaryWithDictionary:[self params]]
-                     andHttpMethod:[self method]
-                       andDelegate:self];
-}
-
-- (void)request:(FBRequest *)request didFailWithError:(NSError *)error
-{
-    self.responseBlock(self, nil, error);
-    [self receivedResponse];
-}
-
-- (void)request:(FBRequest *)request didLoad:(id)result
-{
-    self.responseBlock(self, result, nil);
-    [self receivedResponse];
-}
-@end
-
-///login
-///this is a special case that doesn't call for APICall and method it is just a dummy class
-@interface CSSocialRequestLogin : CSSocialRequestFacebook
-@end
-
-@implementation CSSocialRequestLogin
--(NSString*) APIcall { return nil; }
--(id) method { return nil; }
-@end
-
-
-///user
-@interface CSSocialRequestFacebookUser : CSSocialRequestFacebook
-@end
-
-@implementation CSSocialRequestFacebookUser
-
-- (void)request:(FBRequest *)request didLoad:(id)result
-{
-    self.responseBlock(self, [CSSocialUserFacebook userWithResponse:result], nil);
-    [self receivedResponse];
-}
-
--(NSString*) APIcall { return kCSGraphPathMe; }
--(id) method { return @"GET"; }
-@end
-
-///friends
-@interface CSSocialRequestFacebookFriends : CSSocialRequestFacebook
-@end
-
-@implementation CSSocialRequestFacebookFriends
-
-- (void)request:(FBRequest *)request didLoad:(id)result
-{
-    self.responseBlock(self, [CSSocialUserFacebook usersWithResponse:result], nil);
-    [self receivedResponse];
-}
-
--(NSString*) APIcall { return kCSGraphPathFriends; }
--(id) method { return @"GET"; }
-@end
-
-///friends paging
-@interface CSSocialRequestFacebookFriendsPaging : CSSocialRequestFacebookFriends
-@end
-
-@implementation CSSocialRequestFacebookFriendsPaging
-@end
-
-///post wall
-@interface CSSocialRequestFacebookPostWall : CSSocialRequestFacebook
-@end
-@implementation CSSocialRequestFacebookPostWall
--(NSString*) APIcall { return kCSGraphPathFeed; }
--(id) method  { return @"POST"; }
-@end
-
-///post photo
-@interface CSSocialRequestFacebookPostPhoto : CSSocialRequestFacebook
-@end
-@implementation CSSocialRequestFacebookPostPhoto
--(NSString*) APIcall { return kCSGraphPathPhotos; }
--(id) method  { return @"POST"; }
-@end
-
-///get picture
-@interface CSSocialRequestFacebookGetUserImage : CSSocialRequestFacebook
-@end
-@implementation CSSocialRequestFacebookGetUserImage
-
-- (void)request:(FBRequest *)request didLoad:(id)result
-{
-    //CSLog(@"%@", result);
-}
-
--(void) request:(FBRequest *)request didLoadRawResponse:(NSData *)data
-{
-    UIImage *image = [UIImage imageWithData:data];
-    if(image) self.responseBlock(self,image, nil);
-    else self.responseBlock(self, nil, [NSError errorWithDomain:@""
-                                                           code:0
-                                                       userInfo:[NSDictionary dictionaryWithObject:@"Image is nil" forKey:NSLocalizedDescriptionKey]]);
-    [self receivedResponse];
-}
-
--(NSString*) APIcall { return kCSGraphPathUserImage; }
--(id) method  { return @"GET"; }
-@end
-
-
-@interface CSSocialServiceFacebook  () <CSSocialService, FBRequestDelegate, FBSessionDelegate>
--(NSArray*) permissions;
-@end
 
 #pragma mark - CSSocialServiceFacebook
+
+@interface CSSocialServiceFacebook  () <FBRequestDelegate, FBSessionDelegate>
+-(NSArray*) permissions;
+@end
 
 @implementation CSSocialServiceFacebook
 {
@@ -296,6 +131,10 @@
 -(void) logout
 {
     [_facebook logout:self];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:kCSFBAccessTokenKey];
+    [defaults removeObjectForKey:kCSFBExpirationDateKey];
+
 }
 
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter
@@ -334,7 +173,7 @@
 
 -(NSString*) appID
 {
-    NSString *appID = [[self configDictionary] objectForKey:kCSFacebookAppID];
+    NSString *appID = [[CSSocial configDictionary] objectForKey:kCSFacebookAppID];
     NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSFacebookAppID];
     NSAssert(appID, message);
     return appID;
@@ -342,7 +181,7 @@
 
 -(NSArray*) permissions
 {
-    NSArray *permissions = [[self configDictionary] objectForKey:kCSFacebookPermissions];
+    NSArray *permissions = [[CSSocial configDictionary] objectForKey:kCSFacebookPermissions];
     NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSFacebookPermissions];
     NSAssert(permissions, message);
     return permissions;

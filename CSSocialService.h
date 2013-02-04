@@ -21,16 +21,15 @@
 
 @required
 -(NSOperationQueue*) operationQueue;
--(NSDictionary*) configDictionary;
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error;
 -(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock;
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter;
-
 -(BOOL) isAuthenticated;
+-(void) logout;
 -(NSString*) serviceName;
 @end
 
-@interface CSSocialService : NSObject 
+@interface CSSocialService : NSObject <CSSocialService>
 @property (nonatomic, strong) NSOperationQueue *requestQueue;
 @property (nonatomic, copy) CSVoidBlock loginSuccessBlock;
 @property (nonatomic, copy) CSErrorBlock loginFailedBlock;
