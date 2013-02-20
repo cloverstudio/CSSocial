@@ -8,6 +8,7 @@
 
 #import "CSTwitterPlugin.h"
 #import <Accounts/Accounts.h>
+#import <UIKit/UIKit.h>
 
 @interface CSTwitteriOS5Plugin : CSTwitterPlugin <UIActionSheetDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 {

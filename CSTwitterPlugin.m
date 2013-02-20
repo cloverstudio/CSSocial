@@ -10,6 +10,7 @@
 #import "CSSocialConstants.h"
 #import "CSTwitterPlugin.h"
 #import "OAuth.h"
+#import "CSSocial.h"
 
 @implementation CSTwitterPlugin
 
