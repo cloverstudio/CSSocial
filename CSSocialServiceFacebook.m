@@ -12,6 +12,7 @@
 #import "CSSocialParameter.h"
 #import "CSFacebookParameter.h"
 #import "Facebook.h"
+#import "FacebookSDK.h"
 #import "CSSocial.h"
 #import "CSSocialRequestFacebook.h"
 //#import "FBRequest.h"
@@ -73,18 +74,18 @@
 
 #pragma mark - CSSocialServiceFacebook
 
-@interface CSSocialServiceFacebook  () <FBRequestDelegate, FBSessionDelegate>
+@interface CSSocialServiceFacebook ()
 -(NSArray*) permissions;
 @end
 
 @implementation CSSocialServiceFacebook
 {
-    Facebook *_facebook;
+    FBSession *_session;
 }
 
 -(void) dealloc
 {
-    CS_RELEASE(_facebook);
+    CS_RELEASE(_session);
     CS_SUPER_DEALLOC;
 }
 
@@ -92,49 +93,63 @@
 {
     if ((self = [super init])) 
     {
-        _facebook = [[Facebook alloc] initWithAppId:[self appID] andDelegate:self];
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        if ([defaults objectForKey:kCSFBAccessTokenKey] 
-            && [defaults objectForKey:kCSFBExpirationDateKey]) {
-            _facebook.accessToken = [defaults objectForKey:kCSFBAccessTokenKey];
-            _facebook.expirationDate = [defaults objectForKey:kCSFBExpirationDateKey];
-        }
+        ///TODO: add urlSchemeSuffix to plist, also allow for appID to be nil
+        ///initialize session for the first time;
+        [FBSession setDefaultAppID:[self appID]];
+        _session = [FBSession activeSession];
     }
     return self;
 }
 
 -(BOOL) isAuthenticated
 {
-    return _facebook.isSessionValid;
+    return (nil != _session && (_session.isOpen || FBSessionStateCreatedTokenLoaded == _session.state));
 }
 
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error
-{
-    [_facebook extendAccessTokenIfNeeded];
-    
+{        
     self.loginSuccessBlock = success;
     self.loginFailedBlock = error;
     
-    if ([self isAuthenticated]) 
+    if (_session.isOpen)
     {
         //session is valid, load all data here at the start of application
         self.loginSuccessBlock();
     }
     else 
     {
-        //[_facebook authorize:[self permissions] useSSO:NO];
-        [_facebook authorize:[self permissions]];
+        [FBSession openActiveSessionWithPublishPermissions:[self permissions]
+                                           defaultAudience:FBSessionDefaultAudienceEveryone
+                                              allowLoginUI:YES
+                                         completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+                                             [self handleSession:session status:status error:error];
+                                         }];
+        _session = [FBSession activeSession];
+    }
+}
+
+-(void) handleSession:(FBSession*) session status:(FBSessionState) status error:(NSError*) error
+{
+    switch (status)
+    {
+        case FBSessionStateOpen:
+            self.loginSuccessBlock();
+            break;
+        case FBSessionStateClosed:
+            break;
+        case FBSessionStateClosedLoginFailed:
+            self.loginFailedBlock(error);
+            break;
+        default:
+            break;
     }
 }
 
 -(void) logout
 {
-    [_facebook logout:self];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:kCSFBAccessTokenKey];
-    [defaults removeObjectForKey:kCSFBExpirationDateKey];
-
+    [_session closeAndClearTokenInformation];
+    _session = nil;
+    [FBSession setActiveSession:_session];
 }
 
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter
@@ -147,22 +162,22 @@
         case CSRequestLogout:
             break;
         case CSRequestUser:
-            request = [CSSocialRequestFacebookUser requestWithService:_facebook parameters:[parameter parameters]];
+            request = [CSSocialRequestFacebookUser requestWithService:_session parameters:[parameter parameters]];
             break;
         case CSRequestFriends:
-            request = [CSSocialRequestFacebookFriends requestWithService:_facebook parameters:[parameter parameters]];
+            request = [CSSocialRequestFacebookFriends requestWithService:_session parameters:[parameter parameters]];
             break;
         case CSRequestFriendsPaging:
-            request = [CSSocialRequestFacebookFriendsPaging requestWithService:_facebook parameters:[parameter parameters]];
+            request = [CSSocialRequestFacebookFriendsPaging requestWithService:_session parameters:[parameter parameters]];
             break;
         case CSRequestPostMessage:
-            request = [CSSocialRequestFacebookPostWall requestWithService:_facebook parameters:[parameter parameters]];
+            request = [CSSocialRequestFacebookPostWall requestWithService:_session parameters:[parameter parameters]];
             break;
         case CSRequestPostPhoto:
-            request = [CSSocialRequestFacebookPostPhoto requestWithService:_facebook parameters:[parameter parameters]];
+            request = [CSSocialRequestFacebookPostPhoto requestWithService:_session parameters:[parameter parameters]];
             break;
         case CSRequestGetUserImage:
-            request = [CSSocialRequestFacebookGetUserImage requestWithService:_facebook parameters:[parameter parameters]];
+            request = [CSSocialRequestFacebookGetUserImage requestWithService:_session parameters:[parameter parameters]];
             break;
         default:
             break;
@@ -188,78 +203,8 @@
 }
 
 -(BOOL) handleOpenURL:(NSURL *)url {
-    return [_facebook handleOpenURL:url];
+    return [_session handleOpenURL:url];
 }
-
-#pragma mark Private
-
-#pragma mark FBSessionDelegate
-
-/**
- * Called when the user successfully logged in.
- */
-- (void)fbDidLogin
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_facebook accessToken] forKey:kCSFBAccessTokenKey];
-    [defaults setObject:[_facebook expirationDate] forKey:kCSFBExpirationDateKey];
-    [defaults synchronize];
-    
-    self.loginSuccessBlock();
-}
-
-
-/**
- * Called when the user dismissed the dialog without logging in.
- */
-- (void)fbDidNotLogin:(BOOL)cancelled
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:kCSFBAccessTokenKey];
-    [defaults removeObjectForKey:kCSFBExpirationDateKey];
-    [defaults synchronize];
-    
-    self.loginFailedBlock([NSError errorWithDomain:@""
-                                              code:cancelled ? CSSocialErrorCodeUserCancelled : CSSocialErrorCodeLoginFailed
-                                          userInfo:[NSDictionary dictionaryWithObject:@"fbDidNotLogin:"
-                                                                               forKey:NSLocalizedDescriptionKey]]);
-}
-
-/**
- * Called after the access token was extended. If your application has any
- * references to the previous access token (for example, if your application
- * stores the previous access token in persistent storage), your application
- * should overwrite the old access token with the new one in this method.
- * See extendAccessToken for more details.
- */
-- (void)fbDidExtendToken:(NSString*)accessToken
-               expiresAt:(NSDate*)expiresAt
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:accessToken forKey:kCSFBAccessTokenKey];
-    [defaults setObject:expiresAt forKey:kCSFBExpirationDateKey];
-}
-
-/**
- * Called when the user logged out.
- */
-- (void)fbDidLogout
-{
-    //self.logoutBlock([self response:kCSSocialResponseOK]);
-}
-
-/**
- * Called when the current session has expired. This might happen when:
- *  - the access token expired
- *  - the app has been disabled
- *  - the user revoked the app's permissions
- *  - the user changed his or her password
- */
-- (void)fbSessionInvalidated
-{
-    //self.logoutBlock([self response:kCSSocialResponseOK]);
-}
-
 
 @end
 

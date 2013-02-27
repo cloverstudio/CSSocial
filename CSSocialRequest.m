@@ -52,6 +52,18 @@
     _finished = NO;
 }
 
+-(void) receivedResponse:(id)result error:(NSError *)error
+{
+    self.responseBlock(self, [self parseResponse:result], error);
+    [self receivedResponse];
+}
+
+///each subclass can parse its own response or just return the raw response
+-(id) parseResponse:(id)rawResponse
+{
+    return rawResponse;
+}
+
 -(void) receivedResponse
 {
     if (!_executing) return;

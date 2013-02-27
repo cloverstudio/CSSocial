@@ -27,6 +27,9 @@
 -(BOOL) isAuthenticated;
 -(void) logout;
 -(NSString*) serviceName;
+
+@optional
+-(BOOL) handleOpenURL:(NSURL*)url;
 @end
 
 @interface CSSocialService : NSObject <CSSocialService>
@@ -36,6 +39,6 @@
 
 -(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>) parameter
                                 response:(CSSocialResponseBlock) responseBlock;
--(BOOL) handleOpenURL:(NSURL*)url;
+
 
 @end

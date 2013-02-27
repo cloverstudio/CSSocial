@@ -7,9 +7,8 @@
 //
 
 #import "CSSocialRequest.h"
-#import "Facebook.h"
 
-@interface CSSocialRequestFacebook : CSSocialRequest <FBRequestDelegate>
+@interface CSSocialRequestFacebook : CSSocialRequest
 @end
 
 ///login

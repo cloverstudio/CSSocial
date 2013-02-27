@@ -14,6 +14,7 @@
 
 @interface CSSocial ()
 @property (nonatomic, retain) NSMutableDictionary *services;
+@property (nonatomic, assign) id<CSSocialService> lastService;
 @end
 
 @implementation CSSocial
@@ -54,6 +55,7 @@
 
 +(BOOL) handleOpenURL:(NSURL *)url
 {
+    /*
     CSSocial *manager = [CSSocial sharedManager];
     for (NSString *key in [manager.services allKeys])
     {
@@ -61,6 +63,13 @@
         if (service && [service respondsToSelector:@selector(handleOpenURL:)])
             return [service handleOpenURL:url];
     }
+     */
+    CSSocial *manager = [CSSocial sharedManager];
+    if ([manager.lastService respondsToSelector:@selector(handleOpenURL:)])
+    {
+        return [manager.lastService handleOpenURL:url];
+    }
+    
     return NO;
 }
 
@@ -73,6 +82,7 @@
         service = CS_AUTORELEASE([[CSSocialServiceFacebook alloc] init]);
         [manager.services setObject:service forKey:@"CSSocialServiceFacebook"];
     }
+    manager.lastService = service;
     return service;
 }
 
@@ -85,6 +95,7 @@
         service = CS_AUTORELEASE([[CSSocialServiceTwitter alloc] init]);
         [manager.services setObject:service forKey:@"CSSocialServiceTwitter"];
     }
+    manager.lastService = service;
     return service;
 }
 

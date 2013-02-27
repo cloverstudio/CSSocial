@@ -35,6 +35,8 @@ typedef void (^CSSocialResponseBlock)(CSSocialRequest *request, id response, NSE
 -(id) initWithService:(id) service parameters:(NSDictionary*) parameters;
 +(CSSocialRequest*) requestWithService:(id)service parameters:(NSDictionary*) parameters;
 -(void) receivedResponse;
+-(void) receivedResponse:(id) result error:(NSError*) error;
+-(id) parseResponse:(id) rawResponse;
 @end
 
 

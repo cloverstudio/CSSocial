@@ -8,6 +8,8 @@
 
 #import "CSSocialRequestFacebook.h"
 #import "CSSocialUserFacebook.h"
+#import "FBRequestConnection.h"
+#import "FBRequest.h"
 
 ///graph paths
 #define kCSGraphPathMe @"me"
@@ -17,11 +19,12 @@
 #define kCSGraphPathUserImage @"me/picture"
 
 @implementation CSSocialRequestFacebook
+{
+    FBRequestConnection *_connection;
+}
 
 -(id) initWithService:(id) service parameters:(NSDictionary*) parameters
-{
-    NSAssert([service isKindOfClass:[Facebook class]], @"Service has to be of class Facebook");
-    
+{    
     self = [super initWithService:service parameters:parameters];
     if (self) {
         
@@ -32,94 +35,78 @@
 -(void) start
 {
     [super start];
-    
-    Facebook *facebook = (Facebook*) self.service;
-    [facebook requestWithGraphPath:[self APIcall]
-                         andParams:[NSMutableDictionary dictionaryWithDictionary:[self params]]
-                     andHttpMethod:[self method]
-                       andDelegate:self];
-}
-
-- (void)request:(FBRequest *)request didFailWithError:(NSError *)error
-{
-    self.responseBlock(self, nil, error);
-    [self receivedResponse];
-}
-
-- (void)request:(FBRequest *)request didLoad:(id)result
-{
-    self.responseBlock(self, result, nil);
-    [self receivedResponse];
+    _connection = [FBRequestConnection startWithGraphPath:[self APIcall]
+                                               parameters:[self params]
+                                               HTTPMethod:[self method]
+                                        completionHandler:^(FBRequestConnection *connection, id result, NSError *error)
+                   {
+                       [self receivedResponse:result error:error];
+                   }];
 }
 @end
-
 
 @implementation CSSocialRequestLogin
+
 -(NSString*) APIcall { return nil; }
+
 -(id) method { return nil; }
+
 @end
-
-
 
 @implementation CSSocialRequestFacebookUser
 
-- (void)request:(FBRequest *)request didLoad:(id)result
+-(id) parseResponse:(id)rawResponse
 {
-    self.responseBlock(self, [CSSocialUserFacebook userWithResponse:result], nil);
-    [self receivedResponse];
+    return [CSSocialUserFacebook userWithResponse:rawResponse];
 }
 
 -(NSString*) APIcall { return kCSGraphPathMe; }
+
 -(id) method { return @"GET"; }
+
 @end
 
 @implementation CSSocialRequestFacebookFriends
 
-- (void)request:(FBRequest *)request didLoad:(id)result
+-(id) parseResponse:(id)rawResponse
 {
-    self.responseBlock(self, [CSSocialUserFacebook usersWithResponse:result], nil);
-    [self receivedResponse];
+    return [CSSocialUserFacebook usersWithResponse:rawResponse];
 }
 
 -(NSString*) APIcall { return kCSGraphPathFriends; }
+
 -(id) method { return @"GET"; }
+
 @end
-
-
 
 @implementation CSSocialRequestFacebookFriendsPaging
 @end
 
-
 @implementation CSSocialRequestFacebookPostWall
--(NSString*) APIcall { return kCSGraphPathFeed; }
--(id) method  { return @"POST"; }
-@end
 
+-(NSString*) APIcall { return kCSGraphPathFeed; }
+
+-(id) method  { return @"POST"; }
+
+@end
 
 @implementation CSSocialRequestFacebookPostPhoto
+
 -(NSString*) APIcall { return kCSGraphPathPhotos; }
+
 -(id) method  { return @"POST"; }
+
 @end
 
-
 @implementation CSSocialRequestFacebookGetUserImage
-
-- (void)request:(FBRequest *)request didLoad:(id)result
+///TODO: test this.
+-(id) parseResponse:(id)rawResponse
 {
-    //CSLog(@"%@", result);
-}
-
--(void) request:(FBRequest *)request didLoadRawResponse:(NSData *)data
-{
-    UIImage *image = [UIImage imageWithData:data];
-    if(image) self.responseBlock(self,image, nil);
-    else self.responseBlock(self, nil, [NSError errorWithDomain:@""
-                                                           code:0
-                                                       userInfo:[NSDictionary dictionaryWithObject:@"Image is nil" forKey:NSLocalizedDescriptionKey]]);
-    [self receivedResponse];
+    return [UIImage imageWithData:rawResponse];
 }
 
 -(NSString*) APIcall { return kCSGraphPathUserImage; }
+
 -(id) method  { return @"GET"; }
+
 @end

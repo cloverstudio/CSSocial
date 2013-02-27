@@ -29,6 +29,7 @@
 
 @interface CSSocial : NSObject
 @property (nonatomic, assign) id<CSSocialManagerDataSource> dataSource;
+
 +(CSSocial*) sharedManager;
 +(CSSocialService*) facebook;
 +(CSSocialService*) twitter;
