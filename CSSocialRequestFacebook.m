@@ -10,8 +10,10 @@
 #import "CSSocialUserFacebook.h"
 #import "FBRequestConnection.h"
 #import "FBRequest.h"
+#import "FBURLConnection.h"
 
 ///graph paths
+#define kCSFacebookURL @"https://graph.facebook.com"
 #define kCSGraphPathMe @"me"
 #define kCSGraphPathFriends @"me/friends"
 #define kCSGraphPathFeed @"me/feed"
@@ -19,22 +21,56 @@
 #define kCSGraphPathUserImage @"me/picture"
 
 @implementation CSSocialRequestFacebook
+///some instances use FBRequestConnection, whereas some use NSURLConnection
 {
-    FBRequestConnection *_connection;
+    id _connection;
+}
+
++(CSSocialRequestFacebook*) requestWithApiCall:(NSString*) apiCall
+                                    httpMethod:(NSString*) method
+                                    parameters:(NSDictionary*) parameters
+                                    permission:(NSString*) permission
+{
+    return CS_AUTORELEASE([[self alloc] initWithService:nil
+                                                apiCall:apiCall
+                                             httpMethod:method
+                                             parameters:parameters
+                                             permission:permission]);
+}
+
+-(id) initWithService:(id) service
+              apiCall:(NSString*) apiCall
+           httpMethod:(NSString*) method
+           parameters:(NSDictionary*) parameters
+           permission:(NSString*) permission
+{
+    self = [super initWithService:service parameters:parameters];
+    if (self)
+    {
+        self.APIcall = apiCall;
+        self.method = method;
+        self.permission = permission;
+    }
+    return self;
+    
 }
 
 -(id) initWithService:(id) service parameters:(NSDictionary*) parameters
 {    
-    self = [super initWithService:service parameters:parameters];
-    if (self) {
+    self = [self initWithService:service
+                         apiCall:nil
+                      httpMethod:nil
+                      parameters:parameters
+                      permission:nil];
+    if (self)
+    {
         
     }
     return self;
 }
 
--(void) start
+-(void) makeRequest
 {
-    [super start];
     _connection = [FBRequestConnection startWithGraphPath:[self APIcall]
                                                parameters:[self params]
                                                HTTPMethod:[self method]
@@ -43,13 +79,6 @@
                        [self receivedResponse:result error:error];
                    }];
 }
-@end
-
-@implementation CSSocialRequestLogin
-
--(NSString*) APIcall { return nil; }
-
--(id) method { return nil; }
 
 @end
 
@@ -64,6 +93,8 @@
 
 -(id) method { return @"GET"; }
 
+-(NSString*) permission {return @"user_about_me";}
+
 @end
 
 @implementation CSSocialRequestFacebookFriends
@@ -77,6 +108,8 @@
 
 -(id) method { return @"GET"; }
 
+-(NSString*) permission {return @"user_about_me";}
+
 @end
 
 @implementation CSSocialRequestFacebookFriendsPaging
@@ -88,6 +121,8 @@
 
 -(id) method  { return @"POST"; }
 
+-(NSString*) permission {return @"publish_stream";}
+
 @end
 
 @implementation CSSocialRequestFacebookPostPhoto
@@ -96,17 +131,50 @@
 
 -(id) method  { return @"POST"; }
 
+-(NSString*) permission {return @"publish_stream";}
+
 @end
 
 @implementation CSSocialRequestFacebookGetUserImage
-///TODO: test this.
+{
+    FBRequestConnection *_connection;
+}
+-(void) makeRequest
+{
+    _connection = [FBRequestConnection startWithGraphPath:[self APIcall]
+                                               parameters:[self params]
+                                               HTTPMethod:[self method]
+                                        completionHandler:^(FBRequestConnection *connection, id result, NSError *error)
+                   {
+                       
+                       if (error)
+                       {
+                           [self receivedResponse:result error:error];
+                           return;
+                       }
+                       
+                       FBGraphObject *graphObject = (FBGraphObject*) result;
+                       NSMutableDictionary *dict = [graphObject objectForKey:@"picture"];
+                       NSURL *url = [NSURL URLWithString:dict[@"data"][@"url"]];
+                       
+                       ///using synchronous request here because we are already on NSOperationQueue
+                       NSURLResponse *response = nil;
+                       NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url]
+                                                            returningResponse:&response
+                                                                        error:&error];
+                       [self receivedResponse:data error:error];
+                   }];
+}
+
 -(id) parseResponse:(id)rawResponse
 {
     return [UIImage imageWithData:rawResponse];
 }
 
--(NSString*) APIcall { return kCSGraphPathUserImage; }
+-(NSString*) APIcall { return kCSGraphPathMe; }
 
 -(id) method  { return @"GET"; }
+
+-(NSString*) permission {return @"user_photos";}
 
 @end

@@ -20,62 +20,65 @@
 #define kFBAppID @"490866077597155"
 
 /*
- FACEBOOK PERMISSIONS LIST:
- user_about_me              friends_about_me
- user_activities            friends_activities
- user_birthday              friends_birthday
- user_checkins              friends_checkins
- user_education_history     friends_education_history
- user_events                friends_events
- user_groups                friends_groups
- user_hometown              friends_hometown
- user_interests             friends_interests
- user_likes                 friends_likes
- user_locations             friends_locations
- user_notes                 friends_notes
- user_photos                friends_photos
- user_questions             friends_questions
- user_relationships         friends_relationships
- user_relationship_details  friends_relationship_details
- user_religion_politics     friends_religion_politics
- user_status                friends_status
+ FACEBOOK READ PERMISSIONS
+ user_about_me                  friends_about_me                user_activities
+ friends_activities             user_birthday                   friends_birthday
+ user_checkins                  friends_checkins                user_education_history
+ friends_education_history      user_events                     friends_events
+ user_groups                    friends_groups                  user_hometown
+ friends_hometown               user_interests                  friends_interests
+ user_likes                     friends_likes                   user_notes
+ friends_notes                  user_online_presence            friends_online_presence
+ user_interests                 friends_interests               user_likes
+ friends_likes                  user_notes                      friends_notes
+ user_online_presence           friends_online_presence         user_religion_politics
+ friends_religion_politics      user_status                     friends_status
+ user_subscriptions             friends_subscriptions           user_videos
+ friends_videos                 user_website                    friends_website
+ user_work_history              friends_work_history            read_friendlists
+ read_mailbox                   read_requests                   read_stream
+ read_insights                  xmpp_login
  
- FACEBOOK EXTENDED PERMISSIONS LIST: (user can always disable, don't rely on these permissions)
- read_friendlists
- read_insights
- read_mailbox
- read_requests
- read_stream
- xmpp_login
- create_event
- manage_friendlists
- manage_notifications
- user_online_presence
- friends_online_presence
- publish_checkins
- publish_stream
- rsvp_event
- 
- FACEBOOK OPENGRAPH PERMISSIONS LIST:
- publish_actions                N/A
- user_actions.music             friends_actions.music
- user_actions.news              friends_actions.news
- user_actions.video             friends_actions.video
- user_actions:APP_NAMESPACE     friends_actions:APP_NAMESPACE
- user_games_activity            friends_games_activity
- 
- FACEBOOK PAGE PERMISSIONS LIST:
- manage_pages
+ FACEBOOK PUBLISH PERMISSIONS
+ publish_actions                publish_stream                  publish_checkins
+ ads_management                 create_event                    rsvp_event
+ manage_friendlists             manage_notifications            manage_pages
  */
 
 #define kCSFBAccessTokenKey @"FBAccessTokenKey"
 #define kCSFBExpirationDateKey @"FBExpirationDateKey"
 
+///Get permissions here https://developers.facebook.com/docs/howtos/ios-6/
+#define kCSFBAllReadPermissionsArray [NSArray arrayWithObjects:\
+@"user_about_me",                  @"friends_about_me",                @"user_activities",\
+@"friends_activities",             @"user_birthday",                   @"friends_birthday",\
+@"user_checkins",                  @"friends_checkins",                @"user_education_history",\
+@"friends_education_history",      @"user_events",                     @"friends_events",\
+@"user_groups",                    @"friends_groups",                  @"user_hometown",\
+@"friends_hometown",               @"user_interests",                  @"friends_interests",\
+@"user_likes",                     @"friends_likes",                   @"user_notes",\
+@"friends_notes",                  @"user_online_presence",            @"friends_online_presence",\
+@"user_interests",                 @"friends_interests",               @"user_likes",\
+@"friends_likes",                  @"user_notes",                      @"friends_notes",\
+@"user_online_presence",           @"friends_online_presence",         @"user_religion_politics",\
+@"friends_religion_politics",      @"user_status",                     @"friends_status",\
+@"user_subscriptions",             @"friends_subscriptions",           @"user_videos",\
+@"friends_videos",                 @"user_website",                    @"friends_website",\
+@"user_work_history",              @"friends_work_history",            @"read_friendlists",\
+@"read_mailbox",                   @"read_requests",                   @"read_stream",\
+@"read_insights",                  @"xmpp_login",                      nil]
+
+#define kCSFBAllPublishPermissionsArray [NSArray arrayWithObjects:\
+@"publish_actions",                @"publish_stream",                  @"publish_checkins",\
+@"ads_management",                 @"create_event",                    @"rsvp_event",\
+@"manage_friendlists",             @"manage_notifications",            @"manage_pages",\
+nil]
 
 #pragma mark - CSSocialServiceFacebook
 
 @interface CSSocialServiceFacebook ()
--(NSArray*) permissions;
+-(NSArray*) readPermissions;
+-(NSArray*) publishPermissions;
 @end
 
 @implementation CSSocialServiceFacebook
@@ -113,23 +116,26 @@
     
     if (_session.isOpen)
     {
-        //session is valid, load all data here at the start of application
         self.loginSuccessBlock();
     }
     else 
     {
-        [FBSession openActiveSessionWithPublishPermissions:[self permissions]
-                                           defaultAudience:FBSessionDefaultAudienceEveryone
-                                              allowLoginUI:YES
-                                         completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-                                             [self handleSession:session status:status error:error];
-                                         }];
-        _session = [FBSession activeSession];
+        [FBSession openActiveSessionWithReadPermissions:[self readPermissions]
+                                           allowLoginUI:YES
+                                      completionHandler:^(FBSession *session, FBSessionState status, NSError *error)
+        {
+            ///session is updated and returns a new session object here
+            [self handleSession:session status:status error:error];
+        }];        
     }
+    _session = [FBSession activeSession];
+
 }
 
 -(void) handleSession:(FBSession*) session status:(FBSessionState) status error:(NSError*) error
 {
+    _session = session;
+    
     switch (status)
     {
         case FBSessionStateOpen:
@@ -194,16 +200,67 @@
     return appID;
 }
 
--(NSArray*) permissions
+-(NSArray*) readPermissions
 {
-    NSArray *permissions = [[CSSocial configDictionary] objectForKey:kCSFacebookPermissions];
-    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSFacebookPermissions];
+    NSArray *permissions = [[CSSocial configDictionary] objectForKey:kCSFacebookPermissionsRead];
+    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSFacebookPermissionsRead];
+    NSAssert(permissions, message);
+    return permissions;
+}
+
+-(NSArray*) publishPermissions
+{
+    NSArray *permissions = [[CSSocial configDictionary] objectForKey:kCSFacebookPermissionsPublish];
+    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSFacebookPermissionsPublish];
     NSAssert(permissions, message);
     return permissions;
 }
 
 -(BOOL) handleOpenURL:(NSURL *)url {
     return [_session handleOpenURL:url];
+}
+ 
+#pragma mark - Permissions And Permission handling
+
+-(BOOL) permissionGranted:(NSString *)permission
+{   
+    return [[_session permissions] containsObject:permission];
+}
+
+-(void) requestPermissionsForRequest:(CSSocialRequest *)request permissionsBlock:(CSErrorBlock)permissionsBlock
+{
+    CSSocialRequestFacebook *facebookRequest = (CSSocialRequestFacebook*) request;
+    
+    NSString *permission = facebookRequest.permission;
+    if (![self permissionGranted:permission])
+    {
+        if ([self isPublishPermission:permission])
+        {
+            [_session requestNewPublishPermissions:@[permission]
+                                   defaultAudience:FBSessionDefaultAudienceOnlyMe
+                                 completionHandler:^(FBSession *session, NSError *error) {
+                                     permissionsBlock(error);
+                                 }];
+        }
+        else
+        {
+            [_session requestNewReadPermissions:@[permission]
+                              completionHandler:^(FBSession *session, NSError *error) {
+                                  permissionsBlock(error);
+                              }];
+        }
+    }
+    else permissionsBlock(nil);
+}
+
+-(BOOL) isPublishPermission:(NSString*) permission
+{
+    return [kCSFBAllPublishPermissionsArray containsObject:permission];
+}
+
+-(BOOL) isReadPermission:(NSString*) permission
+{
+    return [kCSFBAllReadPermissionsArray containsObject:permission];
 }
 
 @end

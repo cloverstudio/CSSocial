@@ -12,7 +12,9 @@
 #define kCSSocialResponseOK NSLocalizedString(@"OK", @"")
 #define kCSSocialResponseError @"Error"
 
-#define kCSFacebookPermissions @"CSSOCIAL_FACEBOOK_PERMISSIONS"
+#define kCSFacebookPermissionsRead @"CSSOCIAL_FACEBOOK_PERMISSIONS_READ"
+#define kCSFacebookPermissionsPublish @"CSSOCIAL_FACEBOOK_PERMISSIONS_PUBLISH"
+
 #define kCSFacebookAppID @"CSSOCIAL_FACEBOOK_APP_ID"
 
 #define kCSTwitterConsumerKey @"CSSOCIAL_TWITTER_CONSUMER_KEY"

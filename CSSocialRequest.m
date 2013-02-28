@@ -50,7 +50,14 @@
 {
     _executing = YES;
     _finished = NO;
+    [self makeRequest];
 }
+
+-(void) makeRequest
+{
+    NSAssert(NO, @"Override me in subclass");
+}
+
 
 -(void) receivedResponse:(id)result error:(NSError *)error
 {

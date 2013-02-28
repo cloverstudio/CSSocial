@@ -8,6 +8,7 @@
 
 #import "CSFacebookParameter.h"
 #import "CSConstants.h"
+#import "FacebookSDK.h"
 
 @interface CSFacebookParameter()
 @property (nonatomic, retain) NSDictionary *parameters;
@@ -62,7 +63,8 @@
 {
     CSFacebookParameter *object = [CSFacebookParameter parameter];
     object.requestName = CSRequestGetUserImage;
-    object.parameters = [NSDictionary dictionaryWithObjectsAndKeys:type, @"type", nil];
+    object.parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                         [NSString stringWithFormat:@"picture.type(%@)", type], @"fields", nil];
     return object;
 }
 
@@ -73,9 +75,11 @@
 
 +(id<CSSocialParameter>) friends
 {
+    NSString* accessToken = [FBSession activeSession].accessTokenData.accessToken;
     CSFacebookParameter *object = [CSFacebookParameter parameter];
     object.requestName = CSRequestFriends;
-    object.parameters = nil;
+    //object.parameters = @{@"access_token" : accessToken, @"fields" : @"name,id,picture"};
+    object.parameters = @{@"fields" : @"name,id,picture"};
     return object;
 }
 

@@ -30,10 +30,8 @@
     CS_SUPER_DEALLOC;
 }
 
--(void) start
+-(void) makeRequest
 {
-    [super start];
-    
     if (SYSTEM_VERSION_LESS_THAN(@"5.0"))
     {
         NSError *error = nil;
@@ -122,20 +120,6 @@
     [self.params enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [paramsString appendFormat:@"%@=%@&", key, [self encodedURLParameterString:[self.params objectForKey:key]]];
     }];
-    
-    /*
-     
-     NSInteger keyCount = 0;
-     NSArray *keys = [self.params allKeys];
-     
-     for (NSString *key in keys)
-     {
-     keyCount++;
-     [paramsString appendFormat:@"%@=%@", key, [self encodedURLParameterString:[self.params objectForKey:key]]];
-     if (keyCount != keys.count) [paramsString appendString:@"&"];
-     }
-     */
-    
     return [NSString stringWithString:paramsString];
 }
 

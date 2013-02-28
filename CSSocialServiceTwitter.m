@@ -111,7 +111,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(BOOL) handleOpenURL:(NSURL *)url
 {
-    
+    return NO;
 }
 
 -(void) logout

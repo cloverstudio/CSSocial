@@ -118,17 +118,19 @@
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
 -(void) postToWall:(NSString*) message completionBlock:(CSSocialResponseBlock) responseBlock
 {
-    [CSFacebook requestWithParameter:[CSFacebookParameter message:message
-                                                             name:nil
-                                                             link:nil
-                                                       pictureURL:nil
-                                                          caption:nil
-                                                      description:nil
-                                                             icon:nil]
-                            response:^(CSSocialRequest *request, id response, NSError *error)
-     {
-         if(responseBlock)responseBlock(request, response, error);
-     }];
+    CSFacebookParameter *parameter = [CSFacebookParameter message:message
+                                                           name:nil
+                                                           link:nil
+                                                     pictureURL:nil
+                                                        caption:nil
+                                                    description:nil
+                                                           icon:nil];
+
+    [CSFacebook sendRequest:[CSFacebook requestWithParameter:parameter]
+                   response:^(CSSocialRequest *request, id response, NSError *error)
+    {
+        if(responseBlock)responseBlock(request, response, error);
+    }];
 }
 
 ///postPhoto:completionBlock:
@@ -139,8 +141,9 @@
 {
     CSFacebookParameter *parameter = [CSFacebookParameter photo:photo
                                                         message:nil];
-    [CSFacebook requestWithParameter:parameter
-                            response:^(CSSocialRequest *request, id response, NSError *error)
+    
+    [CSFacebook sendRequest:[CSFacebook requestWithParameter:parameter]
+                   response:^(CSSocialRequest *request, id response, NSError *error)
      {
          if(responseBlock)responseBlock(request, response, error);
      }];
@@ -158,8 +161,9 @@
 -(void) tweet:(NSString*) tweet completionBlock:(CSSocialResponseBlock) responseBlock
 {
     CSTwitterParameter *parameter = [CSTwitterParameter message:tweet];
-    [CSTwitter requestWithParameter:parameter
-                           response:^(CSSocialRequest *request, id response, NSError *error)
+    
+    [CSTwitter sendRequest:[CSTwitter requestWithParameter:parameter]
+                  response:^(CSSocialRequest *request, id response, NSError *error)
      {
          if(responseBlock)responseBlock(request, response, error);
      }];

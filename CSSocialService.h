@@ -22,8 +22,9 @@
 @required
 -(NSOperationQueue*) operationQueue;
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error;
--(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock;
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter;
+-(BOOL) permissionGranted:(NSString*) permission;
+-(void) requestPermissionsForRequest:(CSSocialRequest*) request permissionsBlock:(CSErrorBlock) permissionsBlock;
 -(BOOL) isAuthenticated;
 -(void) logout;
 -(NSString*) serviceName;
@@ -34,11 +35,23 @@
 
 @interface CSSocialService : NSObject <CSSocialService>
 @property (nonatomic, strong) NSOperationQueue *requestQueue;
+@property (nonatomic, copy) CSErrorBlock permissionsBlock;
 @property (nonatomic, copy) CSVoidBlock loginSuccessBlock;
 @property (nonatomic, copy) CSErrorBlock loginFailedBlock;
 
 -(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>) parameter
-                                response:(CSSocialResponseBlock) responseBlock;
+                                response:(CSSocialResponseBlock) responseBlock
+__attribute__((deprecated));
 
+///@abstract sends a request to a social service and handles a callback when the sevice has returned the result
+///@param request a CSSocialRequest you constructed manually or by using requestWithParameter:
+///@param responseBlock callback block with results
+-(void) sendRequest:(CSSocialRequest*) request
+           response:(CSSocialResponseBlock) responseBlock;
+
+///@abstract this is a convenience method that you can use for automatic request construction based on the parameter object passed
+///@param parameter an object that describes the main request details
+///@return CSSocialRequest instance
+-(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>)parameter;
 
 @end

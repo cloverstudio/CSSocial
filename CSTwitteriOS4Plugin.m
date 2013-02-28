@@ -21,15 +21,6 @@
     CS_RELEASE(dialog);
 }
 
--(void) logout
-{
-    [self resetOAuth];
-    self.oAuth.oauth_token = nil;
-    self.oAuth.oauth_token_secret = nil;
-    self.oAuth.oauth_token_authorized = NO;
-
-}
-
 -(UIViewController*) presentingViewController
 {
     return nil;

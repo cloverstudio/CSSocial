@@ -20,12 +20,12 @@
 {
     CSTwitterPlugin *plugin = nil;
     
-    if(NO)//NSClassFromString(@"SLComposeViewController"))
+    if(NSClassFromString(@"SLComposeViewController"))
     {
         ///iOS 6
-        
+        plugin = [[NSClassFromString(@"CSTwitteriOS6Plugin") alloc] init];
     }
-    else if(NO)//NSClassFromString(@"TWTweetComposeViewController"))
+    else if(NSClassFromString(@"TWTweetComposeViewController"))
     {
         ///iOS 5
         plugin = [[NSClassFromString(@"CSTwitteriOS5Plugin") alloc] init];
@@ -78,6 +78,15 @@
     {
         self.loginSuccessBlock();
     }
+}
+
+-(void) logout
+{
+    [self resetOAuth];
+    self.oAuth.oauth_token = nil;
+    self.oAuth.oauth_token_secret = nil;
+    self.oAuth.oauth_token_authorized = NO;
+    
 }
 
 -(void) authenticate

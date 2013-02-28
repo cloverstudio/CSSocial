@@ -9,11 +9,20 @@
 #import "CSSocialRequest.h"
 
 @interface CSSocialRequestFacebook : CSSocialRequest
-@end
+///Facebook permission needed to do the request.
+///List of all permissions is here https://developers.facebook.com/docs/howtos/ios-6/
+@property (nonatomic, strong) NSString *permission;
 
-///login
-///this is a special case that doesn't call for APICall and method it is just a dummy class
-@interface CSSocialRequestLogin : CSSocialRequestFacebook
+///interface to use when creating a custom request
+///@param apiCall path to graph api, for instance me/friends
+///@param method HTTP method (GET, POST, PUT)
+///@param parameters parameters to use when making a request
+///@param permission permission needed for this API
+///@return CSSocialRequestFacebook object
++(CSSocialRequestFacebook*) requestWithApiCall:(NSString*) apiCall
+                                    httpMethod:(NSString*) method
+                                    parameters:(NSDictionary*) parameters
+                                    permission:(NSString*) permission;
 @end
 
 ///user

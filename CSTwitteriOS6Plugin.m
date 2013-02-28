@@ -10,16 +10,14 @@
 
 @implementation CSTwitteriOS6Plugin
 
--(void) canAccessTwitterAccounts:(CSBoolBlock) canAccessBlock
+-(void) canAccessTwitterAccounts:(CSErrorBlock) canAccessBlock
 {
     [_accountStore requestAccessToAccountsWithType:_accountType
                                            options:nil
                                         completion:^(BOOL granted, NSError *error)
     {
-                                            canAccessBlock(granted);
-        ///TODO: if error, display error
+                                            canAccessBlock(error);
                                         }];
 }
-
 
 @end

@@ -8,6 +8,8 @@
 
 #import "CSTwitteriOS5Plugin.h"
 #import <Twitter/Twitter.h>
+#import "OAuthCore.h"
+#import "OAuth.h"
 
 typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 
@@ -27,25 +29,41 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 }
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    
+{    
     ///do reverse auth every time you pick a new account
     if ([keyPath isEqualToString:@"account"])
     {
-        [self performReverseAuth];
+        [self performReverseAuth:^(NSDictionary *JSONDict, NSError *error) {
+            if (error)
+            {
+                self.loginFailedBlock(error);
+            }
+            else
+            {
+                self.loginSuccessBlock();
+            }
+        }];
     }
+}
+
+-(void) dealloc
+{
+    [self removeObserver:self forKeyPath:@"account"];
+    CS_SUPER_DEALLOC;
 }
 
 -(void) authenticate
 {
     if (!_accountStore) _accountStore = [[ACAccountStore alloc] init];
     if (!_accountType) _accountType = [_accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    
+    [self presentTwitterAccountPicker];
 }
 
 -(void) logout
 {
-    
+    [super logout];
+    self.account = nil;
 }
 
 -(UIViewController*) presentingViewController
@@ -55,9 +73,9 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 
 #pragma mark - Reverse Auth
 
--(void) performReverseAuth
+-(void) performReverseAuth:(CSResponseBlock) responseBlock
 {
-    
+    [self reverseAuthStepOne:responseBlock];
 }
 
 #define TW_API_ROOT                  @"https://api.twitter.com"
@@ -68,35 +86,115 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 #define TW_X_AUTH_REVERSE_TARGET     @"x_reverse_auth_target"
 #define TW_OAUTH_URL_REQUEST_TOKEN   TW_API_ROOT "/oauth/request_token"
 #define TW_OAUTH_URL_AUTH_TOKEN      TW_API_ROOT "/oauth/access_token"
+#define TW_HTTP_HEADER_AUTHORIZATION @"Authorization"
 
--(void) reverseAuthStepOne:(CSResponseBlock) response
+
+-(void) reverseAuthStepOne:(CSResponseBlock) responseBlock
 {
     NSURL *url = [NSURL URLWithString:TW_OAUTH_URL_REQUEST_TOKEN];
-    NSDictionary *dict = [NSDictionary
+    NSDictionary *params = [NSDictionary
                           dictionaryWithObject:TW_X_AUTH_MODE_REVERSE_AUTH
                           forKey:TW_X_AUTH_MODE_KEY];
     
     
+    //  Build our parameter string
+    NSMutableString *paramsAsString = [[NSMutableString alloc] init];
+    [params enumerateKeysAndObjectsUsingBlock:
+     ^(id key, id obj, BOOL *stop) {
+         [paramsAsString appendFormat:@"%@=%@&", key, obj];
+     }];
     
+    NSData *bodyData = [paramsAsString dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authHeader = OAuthorizationHeader(url, @"POST", bodyData, [self consumerKey], [self consumerSecret], nil, nil);
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:authHeader forHTTPHeaderField:TW_HTTP_HEADER_AUTHORIZATION];
+    [request setHTTPBody:bodyData];
+    
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+     {
+         NSString *signedReverseAuthSignature = CS_AUTORELEASE([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+         
+         [self reverseAuthStepTwo:signedReverseAuthSignature
+                    responseBlock:^(NSDictionary *JSONDict, NSError *error) {
+                        responseBlock(JSONDict, error);
+                    }];
+     }];
+}
+
+-(void) reverseAuthStepTwo:(NSString*) signedReversSignature responseBlock:(CSResponseBlock) responseBlock
+{
+    NSDictionary *step2Params = [NSDictionary
+                                 dictionaryWithObjectsAndKeys:
+                                 [self consumerKey],
+                                 TW_X_AUTH_REVERSE_TARGET,
+                                 signedReversSignature,
+                                 TW_X_AUTH_REVERSE_PARMS,
+                                 nil];
+    NSURL *authTokenURL = [NSURL URLWithString:TW_OAUTH_URL_AUTH_TOKEN];
+    
+    id request = nil;
+    
+    if ([SLRequest class])
+    {
+        request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+                                     requestMethod:SLRequestMethodPOST
+                                               URL:authTokenURL
+                                        parameters:step2Params];
+    }
+    else
+    {
+        request = [[TWRequest alloc] initWithURL:authTokenURL
+                                      parameters:step2Params
+                                   requestMethod:TWRequestMethodPOST];
+    }
+
+    [request setAccount:self.account];
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error)
+    {
+        if (error)
+        {
+            responseBlock(nil, error);
+            return;
+        }
+        
+        NSString *responseStr = CS_AUTORELEASE([[NSString alloc]
+                                                initWithData:responseData
+                                                encoding:NSUTF8StringEncoding]);
+        
+        NSArray *parts = [responseStr
+                          componentsSeparatedByString:@"&"];
+        
+        NSString *oAuthToken = [parts[0] componentsSeparatedByString:@"="][1];
+        NSString *oAuthTokenSecret = [parts[1] componentsSeparatedByString:@"="][1];
+        self.oAuth.oauth_token = oAuthToken;
+        self.oAuth.oauth_token_secret = oAuthTokenSecret;
+        self.oAuth.oauth_token_authorized = YES;
+        [self saveOAuth:self.oAuth];
+        responseBlock(nil, nil);
+    }];
 }
 
 #pragma mark - Authentication
 
--(void) canAccessTwitterAccounts:(CSBoolBlock) canAccessBlock
+-(void) canAccessTwitterAccounts:(CSErrorBlock) canAccessBlock
 {
     [_accountStore requestAccessToAccountsWithType:_accountType
                              withCompletionHandler:^(BOOL granted, NSError *error)
     {
-        canAccessBlock(granted);
+        canAccessBlock(error);
         ///TODO: if error, display error
     }];
 }
 
 -(void) checkTwitterAccounts
 {
-    [self canAccessTwitterAccounts:^(BOOL yesOrNo)
+    [self canAccessTwitterAccounts:^(NSError *error)
     {
-        if (yesOrNo == YES)
+        if (!error)
         {
             if (self.accounts.count == 0)
             {
@@ -113,42 +211,55 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 
 #pragma mark - Select Account 
 
--(void) presentTwitterAccountPicker {
-    NSArray *accounts = [self accounts];
-    UIViewController *viewController = [self presentingViewController];//[[CSSocial sharedManager].dataSource presentingViewController];
-    
-    if (accounts.count < 4) {
-        
-        //if there are 2 or 3 accounts, present UIActionSheet
-        UIActionSheet *sheet = CS_AUTORELEASE([[UIActionSheet alloc] init]);
-        int i = 0;
-        for (ACAccount *account in accounts) {
-            [sheet addButtonWithTitle:account.username];
-            i += 1;
+-(void) presentTwitterAccountPicker
+{
+    [self canAccessTwitterAccounts:^(NSError *error)
+    {
+        NSArray *accounts = [self accounts];
+
+        if (error || accounts.count == 0)
+        {
+            self.loginFailedBlock([self errorAccountNotFound]);
+            return;
         }
-        [sheet addButtonWithTitle:@"Cancel"];
-        [sheet setDelegate:self];
-        sheet.cancelButtonIndex = i;
         
-        [sheet showInView:viewController.view];
-        
-    } else {
-        
-        //if in rare case user has more then 4 accounts, present UIPickerView
-        UIPickerView *picker = CS_AUTORELEASE([[UIPickerView alloc] init]);
-        picker.delegate = self;
-        picker.dataSource = self;
-        [picker sizeToFit];
-        picker.frame = CGRectMake(picker.frame.origin.x, CS_WINSIZE.height, picker.frame.size.width, 80);
-        
-        [viewController.view addSubview:picker];
-        
-        float navBarOffset = (viewController.navigationController.navigationBarHidden)?0:viewController.navigationController.navigationBar.frame.size.height;
-        
-        [UIView animateWithDuration:.3f animations:^{
-            picker.frame = CGRectMake(picker.frame.origin.x, picker.frame.origin.y - picker.frame.size.height - navBarOffset, picker.frame.size.width, picker.frame.size.height);
-        }];
-    }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIViewController *viewController = [self presentingViewController];
+            
+            if (accounts.count < 4) {
+                
+                //if there are 2 or 3 accounts, present UIActionSheet
+                UIActionSheet *sheet = CS_AUTORELEASE([[UIActionSheet alloc] init]);
+                int i = 0;
+                for (ACAccount *account in accounts) {
+                    [sheet addButtonWithTitle:account.username];
+                    i += 1;
+                }
+                [sheet addButtonWithTitle:@"Cancel"];
+                [sheet setDelegate:self];
+                sheet.cancelButtonIndex = i;
+                
+                [sheet showInView:viewController.view];
+                
+            } else {
+                
+                //if in rare case user has more then 4 accounts, present UIPickerView
+                UIPickerView *picker = CS_AUTORELEASE([[UIPickerView alloc] init]);
+                picker.delegate = self;
+                picker.dataSource = self;
+                [picker sizeToFit];
+                picker.frame = CGRectMake(picker.frame.origin.x, CS_WINSIZE.height, picker.frame.size.width, 80);
+                
+                [viewController.view addSubview:picker];
+                
+                float navBarOffset = (viewController.navigationController.navigationBarHidden)?0:viewController.navigationController.navigationBar.frame.size.height;
+                
+                [UIView animateWithDuration:.3f animations:^{
+                    picker.frame = CGRectMake(picker.frame.origin.x, picker.frame.origin.y - picker.frame.size.height - navBarOffset, picker.frame.size.width, picker.frame.size.height);
+                }];
+            }
+        });
+    }];
 }
 
 #pragma mark - UIAlertViewDelegate

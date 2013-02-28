@@ -24,9 +24,22 @@
             self.gender = [response objectForKey:@"gender"];
             self.ID = [response objectForKey:@"id"];
             self.pageURL = [response objectForKey:@"link"];
+            self.photoURL = [NSURL URLWithString:response[@"picture"][@"data"][@"url"]];
         }
     }
     return self;
 }
+
++(NSArray*) usersWithResponse:(id) response
+{
+    NSDictionary *dictionary = [response objectForKey:@"data"];
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSDictionary *userDict in dictionary)
+    {
+        [array addObject:[CSSocialUserFacebook userWithResponse:userDict]];
+    }
+    return [array copy];
+}
+
 @end
 

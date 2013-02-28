@@ -8,10 +8,13 @@
 	<string>XTG1yWb3HRvP9vyzRmvf3ODjkkD2LjlSainsFgjoU</string>
 	<key>CSSOCIAL_FACEBOOK_APP_ID</key>
 	<string>374181845997697</string>
-	<key>CSSOCIAL_FACEBOOK_PERMISSIONS</key>
+	<key>CSSOCIAL_FACEBOOK_PERMISSIONS_READ</key>
 	<array>
 		<string>user_about_me</string>
 		<string>user_photos</string>
+	</array>
+	<key>CSSOCIAL_FACEBOOK_PERMISSIONS_PUBLISH</key>
+	<array>
 		<string>publish_stream</string>
 	</array>
 </dict>

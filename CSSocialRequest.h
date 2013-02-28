@@ -21,19 +21,20 @@ typedef void (^CSSocialResponseBlock)(CSSocialRequest *request, id response, NSE
 
 //@property (nonatomic, retain) id method;
 ///API call
-@property (nonatomic, retain) NSString *APIcall;
+@property (nonatomic, copy) NSString *APIcall;
 ///custom parameters
-@property (nonatomic, retain) NSDictionary *params;
+@property (nonatomic, copy) NSDictionary *params;
 ///response
 @property (nonatomic, copy) CSSocialResponseBlock responseBlock;
 ///service
 ///this is an object instance of the service in use, for instance Facebook object when using Facebook. 
 @property (nonatomic, assign, readonly) id service;
-
 ///HTTP method (GET, POST, PUT)
--(id) method;
+@property (nonatomic, copy) id method;
+
 -(id) initWithService:(id) service parameters:(NSDictionary*) parameters;
 +(CSSocialRequest*) requestWithService:(id)service parameters:(NSDictionary*) parameters;
+-(void) makeRequest;
 -(void) receivedResponse;
 -(void) receivedResponse:(id) result error:(NSError*) error;
 -(id) parseResponse:(id) rawResponse;

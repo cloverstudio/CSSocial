@@ -38,8 +38,7 @@
     NSAssert(NO, @"Override me");
 }
 
--(void) request:(CSSocialRequest*) request
-       response:(CSSocialResponseBlock) responseBlock;
+-(void) logout
 {
     NSAssert(NO, @"Override me");
 }
@@ -50,20 +49,57 @@
     return NO;
 }
 
--(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>) parameter
-                                response:(CSSocialResponseBlock) responseBlock
+-(void) sendRequest:(CSSocialRequest*) request
+           response:(CSSocialResponseBlock) responseBlock
 {
-    __block CSSocialRequest *request = [self constructRequestWithParameter:parameter];
     request.responseBlock = responseBlock;
     [self login:^
      {
-         [self.requestQueue addOperation:request];
+         [self requestPermissionsForRequest:request
+                           permissionsBlock:^(NSError* error)
+          {
+              if (!error)
+              {
+                  [self.requestQueue addOperation:request];
+              }
+              else
+              {
+                  responseBlock(request, nil, error);
+              }
+          }
+          ];
      }
           error:^(NSError *error) {
               responseBlock(request, nil, error);
           }];
-    
+}
+
+-(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>)parameter
+{
+    return [self constructRequestWithParameter:parameter];
+}
+
+-(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>) parameter
+                                response:(CSSocialResponseBlock) responseBlock
+{
+    CSSocialRequest *request = [self requestWithParameter:parameter];
+    [self sendRequest:request
+             response:responseBlock];
     return request;
+}
+
+-(BOOL) permissionGranted:(NSString*) permission
+{    
+    ///the default value is that the permissions are granted.
+    ///some services like Facebook need to extend these to make request possible.
+    return YES;
+}
+
+-(void) requestPermissionsForRequest:(CSSocialRequest *)request permissionsBlock:(CSErrorBlock)permissionsBlock
+{
+    if (![self permissionGranted:nil]) return;
+    ///implement this in service where you need extended permissions for the request to succeed
+    permissionsBlock(nil);
 }
 
 -(CSSocialRequest*) constructRequestWithParameter:(id<CSSocialParameter>) parameter
