@@ -54,4 +54,12 @@ __attribute__((deprecated));
 ///@return CSSocialRequest instance
 -(CSSocialRequest*) requestWithParameter:(id<CSSocialParameter>)parameter;
 
+///@abstract shows the dialog box of the service (where available) with initial message and photo parameters
+///@param message initial message
+///@param photo photo to upload
+///@param handlerBlock callback block containing an error if one occured.
+-(void) showDialogWithMessage:(NSString*) message
+                        photo:(UIImage*) photo
+                      handler:(CSErrorBlock) handlerBlock;
+
 @end

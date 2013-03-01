@@ -28,14 +28,16 @@
 @end
 
 @interface CSSocial : NSObject
-@property (nonatomic, assign) id<CSSocialManagerDataSource> dataSource;
+//@property (nonatomic, assign) id<CSSocialManagerDataSource> dataSource;
 
 +(CSSocial*) sharedManager;
 +(CSSocialService*) facebook;
 +(CSSocialService*) twitter;
 //+(CSSocialService*) mixi;
+
 +(BOOL) handleOpenURL:(NSURL *)url;
-+(void) setDataSource:(id<CSSocialManagerDataSource>) dataSource;
++(UIViewController*) viewController;
++(void) setViewController:(UIViewController*) viewController;
 +(NSDictionary*) configDictionary;
 @end
 
@@ -52,6 +54,15 @@
 ///@param photo photo to post to album
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
 -(void) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock;
+
+///postPhoto:caption:completionBlock:
+///posts a photo to facebook photo album
+///@param photo photo to post to album
+///@param caption album caption of the image 
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) postPhoto:(UIImage*) photo
+          caption:(NSString*) caption
+    completionBlock:(CSSocialResponseBlock) responseBlock;
 @end
 
 @interface CSSocialServiceTwitter (Helper)

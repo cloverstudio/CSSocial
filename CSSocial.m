@@ -15,6 +15,7 @@
 @interface CSSocial ()
 @property (nonatomic, retain) NSMutableDictionary *services;
 @property (nonatomic, assign) id<CSSocialService> lastService;
+@property (nonatomic, assign) UIViewController *presentingViewController;
 @end
 
 @implementation CSSocial
@@ -47,12 +48,24 @@
     return self;
 }
 
-+(void) setDataSource:(id<CSSocialManagerDataSource>) dataSource
++(UIViewController*) viewController
 {
-    CSSocial *manager = [CSSocial sharedManager];
-    manager.dataSource = dataSource;
+    ///if no view controller has been assigned, try to assign the main window's rootviewcontroller 
+    if (![CSSocial sharedManager].presentingViewController) {
+        [CSSocial sharedManager].presentingViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+    }
+    
+    NSParameterAssert([CSSocial sharedManager].presentingViewController != nil);
+    return [CSSocial sharedManager].presentingViewController;
 }
 
++(void) setViewController:(UIViewController*) viewController
+{
+    [CSSocial sharedManager].presentingViewController = viewController;
+}
+
+
+///TODO: this is potentially dangerous if two services want to handleOpenURL:
 +(BOOL) handleOpenURL:(NSURL *)url
 {
     /*
@@ -106,6 +119,8 @@
     return plist;
 }
 
+
+
 @end
 
 #pragma mark - Helpers
@@ -133,20 +148,32 @@
     }];
 }
 
-///postPhoto:completionBlock:
+///postPhoto:caption:completionBlock:
 ///posts a photo to facebook photo album
 ///@param photo photo to post to album
+///@param caption album caption of the image
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
--(void) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock
+-(void) postPhoto:(UIImage*) photo
+          caption:(NSString*) caption
+  completionBlock:(CSSocialResponseBlock) responseBlock
 {
     CSFacebookParameter *parameter = [CSFacebookParameter photo:photo
-                                                        message:nil];
+                                                        message:caption];
     
     [CSFacebook sendRequest:[CSFacebook requestWithParameter:parameter]
                    response:^(CSSocialRequest *request, id response, NSError *error)
      {
          if(responseBlock)responseBlock(request, response, error);
      }];
+}
+
+///postPhoto:completionBlock:
+///posts a photo to facebook photo album
+///@param photo photo to post to album
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(void) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock
+{
+    [self postPhoto:photo caption:nil completionBlock:responseBlock];
 }
 
 @end

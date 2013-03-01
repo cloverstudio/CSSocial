@@ -88,6 +88,14 @@
     return request;
 }
 
+-(void) showDialogWithMessage:(NSString*) message
+                        photo:(UIImage*) photo
+                      handler:(CSErrorBlock) handlerBlock
+{
+    ///override this in a subclass to support dialog.
+    handlerBlock([self errorWithLocalizedDescription:@"Dialog unavaliable"]);
+}
+
 -(BOOL) permissionGranted:(NSString*) permission
 {    
     ///the default value is that the permissions are granted.

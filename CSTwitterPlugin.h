@@ -34,7 +34,6 @@
 -(void) loadOAuth:(OAuth*) oAuth;
 -(void) resetOAuth;
 
-
 -(NSError*) errorWithLocalizedDescription:(NSString*) description errorCode:(NSInteger) errorCode;
 -(NSError*) errorWithLocalizedDescription:(NSString*) description;
 -(NSError*) errorInvalidReturnValue;
@@ -42,6 +41,5 @@
 -(NSError*) errorUnsupportedSDK;
 -(NSError*) errorTwitterLoginFailed;
 -(NSError*) errorTwitterUserCancelled;
-
 
 @end

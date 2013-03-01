@@ -10,6 +10,7 @@
 #import <Twitter/Twitter.h>
 #import "OAuthCore.h"
 #import "OAuth.h"
+#import "CSSocial.h"
 
 typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 
@@ -64,11 +65,6 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 {
     [super logout];
     self.account = nil;
-}
-
--(UIViewController*) presentingViewController
-{
-    return [[[UIApplication sharedApplication] keyWindow] rootViewController];
 }
 
 #pragma mark - Reverse Auth
@@ -187,20 +183,6 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
     {
         canAccessBlock(error);
         ///TODO: if error, display error
-    }];
-}
-
--(void) checkTwitterAccounts
-{
-    [self canAccessTwitterAccounts:^(NSError *error)
-    {
-        if (!error)
-        {
-            if (self.accounts.count == 0)
-            {
-                ///TODO: Display no accounts alert
-            }
-        }
     }];
 }
 

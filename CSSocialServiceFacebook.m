@@ -11,11 +11,11 @@
 #import "CSSocialUser.h"
 #import "CSSocialParameter.h"
 #import "CSFacebookParameter.h"
-#import "Facebook.h"
-#import "FacebookSDK.h"
 #import "CSSocial.h"
 #import "CSSocialRequestFacebook.h"
-//#import "FBRequest.h"
+#import "FacebookSDK.h"
+#import <Social/SLComposeViewController.h>
+#import <Social/SLServiceTypes.h>
 
 #define kFBAppID @"490866077597155"
 
@@ -261,6 +261,57 @@ nil]
 -(BOOL) isReadPermission:(NSString*) permission
 {
     return [kCSFBAllReadPermissionsArray containsObject:permission];
+}
+
+#pragma mark - Dialogs 
+
+-(void) showDialogWithMessage:(NSString*) message
+                        photo:(UIImage*) photo
+                      handler:(CSErrorBlock) handlerBlock
+{
+    [self login:^
+     {
+         
+         if ([SLComposeViewController class])
+         {
+             SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+             [viewController setInitialText:message];
+             [viewController addImage:photo];
+             [viewController setCompletionHandler:^(SLComposeViewControllerResult result)
+              {
+                  switch (result) {
+                      case SLComposeViewControllerResultDone:
+                          handlerBlock(nil);
+                          break;
+                      case SLComposeViewControllerResultCancelled:
+                          handlerBlock([self errorWithLocalizedDescription:@"Dialog cancelled."]);
+                          break;
+                      default:
+                          break;
+                  }
+              }];
+             [[CSSocial viewController] presentViewController:viewController animated:YES completion:nil];
+         }
+         else
+         {
+             handlerBlock([self errorWithLocalizedDescription:@"Dialog not supported on this platform"]);
+             /*
+             NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         //UIImageJPEGRepresentation(photo, 1.0f), @"source",
+                                         message, @"caption",
+                                         nil];
+             
+             [FBWebDialogs presentFeedDialogModallyWithSession:_session
+                                                    parameters:parameters
+                                                       handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                                                           handlerBlock(error);
+                                                       }];
+              */
+         }
+     }
+     error:^(NSError *error) {
+         handlerBlock([self errorWithLocalizedDescription:@"Login failed"]);
+     }];
 }
 
 @end

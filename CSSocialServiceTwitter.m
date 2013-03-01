@@ -18,59 +18,27 @@
 #import "CSTwitterPlugin.h"
 #import "CSSocialRequestTwitter.h"
 
-static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdentifier";
-
 #pragma mark - CSSocialServiceTwitter
 
 @interface CSSocialServiceTwitter()
--(NSString*) consumerKey;
--(NSString*) consumerSecret;
-@property (nonatomic, retain) ACAccountStore *accountStore;
-@property (nonatomic, retain) ACAccount *twitterAccount;
-@property (nonatomic, retain) NSArray *accounts;
+
 @end
 
 @implementation CSSocialServiceTwitter
 {
     CSTwitterPlugin *_plugin;
-    BOOL waitingForAccess;
-    OAuth *_oAuth;
-}
-@synthesize accountStore = _accountStore;
-@synthesize twitterAccount = _twitterAccount;
-@synthesize accounts = _accounts;
 
--(NSString*) consumerKey
-{
-    NSString *consumerKey = [[CSSocial configDictionary] objectForKey:kCSTwitterConsumerKey];
-    NSString *message = [NSString stringWithFormat:@"Add Consumer Key with %@ key to CSSocial.plist", kCSTwitterConsumerKey];
-    NSAssert(consumerKey, message);
-    return consumerKey;
 }
 
--(NSString*) consumerSecret
-{
-    NSString *consumerSecret = [[CSSocial configDictionary] objectForKey:kCSTwitterConsumerSecret];
-    NSString *message = [NSString stringWithFormat:@"Add Consumer Secret with %@ key to CSSocial.plist", kCSTwitterConsumerSecret];
-    NSAssert(consumerSecret, message);
-    return consumerSecret;
-}
 
 -(void) dealloc
 {
-    CS_RELEASE(_oAuth);
-    CS_RELEASE(_accountStore);
-    CS_RELEASE(_twitterAccount);
-    CS_RELEASE(_accounts);
     CS_SUPER_DEALLOC;
 }
 
 -(id) init {
     if ((self=[super init])) 
     {
-        self.twitterAccount = [self obtainAccountWithIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:CSTweetLastAccountIdentifier]];
-        self.accountStore = CS_AUTORELEASE([[ACAccountStore alloc] init]);
-        
         _plugin = [CSTwitterPlugin plugin];
     }
     return self;
@@ -86,27 +54,8 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     self.loginSuccessBlock = success;
     self.loginFailedBlock = error;
     
-    if (YES)//SYSTEM_VERSION_LESS_THAN(@"5.0"))
-    {
-        [_plugin login:success error:error];
-    }
-    else
-    {
+    [_plugin login:success error:error];
     
-        [self checkTwitterCredentials];
-        if ([self selectTwitterAccount])
-        {
-            [self presentTwitterAccountPicker];
-        }
-        else
-        {
-            _twitterAccount ?
-            self.loginSuccessBlock() :
-            self.loginFailedBlock([NSError errorWithDomain:@""
-                                                      code:0
-                                                  userInfo:[NSDictionary dictionaryWithObject:@"No twitter account available" forKey:NSLocalizedDescriptionKey]]);
-        }
-    }
 }
 
 -(BOOL) handleOpenURL:(NSURL *)url
@@ -152,101 +101,12 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
     return request;
 }
 
-/*
--(void) request:(CSSocialRequest*) request response:(CSSocialResponseBlock) responseBlock
-{
- 
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0")) 
-    {
-        responseBlock(request, nil, [self errorUnsupportedSDK]);
-        return;
-    }
-    
-    self.twitterAccount = [self obtainAccount];
-    if (self.twitterAccount == nil) {
-        CSLog(@"Account not found!");
-        responseBlock(request, nil, [self errorAccountNotFound]);
-        return;
-    }
-    
-    request.responseBlock = responseBlock;
-    
-    if ([request isKindOfClass:[CSSocialRequestTwitterFriends class]])
-    {
-        [self.requestQueue addOperation:request];
-
-    }
-    else if ([request isKindOfClass:[CSSocialRequestTwitterGetUserImage class]])
-    {
-        NSString *body = [NSString stringWithFormat:@"%@?screen_name=%@&size=original", request.APIcall, self.twitterAccount.username];
-        NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:body]];
-        [NSURLConnection sendAsynchronousRequest:mutableRequest 
-                                           queue:self.requestQueue 
-                               completionHandler:^(NSURLResponse * response, NSData * data, NSError *error) 
-        {
-            if (error) 
-            {
-                request.responseBlock(request, nil, error);
-                return;
-            }
-            UIImage *image = [UIImage imageWithData:data];
-            request.responseBlock(request, image, image ? nil : [self errorInvalidReturnValue]);
-        }];
-    }
-    else 
-    {
-        TWRequest *postRequest = CS_AUTORELEASE([[TWRequest alloc] initWithURL:[NSURL URLWithString:request.APIcall]
-                                                                    parameters:[NSDictionary dictionary]//request.params
-                                                                 requestMethod:TWRequestMethodGET]);
-        [postRequest setAccount:self.twitterAccount];
-        
-        NSLog(@"%@", [postRequest URL]);
-        [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) 
-         {
-             CSLog(@"Twitter response, HTTP response: %i", [urlResponse statusCode]);
-             
-             if (error) 
-             {
-                 request.responseBlock(request, nil, error);
-             }
-             else 
-             {
-                 CSLog(@"%@", responseData);
-                 NSError *parseError = nil;
-                 UIImage *image = [UIImage imageWithData:responseData];
-                 
-                 id response = [self parseResponseData:responseData error:&parseError];
-                 if (response) 
-                 {
-                     request.responseBlock(request, response, nil);
-                 } 
-                 else if (image) 
-                 {
-                     request.responseBlock(request, image, nil);
-                 }
-                 else 
-                 { 
-                     request.responseBlock(request, nil, parseError);
-                 }
-             }
-         }];
-    }
-
-    
-    
-    //[postRequest setAccount:account];
-//    CSSocialRequestTwitter *twRequest = (CSSocialRequestTwitter*) request;
-//    twRequest.request = postRequest;
-//    twRequest.account = self.twitterAccount;
-//    [self.requestQueue addOperation:twRequest];
-    
-}
-*/
 
 -(NSArray*) permissions {
     return nil;
 }
 
+/*
 #pragma mark - Private
 
 -(BOOL) canAccessTwitterAccounts {
@@ -370,6 +230,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 
 -(void) presentTwitterAccountPicker {
     NSArray *accounts = [self accounts];
+    UIViewController *viewController = [CSSocial viewController];
     
     if (accounts.count < 4) {
         
@@ -384,8 +245,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
         [sheet setDelegate:self];
         sheet.cancelButtonIndex = i;
         
-        NSAssert([CSSocial sharedManager].dataSource, @"You must assign a dataSource!");
-        UIViewController *viewController = [[CSSocial sharedManager].dataSource presentingViewController];
+        
         
         [sheet showInView:viewController.view];
         
@@ -397,9 +257,6 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
         picker.dataSource = self;
         [picker sizeToFit];
         picker.frame = CGRectMake(picker.frame.origin.x, CS_WINSIZE.height, picker.frame.size.width, 80);
-        
-        NSAssert([CSSocial sharedManager].dataSource, @"You must assign a dataSource!");
-        UIViewController *viewController = [[CSSocial sharedManager].dataSource presentingViewController];
         
         [viewController.view addSubview:picker];
         
@@ -476,8 +333,7 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
         self.loginSuccessBlock();
     }
     
-    NSAssert([CSSocial sharedManager].dataSource, @"You must assign a dataSource!");
-    UIViewController *viewController = [[CSSocial sharedManager].dataSource presentingViewController];
+    UIViewController *viewController = [CSSocial viewController];
     float navBarOffset = (viewController.navigationController.navigationBarHidden)?0:viewController.navigationController.navigationBar.frame.size.height;
     
     [UIView animateWithDuration:.3f animations:^{
@@ -488,12 +344,12 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
         pickerView.dataSource = nil;
     }];
     
-    /*
-     TODO: create cancel option
-    if (self.loginBlock) {
-        self.loginBlock([self response:kCSSocialResponseError]);
-    }
-     */
+ 
+    /// TODO: create cancel option
+   /// if (self.loginBlock) {
+   ///     self.loginBlock([self response:kCSSocialResponseError]);
+   /// }
+ 
 }
 
 #pragma mark - TwitterLoginDialogDelegate
@@ -546,5 +402,6 @@ static NSString * const CSTweetLastAccountIdentifier = @"CSTweetLastAccountIdent
 {
     [SimpleKeychain delete:kCSTwitterOAuthDictionary];
 }
+ */
 
 @end

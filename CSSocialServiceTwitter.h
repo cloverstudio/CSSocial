@@ -8,6 +8,6 @@
 
 #import "CSSocialService.h"
 
-@interface CSSocialServiceTwitter : CSSocialService <UIAlertViewDelegate, UIActionSheetDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
+@interface CSSocialServiceTwitter : CSSocialService 
 
 @end

@@ -65,6 +65,11 @@
     return self;
 }
 
+-(UIViewController*) presentingViewController
+{
+    return [CSSocial viewController];
+}
+
 -(void) login:(CSVoidBlock)success error:(CSErrorBlock) error
 {
     self.loginSuccessBlock = success;
