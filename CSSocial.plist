@@ -17,5 +17,7 @@
 	<array>
 		<string>publish_stream</string>
 	</array>
+	<key>CSSOCIAL_GOOGLEPLUS_CLIENT_ID</key>
+	<string>268592120777.apps.googleusercontent.com</string>
 </dict>
 </plist>

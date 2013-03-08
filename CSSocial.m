@@ -3,13 +3,11 @@
 //  CSCocialManager2.0
 //
 //  Created by marko.hlebar on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import "CSSocial.h"
 #import "CSSocialService.h"
-#import "CSSocialServiceFacebook.h"
-#import "CSSocialServiceTwitter.h"
 #import "CSConstants.h"
 
 @interface CSSocial ()
@@ -68,15 +66,6 @@
 ///TODO: this is potentially dangerous if two services want to handleOpenURL:
 +(BOOL) handleOpenURL:(NSURL *)url
 {
-    /*
-    CSSocial *manager = [CSSocial sharedManager];
-    for (NSString *key in [manager.services allKeys])
-    {
-        CSSocialService *service = [manager.services objectForKey:key];
-        if (service && [service respondsToSelector:@selector(handleOpenURL:)])
-            return [service handleOpenURL:url];
-    }
-     */
     CSSocial *manager = [CSSocial sharedManager];
     if ([manager.lastService respondsToSelector:@selector(handleOpenURL:)])
     {
@@ -86,31 +75,46 @@
     return NO;
 }
 
-+(CSSocialService*) facebook
+///TODO: this is potentially dangerous if two services want to openURL:
++(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation
 {
     CSSocial *manager = [CSSocial sharedManager];
-    CSSocialService *service = [manager.services objectForKey:@"CSSocialServiceFacebook"];
-    if (!service)
+    if ([manager.lastService respondsToSelector:@selector(openURL:sourceApplication:annotation:)])
     {
-        service = CS_AUTORELEASE([[CSSocialServiceFacebook alloc] init]);
-        [manager.services setObject:service forKey:@"CSSocialServiceFacebook"];
+        return [manager.lastService openURL:url sourceApplication:sourceApplication annotation:annotation];
     }
-    manager.lastService = service;
-    return service;
+    
+    return NO;
+}
+
++(CSSocialService*) facebook
+{
+    return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceFacebook class]];
 }
 
 +(CSSocialService*) twitter
 {
-    CSSocial *manager = [CSSocial sharedManager];
-    CSSocialService *service = [manager.services objectForKey:@"CSSocialServiceTwitter"];
+    return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceTwitter class]];
+}
+
++(CSSocialService*) google
+{
+    return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceGoogle class]];
+}
+
+-(CSSocialService*) serviceWithClass:(Class) class
+{
+    NSString *className = NSStringFromClass(class);
+    CSSocialService *service = [self.services objectForKey:className];
     if (!service)
     {
-        service = CS_AUTORELEASE([[CSSocialServiceTwitter alloc] init]);
-        [manager.services setObject:service forKey:@"CSSocialServiceTwitter"];
+        service = CS_AUTORELEASE([[class alloc] init]);
+        [self.services setObject:service forKey:className];
     }
-    manager.lastService = service;
+    self.lastService = service;
     return service;
 }
+
 
 +(NSDictionary*) configDictionary
 {

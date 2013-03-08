@@ -3,14 +3,16 @@
 //  CSCocialManager2.0
 //
 //  Created by marko.hlebar on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "CSConstants.h"
+
 #import "CSSocialServiceFacebook.h"
 #import "CSSocialServiceTwitter.h"
+#import "CSSocialServiceGoogle.h"
+
 #import "CSSocialConstants.h"
 #import "CSSocialUser.h"
 #import "CSSocialRequest.h"
@@ -18,8 +20,6 @@
 #import "CSRequests.h"
 #import "CSFacebookParameter.h"
 #import "CSTwitterParameter.h"
-
-#define CSSocialServiceResponse @"CSSocialServiceResponse"
 
 @protocol CSSocialService;
 @protocol CSSocialManagerDataSource <NSObject>
@@ -33,8 +33,10 @@
 +(CSSocial*) sharedManager;
 +(CSSocialService*) facebook;
 +(CSSocialService*) twitter;
++(CSSocialService*) google;
 //+(CSSocialService*) mixi;
 
++(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation;
 +(BOOL) handleOpenURL:(NSURL *)url;
 +(UIViewController*) viewController;
 +(void) setViewController:(UIViewController*) viewController;

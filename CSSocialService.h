@@ -3,7 +3,7 @@
 //  CSCocialManager2.0
 //
 //  Created by marko.hlebar on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -30,6 +30,7 @@
 -(NSString*) serviceName;
 
 @optional
+-(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation;
 -(BOOL) handleOpenURL:(NSURL*)url;
 @end
 
@@ -58,8 +59,9 @@ __attribute__((deprecated));
 ///@param message initial message
 ///@param photo photo to upload
 ///@param handlerBlock callback block containing an error if one occured.
--(void) showDialogWithMessage:(NSString*) message
-                        photo:(UIImage*) photo
-                      handler:(CSErrorBlock) handlerBlock;
+///@return instance od the dialog if available or nil if unavailable.
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock;
 
 @end

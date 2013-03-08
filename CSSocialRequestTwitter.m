@@ -13,7 +13,7 @@
 
 #pragma mark - CSSocialRequestTwitter
 
-@interface CSSocialRequestTwitter (Private)
+@interface CSSocialRequestTwitter (Private) <NSURLConnectionDelegate>
 
 -(id) parseResponseData:(id)response error:(NSError**) error;
 -(NSString*) paramsString;

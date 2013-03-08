@@ -3,7 +3,7 @@
 //  CSCocialManager2.0
 //
 //  Created by marko.hlebar on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import "CSSocialService.h"
@@ -88,12 +88,13 @@
     return request;
 }
 
--(void) showDialogWithMessage:(NSString*) message
-                        photo:(UIImage*) photo
-                      handler:(CSErrorBlock) handlerBlock
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock
 {
     ///override this in a subclass to support dialog.
     handlerBlock([self errorWithLocalizedDescription:@"Dialog unavaliable"]);
+    return nil;
 }
 
 -(BOOL) permissionGranted:(NSString*) permission
@@ -122,6 +123,12 @@
 }
 
 -(BOOL) handleOpenURL:(NSURL *)url
+{
+    NSAssert(NO, @"Override me");
+    return NO;
+}
+
+-(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation
 {
     NSAssert(NO, @"Override me");
     return NO;

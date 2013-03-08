@@ -3,7 +3,7 @@
 //  CSCocialManager2.0
 //
 //  Created by marko.hlebar on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import "CSSocialUser.h"

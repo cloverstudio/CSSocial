@@ -3,7 +3,7 @@
 //  CSCocialManager2.0
 //
 //  Created by marko.hlebar on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import "CSSocialServiceFacebook.h"
@@ -195,7 +195,7 @@ nil]
 -(NSString*) appID
 {
     NSString *appID = [[CSSocial configDictionary] objectForKey:kCSFacebookAppID];
-    NSString *message = [NSString stringWithFormat:@"Add array of permissions with %@ key to CSSocial.plist", kCSFacebookAppID];
+    NSString *message = [NSString stringWithFormat:@"Add Facebook app ID %@ key to CSSocial.plist", kCSFacebookAppID];
     NSAssert(appID, message);
     return appID;
 }
@@ -219,6 +219,8 @@ nil]
 -(BOOL) handleOpenURL:(NSURL *)url {
     return [_session handleOpenURL:url];
 }
+
+
  
 #pragma mark - Permissions And Permission handling
 
@@ -265,53 +267,51 @@ nil]
 
 #pragma mark - Dialogs 
 
--(void) showDialogWithMessage:(NSString*) message
-                        photo:(UIImage*) photo
-                      handler:(CSErrorBlock) handlerBlock
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock
 {
-    [self login:^
-     {
-         
-         if ([SLComposeViewController class])
+    if (![self isAuthenticated]) {
+        handlerBlock([self errorWithLocalizedDescription:@"Facebook not logged in. Please login before trying to use the dialog."]);
+    }
+    
+    if ([SLComposeViewController class])
+    {
+        SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [viewController setInitialText:message];
+        [viewController addImage:photo];
+        [viewController setCompletionHandler:^(SLComposeViewControllerResult result)
          {
-             SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-             [viewController setInitialText:message];
-             [viewController addImage:photo];
-             [viewController setCompletionHandler:^(SLComposeViewControllerResult result)
-              {
-                  switch (result) {
-                      case SLComposeViewControllerResultDone:
-                          handlerBlock(nil);
-                          break;
-                      case SLComposeViewControllerResultCancelled:
-                          handlerBlock([self errorWithLocalizedDescription:@"Dialog cancelled."]);
-                          break;
-                      default:
-                          break;
-                  }
-              }];
-             [[CSSocial viewController] presentViewController:viewController animated:YES completion:nil];
-         }
-         else
-         {
-             handlerBlock([self errorWithLocalizedDescription:@"Dialog not supported on this platform"]);
-             /*
-             NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         //UIImageJPEGRepresentation(photo, 1.0f), @"source",
-                                         message, @"caption",
-                                         nil];
-             
-             [FBWebDialogs presentFeedDialogModallyWithSession:_session
-                                                    parameters:parameters
-                                                       handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-                                                           handlerBlock(error);
-                                                       }];
-              */
-         }
-     }
-     error:^(NSError *error) {
-         handlerBlock([self errorWithLocalizedDescription:@"Login failed"]);
-     }];
+             switch (result) {
+                 case SLComposeViewControllerResultDone:
+                     handlerBlock(nil);
+                     break;
+                 case SLComposeViewControllerResultCancelled:
+                     handlerBlock([self errorWithLocalizedDescription:@"Dialog cancelled."]);
+                     break;
+                 default:
+                     break;
+             }
+         }];
+        
+        [[CSSocial viewController] presentViewController:viewController animated:YES completion:nil];
+        return viewController;
+    }
+    else
+    {
+        NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    message, @"caption",
+                                    nil];
+        
+        [FBWebDialogs presentFeedDialogModallyWithSession:_session
+                                               parameters:parameters
+                                                  handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                                                      handlerBlock(error);
+                                                  }];
+        
+    }
+    
+    return nil;
 }
 
 @end

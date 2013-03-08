@@ -3,7 +3,7 @@
 //  CSCocialManager2.0
 //
 //  Created by Luka Fajl on 26.6.2012..
-//  Copyright (c) 2012. __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. Clover Studio. All rights reserved.
 //
 
 #import "CSTwitterParameter.h"

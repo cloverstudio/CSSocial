@@ -3,7 +3,7 @@
 //  CSUtilities
 //
 //  Created by marko.hlebar on 7/4/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
 #import "CSSocialRequest.h"

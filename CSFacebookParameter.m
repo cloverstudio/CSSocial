@@ -3,12 +3,11 @@
 //  CSCocialManager2.0
 //
 //  Created by Luka Fajl on 26.6.2012..
-//  Copyright (c) 2012. __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. Clover Studio. All rights reserved.
 //
 
 #import "CSFacebookParameter.h"
 #import "CSConstants.h"
-#import "FacebookSDK.h"
 
 @interface CSFacebookParameter()
 @property (nonatomic, retain) NSDictionary *parameters;
@@ -75,10 +74,8 @@
 
 +(id<CSSocialParameter>) friends
 {
-    NSString* accessToken = [FBSession activeSession].accessTokenData.accessToken;
     CSFacebookParameter *object = [CSFacebookParameter parameter];
     object.requestName = CSRequestFriends;
-    //object.parameters = @{@"access_token" : accessToken, @"fields" : @"name,id,picture"};
     object.parameters = @{@"fields" : @"name,id,picture"};
     return object;
 }

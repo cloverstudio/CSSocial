@@ -8,7 +8,7 @@
 
 #import "CSSocialRequest.h"
 
-@interface CSSocialRequestTwitter : CSSocialRequest <NSURLConnectionDelegate>
+@interface CSSocialRequestTwitter : CSSocialRequest
 @end
 
 ///tweet
