@@ -6,36 +6,39 @@
 //  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
-#import "SimpleKeychain.h"
 #import "CSSocialConstants.h"
 #import "CSTwitterPlugin.h"
 #import "OAuth.h"
 #import "CSSocial.h"
+#import <Twitter/Twitter.h>
+#import <Social/Social.h>
 
 @implementation CSTwitterPlugin
 
-///chooses the correct plugin based on iOS version and config settings and instantiates it
+///chooses the correct plugin based on iOS version, config settings and service availability and instantiates it
 ///@return an instance of CSTwitterPlugin
 +(CSTwitterPlugin*) plugin
 {
-    CSTwitterPlugin *plugin = nil;
-    
-    if(NSClassFromString(@"SLComposeViewController"))
+    if([SLComposeViewController class])
     {
         ///iOS 6
-        plugin = [[NSClassFromString(@"CSTwitteriOS6Plugin") alloc] init];
+        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+        {
+             return [[NSClassFromString(@"CSTwitteriOS6Plugin") alloc] init];
+        }
     }
-    else if(NSClassFromString(@"TWTweetComposeViewController"))
+    
+    if([TWTweetComposeViewController class])
     {
         ///iOS 5
-        plugin = [[NSClassFromString(@"CSTwitteriOS5Plugin") alloc] init];
+        if([TWTweetComposeViewController canSendTweet])
+        {
+            return [[NSClassFromString(@"CSTwitteriOS5Plugin") alloc] init];
+        }
     }
-    else
-    {
-        ///iOS 4
-        plugin = [[NSClassFromString(@"CSTwitteriOS4Plugin") alloc] init];
-    }
-    return plugin;
+    
+    ///final fallback = iOS 4
+    return [[NSClassFromString(@"CSTwitteriOS4Plugin") alloc] init];
 }
 
 -(NSString*) consumerKey
@@ -104,29 +107,38 @@
    return self.oAuth.oauth_token_authorized;
 }
 
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock
+{
+    handlerBlock([self errorUnsupportedSDK]);
+    return nil;
+}
+
 #pragma mark - OAuth
 
 -(void) saveOAuth:(OAuth*) oAuth
 {
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                _oAuth.oauth_token, kCSTwitterOAuthToken,
-                                _oAuth.oauth_token_secret, kCSTwitterOAuthTokenSecret,
-                                NSStringFromBOOL(oAuth.oauth_token_authorized), kCSTwitterOAuthTokenAuthorized,
-                                nil];
-    [SimpleKeychain save:kCSTwitterOAuthDictionary data:dictionary];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:_oAuth.oauth_token forKey:kCSTwitterOAuthToken];
+    [defaults setObject:_oAuth.oauth_token_secret forKey:kCSTwitterOAuthTokenSecret];
+    [defaults setBool:oAuth.oauth_token_authorized forKey:kCSTwitterOAuthTokenAuthorized];
 }
 
 -(void) loadOAuth:(OAuth*) oAuth
 {
-    NSDictionary *dictionary = [SimpleKeychain load:kCSTwitterOAuthDictionary];
-    _oAuth.oauth_token = [dictionary objectForKey:kCSTwitterOAuthToken];
-    _oAuth.oauth_token_secret = [dictionary objectForKey:kCSTwitterOAuthTokenSecret];
-    _oAuth.oauth_token_authorized = [[dictionary objectForKey:kCSTwitterOAuthTokenAuthorized] boolValue];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    _oAuth.oauth_token = [defaults objectForKey:kCSTwitterOAuthToken];
+    _oAuth.oauth_token_secret = [defaults objectForKey:kCSTwitterOAuthTokenSecret];
+    _oAuth.oauth_token_authorized = [defaults boolForKey:kCSTwitterOAuthTokenAuthorized];
 }
 
 -(void) resetOAuth
 {
-    [SimpleKeychain delete:kCSTwitterOAuthDictionary];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:kCSTwitterOAuthToken];
+    [defaults removeObjectForKey:kCSTwitterOAuthTokenSecret];
+    [defaults removeObjectForKey:kCSTwitterOAuthTokenAuthorized];
 }
 
 #pragma mark - Errors

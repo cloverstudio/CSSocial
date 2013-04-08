@@ -4,6 +4,7 @@ var hierarchy =
     [ "CSSocialServiceTwitter(Helper)", "category_c_s_social_service_twitter_07_helper_08.html", null ],
     [ "<NSObject>", null, [
       [ "CSSocial", "interface_c_s_social.html", null ],
+      [ "CSSocialError", "interface_c_s_social_error.html", null ],
       [ "<CSSocialManagerDataSource>", "protocol_c_s_social_manager_data_source-p.html", null ],
       [ "CSSocialParameter", "interface_c_s_social_parameter.html", [
         [ "CSFacebookParameter", "interface_c_s_facebook_parameter.html", null ],

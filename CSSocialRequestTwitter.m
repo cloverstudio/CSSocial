@@ -54,29 +54,50 @@
 
 -(void) buildResponse:(NSData*) data error:(NSError*) error
 {
-    if (error)
+    if (data)
     {
-        self.responseBlock(self, nil, error);
-        return;
+        NSError *jsonError = nil;
+        id parsedResponse = [self parseResponseData:data error:&jsonError];
+        if (!parsedResponse || jsonError)
+        {
+            self.responseBlock(self, nil, jsonError);
+            return;
+        }
+        
+        NSError *twitterError = [self checkJSONForTwitterError:parsedResponse];
+        if (twitterError)
+        {
+            self.responseBlock(self, nil, twitterError);
+            return;
+        }
+       
+        self.responseBlock(self, parsedResponse, nil);
     }
-    
-    if (!data)
+    else if (error)
+    {
+        ///there is a twitter error message probably here 
+        self.responseBlock(self, nil, error);
+    }
+    else
     {
         self.responseBlock(self, nil, [NSError errorWithDomain:@""
                                                           code:0
                                                       userInfo:[NSDictionary dictionaryWithObject:@"No data in response"
                                                                                            forKey:NSLocalizedDescriptionKey]]);
-        return;
     }
-    
-    id parsedResponse = [self parseResponseData:data error:&error];
-    if (!parsedResponse || error)
+}
+
+-(NSError*) checkJSONForTwitterError:(NSDictionary*) JSONDict
+{
+    NSString *errorString = JSONDict[@"error"];
+    if (errorString)
     {
-        self.responseBlock(self, nil, error);
-        return;
+        return [NSError errorWithDomain:@""
+                                   code:0
+                               userInfo:[NSDictionary dictionaryWithObject:errorString
+                                                                    forKey:NSLocalizedDescriptionKey]];
     }
-    
-    self.responseBlock(self, parsedResponse, nil);
+    return nil;
 }
 
 -(void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data

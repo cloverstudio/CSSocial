@@ -7,6 +7,9 @@
 //
 
 #import "CSTwitteriOS6Plugin.h"
+#import <Social/SLComposeViewController.h>
+#import <Social/SLServiceTypes.h>
+#import "CSSocial.h"
 
 @implementation CSTwitteriOS6Plugin
 
@@ -18,6 +21,36 @@
     {
                                             canAccessBlock(error);
                                         }];
+}
+
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock
+{
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [viewController setInitialText:message];
+        [viewController addImage:photo];
+        [viewController setCompletionHandler:^(SLComposeViewControllerResult result)
+        {
+            switch (result) {
+                case SLComposeViewControllerResultDone:
+                    handlerBlock(nil);
+                    break;
+                case SLComposeViewControllerResultCancelled:
+                    handlerBlock([self errorWithLocalizedDescription:@"User Cancelled" errorCode:CSSocialErrorCodeUserCancelled]);
+                default:
+                    break;
+            }
+         }];
+        
+        [[CSSocial viewController] presentViewController:viewController
+                                                animated:YES
+                                              completion:nil];
+        return viewController;
+    }
+    return nil;
 }
 
 @end

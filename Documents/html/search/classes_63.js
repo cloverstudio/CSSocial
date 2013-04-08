@@ -2,6 +2,7 @@ var searchData=
 [
   ['csfacebookparameter',['CSFacebookParameter',['../interface_c_s_facebook_parameter.html',1,'']]],
   ['cssocial',['CSSocial',['../interface_c_s_social.html',1,'']]],
+  ['cssocialerror',['CSSocialError',['../interface_c_s_social_error.html',1,'']]],
   ['cssocialmanagerdatasource_2dp',['CSSocialManagerDataSource-p',['../protocol_c_s_social_manager_data_source-p.html',1,'']]],
   ['cssocialparameter',['CSSocialParameter',['../interface_c_s_social_parameter.html',1,'']]],
   ['cssocialparameter_2dp',['CSSocialParameter-p',['../protocol_c_s_social_parameter-p.html',1,'']]],

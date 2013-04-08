@@ -7,7 +7,10 @@
 //
 
 #import "CSSocialService.h"
+#import "External/Facebook/FBSession.h"
 
 @interface CSSocialServiceFacebook : CSSocialService
-
+///Facebook specific, people you want to share your published stuff with
+///@default FBSessionDefaultAudienceEveryone
+@property (nonatomic) FBSessionDefaultAudience audience;
 @end

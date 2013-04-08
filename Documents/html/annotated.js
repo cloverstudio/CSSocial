@@ -2,6 +2,7 @@ var annotated =
 [
     [ "CSFacebookParameter", "interface_c_s_facebook_parameter.html", "interface_c_s_facebook_parameter" ],
     [ "CSSocial", "interface_c_s_social.html", "interface_c_s_social" ],
+    [ "CSSocialError", "interface_c_s_social_error.html", null ],
     [ "<CSSocialManagerDataSource>", "protocol_c_s_social_manager_data_source-p.html", "protocol_c_s_social_manager_data_source-p" ],
     [ "CSSocialParameter", "interface_c_s_social_parameter.html", "interface_c_s_social_parameter" ],
     [ "<CSSocialParameter>", "protocol_c_s_social_parameter-p.html", "protocol_c_s_social_parameter-p" ],

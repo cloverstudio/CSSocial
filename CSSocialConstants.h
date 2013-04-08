@@ -31,11 +31,4 @@
 #define CSTwitter (CSSocialServiceTwitter*)[CSSocial twitter]
 #define CSGoogle (CSSocialServiceGoogle*)[CSSocial google]
 
-typedef enum
-{
-    CSSocialErrorCodeLoginFailed = 10000,
-    CSSocialErrorCodeUserCancelled = 10001
-}
-CSSocialServiceErrorCode;
-
 #endif

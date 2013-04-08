@@ -67,6 +67,37 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
     self.account = nil;
 }
 
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock
+{
+    if([TWTweetComposeViewController canSendTweet])
+    {
+        TWTweetComposeViewController *viewController = [[TWTweetComposeViewController alloc] init];
+        [viewController setInitialText:message];
+        [viewController addImage:photo];
+        [viewController setCompletionHandler:^(TWTweetComposeViewControllerResult result)
+         {
+             switch (result) {
+                 case TWTweetComposeViewControllerResultDone:
+                     handlerBlock(nil);
+                     break;
+                 case TWTweetComposeViewControllerResultCancelled:
+                     handlerBlock([self errorWithLocalizedDescription:@"User Cancelled" errorCode:CSSocialErrorCodeUserCancelled]);
+                     break;
+                 default:
+                     break;
+             }
+             [[CSSocial viewController] dismissViewControllerAnimated:YES completion:nil];
+         }];
+        [[CSSocial viewController] presentViewController:viewController
+                                                animated:YES
+                                              completion:nil];
+        return viewController;
+    }
+    return nil;
+}
+
 #pragma mark - Reverse Auth
 
 -(void) performReverseAuth:(CSResponseBlock) responseBlock
@@ -308,6 +339,5 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
     }];
     
 }
-
 
 @end

@@ -17,8 +17,6 @@
 #import <Social/SLComposeViewController.h>
 #import <Social/SLServiceTypes.h>
 
-#define kFBAppID @"490866077597155"
-
 /*
  FACEBOOK READ PERMISSIONS
  user_about_me                  friends_about_me                user_activities
@@ -86,6 +84,11 @@ nil]
     FBSession *_session;
 }
 
+-(NSOperationQueue*) requestQueue
+{
+    return [NSOperationQueue currentQueue];
+}
+
 -(void) dealloc
 {
     CS_RELEASE(_session);
@@ -100,6 +103,8 @@ nil]
         ///initialize session for the first time;
         [FBSession setDefaultAppID:[self appID]];
         _session = [FBSession activeSession];
+        
+        self.audience = FBSessionDefaultAudienceEveryone;
     }
     return self;
 }
@@ -219,8 +224,6 @@ nil]
 -(BOOL) handleOpenURL:(NSURL *)url {
     return [_session handleOpenURL:url];
 }
-
-
  
 #pragma mark - Permissions And Permission handling
 
@@ -239,7 +242,7 @@ nil]
         if ([self isPublishPermission:permission])
         {
             [_session requestNewPublishPermissions:@[permission]
-                                   defaultAudience:FBSessionDefaultAudienceOnlyMe
+                                   defaultAudience:FBSessionDefaultAudienceEveryone
                                  completionHandler:^(FBSession *session, NSError *error) {
                                      permissionsBlock(error);
                                  }];

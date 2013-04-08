@@ -98,13 +98,48 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="Introduction"></a>
 Introduction</h1>
-<p><a class="el" href="interface_c_s_social.html">CSSocial</a> framework was built to make use of social services like Facebook, Twitter or Google plus safe and easy to implement by the programmer. We were frustrated that every time we needed to integrate a social service into the app, each programmer did it his own way and usually spent more than an hour doing so. The decision was to make a one line of code do magic solution which took only a couple of minutes to set up and run.</p>
+<p><a class="el" href="interface_c_s_social.html">CSSocial</a> framework was built to make use of social services like Facebook, Twitter or Google+ safe and easy to implement by the programmer. We were frustrated that every time we needed to integrate a social service into the app, each programmer did it his own way and usually spent more than an hour doing so. The decision was to make a one-line-of-code-do-magic solution which took only a couple of minutes to set up and run.</p>
 <h1><a class="anchor" id="Setup"></a>
 Setup</h1>
-<p>First, download the CSSocial.framework file from <a href="http://bla.com">http://bla.com</a> Drag&amp;drop it into your project.</p>
+<ul>
+<li>download the CSSocial.framework file from <a href="http://bla.com">http://bla.com</a></li>
+<li>drag&amp;drop CSSocial.framework to Frameworks - check copy</li>
+<li>drag&amp;drop CSSocial.plist to Supporting Files - check copy</li>
+<li>open CSSocial.plist and enter your parameters</li>
+</ul>
+<table class="doxtable">
+<tr>
+<th>Parameter </th><th>Description</th></tr>
+<tr>
+<td>CSSOCIAL_FACEBOOK_APP_ID </td><td>Facebook App ID </td></tr>
+<tr>
+<td>CSSOCIAL_TWITTER_CONSUMER_KEY </td><td>Twitter Consumer Key </td></tr>
+<tr>
+<td>CSSOCIAL_TWITTER_CONSUMER_SECRET </td><td>Twitter Consumer Secret </td></tr>
+<tr>
+<td>CSSOCIAL_FACEBOOK_PERMISSIONS_READ </td><td>Facebook read permissions </td></tr>
+<tr>
+<td>CSSOCIAL_FACEBOOK_PERMISSIONS_PUBLISH </td><td>Facebook publish permissions </td></tr>
+<tr>
+<td>CSSOCIAL_GOOGLEPLUS_CLIENT_ID </td><td>Google+ Client ID </td></tr>
+</table>
+<ul>
+<li>add the following frameworks<ul>
+<li>Accounts.framework</li>
+<li>AdSupport.framework</li>
+<li>CFNetwork.framework</li>
+<li>MobileCoreServices.framework</li>
+<li>Security.framework</li>
+<li>Social.framework</li>
+<li>SystemConfiguration.framework</li>
+<li>libsqlite3.0.dylib</li>
+<li>libz.1.2.5.dylib</li>
+</ul>
+</li>
+</ul>
 <h2><a class="anchor" id="Facebook"></a>
 Facebook</h2>
-<p>Posting a message to Facebook wall can be done calling a single method like this:</p>
+<p>Posting a message to Facebook wall can be done by calling a single method like this. If you haven't handled the login process yourself, <a class="el" href="interface_c_s_social.html">CSSocial</a> handles it for you automagically:</p>
 <div class="fragment"><div class="line">[CSFacebook postToWall:<span class="stringliteral">@&quot;Test&quot;</span></div>
 <div class="line">            completionBlock:^(<a class="code" href="interface_c_s_social_request.html">CSSocialRequest</a> *request, <span class="keywordtype">id</span> response, NSError *error)</div>
 <div class="line">{</div>
@@ -117,18 +152,39 @@ Facebook</h2>
 <div class="line">            completionBlock:^(<a class="code" href="interface_c_s_social_request.html">CSSocialRequest</a> *request, <span class="keywordtype">id</span> response, NSError *error) {</div>
 <div class="line"></div>
 <div class="line">}];</div>
-</div><!-- fragment --><h2><a class="anchor" id="Twitter"></a>
+</div><!-- fragment --><p>Showing a Facebook dialog (as available depending on the platform )</p>
+<div class="fragment"><div class="line">[CSFacebook showDialogWithMessage:<span class="stringliteral">@&quot;test&quot;</span></div>
+<div class="line">                            photo:[UIImage imageNamed:<span class="stringliteral">@&quot;test&quot;</span>]</div>
+<div class="line">                          handler:^(NSError *error) {</div>
+<div class="line"></div>
+<div class="line">}];</div>
+</div><!-- fragment --><p>If you assign a handler block, you will receive an error if user cancels the dialog or if something goes wrong while posting. For more information on errors, see here.</p>
+<h2><a class="anchor" id="Twitter"></a>
 Twitter</h2>
 <p>Posting a tweet to Twitter can be done calling a single method like this:</p>
 <div class="fragment"><div class="line">[CSTwitter tweet:<span class="stringliteral">@&quot;test&quot;</span></div>
 <div class="line">           completionBlock:^(<a class="code" href="interface_c_s_social_request.html">CSSocialRequest</a> *request, <span class="keywordtype">id</span> response, NSError *error) {</div>
 <div class="line">}];</div>
-</div><!-- fragment --> </div></div><!-- contents -->
+</div><!-- fragment --><p>Showing a Twitter dialog (as available depending on the platform )</p>
+<div class="fragment"><div class="line">[CSTwitter showDialogWithMessage:<span class="stringliteral">@&quot;test&quot;</span></div>
+<div class="line">                           photo:[UIImage imageNamed:<span class="stringliteral">@&quot;test&quot;</span>]</div>
+<div class="line">                         handler:^(NSError *error) {</div>
+<div class="line">}];</div>
+</div><!-- fragment --><p>If you assign a handler block, you will receive an error if user cancels the dialog or if something goes wrong while posting. For more information on errors, see here.</p>
+<h2><a class="anchor" id="Google"></a>
+Google</h2>
+<p>Showing a Google+ dialog (as available depending on the platform )</p>
+<div class="fragment"><div class="line">[CSGoogle showDialogWithMessage:<span class="stringliteral">@&quot;test&quot;</span></div>
+<div class="line">                          photo:[UIImage imageNamed:<span class="stringliteral">@&quot;test&quot;</span>]</div>
+<div class="line">                        handler:^(NSError *error) {</div>
+<div class="line">}];</div>
+</div><!-- fragment --><p>If you assign a handler block, you will receive an error if user cancels the dialog or if something goes wrong while posting. For more information on errors, see here. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Mar 6 2013 19:03:48 for CSSocial by
+    <li class="footer">Generated on Thu Mar 14 2013 19:00:44 for CSSocial by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.2 </li>
   </ul>

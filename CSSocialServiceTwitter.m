@@ -11,10 +11,6 @@
 #import "CSSocial.h"
 #import "CSSocialConstants.h"
 #import "CSRequests.h"
-#import <Twitter/Twitter.h>
-#import <Accounts/Accounts.h>
-#import "OAuth.h"
-#import "SimpleKeychain.h"
 #import "CSTwitterPlugin.h"
 #import "CSSocialRequestTwitter.h"
 
@@ -29,7 +25,6 @@
     CSTwitterPlugin *_plugin;
 
 }
-
 
 -(void) dealloc
 {
@@ -114,8 +109,7 @@
         handlerBlock([self errorWithLocalizedDescription:@"Twitter not logged in. Please login before trying to use the dialog."]);
         return nil;
     }
-    
-    
+    return [_plugin showDialogWithMessage:message photo:photo handler:handlerBlock];
 }
 
 @end

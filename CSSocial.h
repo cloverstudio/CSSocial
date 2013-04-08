@@ -20,6 +20,7 @@
 #import "CSRequests.h"
 #import "CSFacebookParameter.h"
 #import "CSTwitterParameter.h"
+#import "CSSocialError.h"
 
 @protocol CSSocialService;
 @protocol CSSocialManagerDataSource <NSObject>
@@ -49,22 +50,22 @@
 ///posts a simple message to the facebook wall
 ///@param message message to post to wall
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
--(void) postToWall:(NSString*) message completionBlock:(CSSocialResponseBlock) responseBlock;
+-(CSSocialRequest*) postToWall:(NSString*) message completionBlock:(CSSocialResponseBlock) responseBlock;
 
 ///postPhoto:completionBlock:
 ///posts a photo to facebook photo album
 ///@param photo photo to post to album
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
--(void) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock;
+-(CSSocialRequest*) postPhoto:(UIImage*) photo completionBlock:(CSSocialResponseBlock) responseBlock;
 
 ///postPhoto:caption:completionBlock:
 ///posts a photo to facebook photo album
 ///@param photo photo to post to album
-///@param caption album caption of the image 
+///@param caption album caption of the image
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
--(void) postPhoto:(UIImage*) photo
-          caption:(NSString*) caption
-    completionBlock:(CSSocialResponseBlock) responseBlock;
+-(CSSocialRequest*) postPhoto:(UIImage*) photo
+                      caption:(NSString*) caption
+              completionBlock:(CSSocialResponseBlock) responseBlock;
 @end
 
 @interface CSSocialServiceTwitter (Helper)
@@ -72,5 +73,5 @@
 ///posts a simple tweet to selected Twitter account
 ///@param tweet tweet to post
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
--(void) tweet:(NSString*) tweet  completionBlock:(CSSocialResponseBlock) responseBlock;
+-(CSSocialRequest*) tweet:(NSString*) tweet  completionBlock:(CSSocialResponseBlock) responseBlock;
 @end    

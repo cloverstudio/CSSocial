@@ -17,6 +17,9 @@
 -(UIViewController*) presentingViewController;
 -(BOOL) isAuthenticated;
 -(void) authenticate;
+-(id) showDialogWithMessage:(NSString*) message
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock;
 @end
 
 @interface CSTwitterPlugin : NSObject <CSTwitterPlugin>

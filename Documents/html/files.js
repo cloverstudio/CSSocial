@@ -4,6 +4,7 @@ var files =
     [ "CSRequests.h", "_c_s_requests_8h_source.html", null ],
     [ "CSSocial.h", "_c_s_social_8h_source.html", null ],
     [ "CSSocialConstants.h", "_c_s_social_constants_8h_source.html", null ],
+    [ "CSSocialError.h", "_c_s_social_error_8h_source.html", null ],
     [ "CSSocialParameter.h", "_c_s_social_parameter_8h_source.html", null ],
     [ "CSSocialRequest.h", "_c_s_social_request_8h_source.html", null ],
     [ "CSSocialRequestFacebook.h", "_c_s_social_request_facebook_8h_source.html", null ],

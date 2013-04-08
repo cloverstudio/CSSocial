@@ -120,37 +120,40 @@ $(document).ready(function(){initNavTree('_c_s_twitter_plugin_8h_source.html',''
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;-(UIViewController*) presentingViewController;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;-(BOOL) isAuthenticated;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;-(void) authenticate;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">@end</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="code" href="interface_c_s_twitter_plugin.html">   22</a></span>&#160;<span class="keyword">@interface </span><a class="code" href="interface_c_s_twitter_plugin.html">CSTwitterPlugin</a> : NSObject &lt;<a class="code" href="protocol_c_s_twitter_plugin-p.html">CSTwitterPlugin</a>&gt;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">@property</span>(nonatomic, copy) CSVoidBlock loginSuccessBlock;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">@property</span>(nonatomic, copy) CSErrorBlock loginFailedBlock;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">@property</span>(nonatomic, strong) OAuth *oAuth;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">@property</span>(nonatomic, readonly, strong) NSString *consumerKey;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">@property</span>(nonatomic, readonly, strong) NSString *consumerSecret;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;+(<a class="code" href="interface_c_s_twitter_plugin.html">CSTwitterPlugin</a>*) <a class="code" href="interface_c_s_twitter_plugin.html#a26c61d0671d3e342a9336159b4f42e03">plugin</a>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;-(void) saveOAuth:(OAuth*) oAuth;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;-(void) loadOAuth:(OAuth*) oAuth;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;-(void) resetOAuth;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;-(NSError*) errorWithLocalizedDescription:(NSString*) description errorCode:(NSInteger) errorCode;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;-(NSError*) errorWithLocalizedDescription:(NSString*) description;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;-(NSError*) errorInvalidReturnValue;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;-(NSError*) errorAccountNotFound;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;-(NSError*) errorUnsupportedSDK;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;-(NSError*) errorTwitterLoginFailed;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;-(NSError*) errorTwitterUserCancelled;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">@end</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;-(id) showDialogWithMessage:(NSString*) message</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                      photo:(UIImage*) photo</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                    handler:(CSErrorBlock) handlerBlock;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">@end</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="code" href="interface_c_s_twitter_plugin.html">   25</a></span>&#160;<span class="keyword">@interface </span><a class="code" href="interface_c_s_twitter_plugin.html">CSTwitterPlugin</a> : NSObject &lt;<a class="code" href="protocol_c_s_twitter_plugin-p.html">CSTwitterPlugin</a>&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">@property</span>(nonatomic, copy) CSVoidBlock loginSuccessBlock;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">@property</span>(nonatomic, copy) CSErrorBlock loginFailedBlock;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">@property</span>(nonatomic, strong) OAuth *oAuth;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">@property</span>(nonatomic, readonly, strong) NSString *consumerKey;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">@property</span>(nonatomic, readonly, strong) NSString *consumerSecret;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;+(<a class="code" href="interface_c_s_twitter_plugin.html">CSTwitterPlugin</a>*) <a class="code" href="interface_c_s_twitter_plugin.html#a26c61d0671d3e342a9336159b4f42e03">plugin</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;-(void) saveOAuth:(OAuth*) oAuth;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;-(void) loadOAuth:(OAuth*) oAuth;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;-(void) resetOAuth;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;-(NSError*) errorWithLocalizedDescription:(NSString*) description errorCode:(NSInteger) errorCode;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;-(NSError*) errorWithLocalizedDescription:(NSString*) description;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;-(NSError*) errorInvalidReturnValue;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;-(NSError*) errorAccountNotFound;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;-(NSError*) errorUnsupportedSDK;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;-(NSError*) errorTwitterLoginFailed;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;-(NSError*) errorTwitterUserCancelled;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">@end</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>CSTwitterPlugin.h</b></li>
-    <li class="footer">Generated on Wed Mar 6 2013 19:03:48 for CSSocial by
+    <li class="footer">Generated on Thu Mar 14 2013 19:00:44 for CSSocial by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.2 </li>
   </ul>

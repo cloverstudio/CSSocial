@@ -10,6 +10,7 @@
 #import "GTLPlusConstants.h"
 #import "GPPSignIn.h"
 #import "GPPShare.h"
+#import "CSSocial.h"
 
 @interface CSSocialServiceGoogle () <GPPSignInDelegate, GPPShareDelegate>
 @property (nonatomic, copy) CSErrorBlock shareBlock;
@@ -19,8 +20,6 @@
 {
     GPPSignIn *_session;
 }
-
-
 
 -(NSString*) clientID
 {

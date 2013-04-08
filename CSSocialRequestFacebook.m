@@ -8,9 +8,9 @@
 
 #import "CSSocialRequestFacebook.h"
 #import "CSSocialUserFacebook.h"
-#import "FBRequestConnection.h"
-#import "FBRequest.h"
-#import "FBURLConnection.h"
+#import "External/Facebook/FBRequestConnection.h"
+#import "External/Facebook/FBRequest.h"
+#import "External/Facebook/FBURLConnection.h"
 
 ///graph paths
 #define kCSFacebookURL @"https://graph.facebook.com"
@@ -23,7 +23,8 @@
 @implementation CSSocialRequestFacebook
 ///some instances use FBRequestConnection, whereas some use NSURLConnection
 {
-    id _connection;
+    FBRequestConnection *_connection;
+    FBRequest *_request;
 }
 
 +(CSSocialRequestFacebook*) requestWithApiCall:(NSString*) apiCall
@@ -71,13 +72,16 @@
 
 -(void) makeRequest
 {
-    _connection = [FBRequestConnection startWithGraphPath:[self APIcall]
-                                               parameters:[self params]
-                                               HTTPMethod:[self method]
-                                        completionHandler:^(FBRequestConnection *connection, id result, NSError *error)
-                   {
-                       [self receivedResponse:result error:error];
-                   }];
+    __block CSSocialRequestFacebook *this = self;
+    FBRequest *request = [FBRequest requestWithGraphPath:[self APIcall]
+                                              parameters:[self params]
+                                              HTTPMethod:[self method]];
+    _connection = [[FBRequestConnection alloc] initWithTimeout:30];
+    [_connection addRequest:request
+          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+              [this receivedResponse:result error:error];
+          }];
+    [_connection start];
 }
 
 @end

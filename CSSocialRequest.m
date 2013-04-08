@@ -7,9 +7,11 @@
 //
 
 #import "CSSocialRequest.h"
+#import <UIKit/UIApplication.h>
 
 @interface CSSocialRequest ()
 @property (nonatomic, assign) id service;
+@property (nonatomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 @end
 
 @implementation CSSocialRequest
@@ -37,13 +39,30 @@
     self = [super init];
     if (self) 
     {
+        self.queuePriority = NSOperationQueuePriorityHigh;
         self.service = service;
         self.params = parameters;
         _cancelled = NO;
         _executing = NO;
         _finished = NO;
+        
+        [self beginBackgroundTask];
     }
     return self;
+}
+
+-(void) beginBackgroundTask
+{
+    self.backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskIdentifier];
+        self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+    }];
+}
+
+-(void) endBackgroundTask
+{
+    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskIdentifier];
+    self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
 }
 
 -(void) start
@@ -51,6 +70,11 @@
     _executing = YES;
     _finished = NO;
     [self makeRequest];
+}
+
+-(void) finish
+{
+    [self endBackgroundTask];
 }
 
 -(void) makeRequest
@@ -63,6 +87,7 @@
 {
     self.responseBlock(self, [self parseResponse:result], error);
     [self receivedResponse];
+    [self finish];
 }
 
 ///each subclass can parse its own response or just return the raw response
