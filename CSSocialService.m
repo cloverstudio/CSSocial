@@ -30,8 +30,7 @@
 
 -(NSOperationQueue*) operationQueue
 {
-    return [NSOperationQueue currentQueue];
-    //return [[NSOperationQueue alloc] init];
+    return [NSOperationQueue mainQueue];
 }
 
 -(void) login:(CSVoidBlock) success error:(CSErrorBlock) error
