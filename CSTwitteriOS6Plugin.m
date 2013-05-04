@@ -27,9 +27,9 @@
                       photo:(UIImage*) photo
                     handler:(CSErrorBlock) handlerBlock
 {
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
-        SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         [viewController setInitialText:message];
         [viewController addImage:photo];
         [viewController setCompletionHandler:^(SLComposeViewControllerResult result)

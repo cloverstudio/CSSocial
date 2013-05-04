@@ -16,6 +16,7 @@
 #import "FacebookSDK.h"
 #import <Social/SLComposeViewController.h>
 #import <Social/SLServiceTypes.h>
+#import "FBSettings.h"
 
 /*
    FACEBOOK READ PERMISSIONS
@@ -93,7 +94,7 @@
     if ((self = [super init])) {
         ///TODO: add urlSchemeSuffix to plist, also allow for appID to be nil
         ///initialize session for the first time;
-        [FBSession setDefaultAppID:[self appID]];
+        [FBSettings setDefaultAppID:[self appID]];
         _session = [FBSession activeSession];
 
         self.audience = FBSessionDefaultAudienceEveryone;
@@ -203,6 +204,11 @@
 - (BOOL)handleOpenURL:(NSURL *)url {
     return [_session handleOpenURL:url];
 }
+
+-(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation {
+    return [_session handleOpenURL:url];
+}
+
 
 #pragma mark - Permissions And Permission handling
 
