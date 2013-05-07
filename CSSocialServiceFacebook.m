@@ -180,6 +180,10 @@
     return request;
 }
 
+-(NSString*) accessToken {
+    return [[_session accessTokenData] accessToken];
+}
+
 - (NSString *)appID {
     NSString *appID = [[CSSocial configDictionary] objectForKey:kCSFacebookAppID];
     NSString *message = [NSString stringWithFormat:@"Add Facebook app ID %@ key to CSSocial.plist", kCSFacebookAppID];
@@ -209,7 +213,6 @@
     return [_session handleOpenURL:url];
 }
 
-
 #pragma mark - Permissions And Permission handling
 
 - (BOOL)permissionGranted:(NSString *)permission {
@@ -218,22 +221,38 @@
 
 - (void)requestPermissionsForRequest:(CSSocialRequest *)request permissionsBlock:(CSErrorBlock)permissionsBlock {
     CSSocialRequestFacebook *facebookRequest = (CSSocialRequestFacebook *)request;
+    NSArray *permissions = facebookRequest.permissions;
+    
+    for (NSString *permission in permissions) {
+        if (![self permissionGranted:permission]) {
+            if ([self isPublishPermission:permission]) {
+                [self requestPublishPermissions:@[permission]
+                                     errorBlock:^(NSError *error) {
+                                         permissionsBlock(error);
+                                     }];
+            } else {
+                [self requestReadPermissions:@[permission]
+                                  errorBlock:^(NSError *error) {
+                    permissionsBlock(error);
+                }];
+            }
+        } else permissionsBlock(nil);
+    }
+}
 
-    NSString *permission = facebookRequest.permission;
-    if (![self permissionGranted:permission]) {
-        if ([self isPublishPermission:permission]) {
-            [_session requestNewPublishPermissions:@[permission]
-                                   defaultAudience:FBSessionDefaultAudienceEveryone
-                                 completionHandler:^(FBSession *session, NSError *error) {
-                permissionsBlock(error);
-            }];
-        } else {
-            [_session requestNewReadPermissions:@[permission]
-                              completionHandler:^(FBSession *session, NSError *error) {
-                permissionsBlock(error);
-            }];
-        }
-    } else permissionsBlock(nil);
+-(void) requestReadPermissions:(NSArray*) permissions errorBlock:(CSErrorBlock) errorBlock {
+    [_session requestNewReadPermissions:permissions
+                      completionHandler:^(FBSession *session, NSError *error) {
+                          errorBlock(error);
+                      }];
+}
+
+-(void) requestPublishPermissions:(NSArray*) permissions errorBlock:(CSErrorBlock) errorBlock {
+    [_session requestNewPublishPermissions:permissions
+                           defaultAudience:self.audience
+                         completionHandler:^(FBSession *session, NSError *error) {
+                             errorBlock(error);
+                         }];
 }
 
 - (BOOL)isPublishPermission:(NSString *)permission {

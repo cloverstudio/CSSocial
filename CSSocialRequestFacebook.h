@@ -11,7 +11,7 @@
 @interface CSSocialRequestFacebook : CSSocialRequest
 ///Facebook permission needed to do the request.
 ///List of all permissions is here https://developers.facebook.com/docs/howtos/ios-6/
-@property (nonatomic, strong) NSString *permission;
+@property (nonatomic, strong) NSArray *permissions;
 
 ///interface to use when creating a custom request
 ///@param apiCall path to graph api, for instance me/friends
@@ -22,7 +22,7 @@
 +(CSSocialRequestFacebook*) requestWithApiCall:(NSString*) apiCall
                                     httpMethod:(NSString*) method
                                     parameters:(NSDictionary*) parameters
-                                    permission:(NSString*) permission;
+                                    permissions:(NSArray*) permissions;
 @end
 
 ///user

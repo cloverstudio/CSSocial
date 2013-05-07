@@ -30,27 +30,27 @@
 +(CSSocialRequestFacebook*) requestWithApiCall:(NSString*) apiCall
                                     httpMethod:(NSString*) method
                                     parameters:(NSDictionary*) parameters
-                                    permission:(NSString*) permission
+                                    permissions:(NSArray *)permissions
 {
     return CS_AUTORELEASE([[self alloc] initWithService:nil
                                                 apiCall:apiCall
                                              httpMethod:method
                                              parameters:parameters
-                                             permission:permission]);
+                                             permissions:permissions]);
 }
 
 -(id) initWithService:(id) service
               apiCall:(NSString*) apiCall
            httpMethod:(NSString*) method
            parameters:(NSDictionary*) parameters
-           permission:(NSString*) permission
+           permissions:(NSArray*) permissions
 {
     self = [super initWithService:service parameters:parameters];
     if (self)
     {
         self.APIcall = apiCall;
         self.method = method;
-        self.permission = permission;
+        self.permissions = permissions;
     }
     return self;
     
@@ -62,7 +62,7 @@
                          apiCall:nil
                       httpMethod:nil
                       parameters:parameters
-                      permission:nil];
+                      permissions:nil];
     if (self)
     {
         
@@ -88,31 +88,35 @@
 
 @implementation CSSocialRequestFacebookUser
 
+-(id) initWithService:(id)service parameters:(NSDictionary *)parameters {
+    return [self initWithService:service
+                         apiCall:kCSGraphPathMe
+                      httpMethod:@"GET"
+                      parameters:parameters
+                     permissions:@[@"user_about_me"]];
+}
+
 -(id) parseResponse:(id)rawResponse
 {
     return [CSSocialUserFacebook userWithResponse:rawResponse];
 }
 
--(NSString*) APIcall { return kCSGraphPathMe; }
-
--(id) method { return @"GET"; }
-
--(NSString*) permission {return @"user_about_me";}
-
 @end
 
 @implementation CSSocialRequestFacebookFriends
+
+-(id) initWithService:(id)service parameters:(NSDictionary *)parameters {
+    return [self initWithService:service
+                         apiCall:kCSGraphPathFriends
+                      httpMethod:@"GET"
+                      parameters:parameters
+                     permissions:@[@"user_about_me"]];
+}
 
 -(id) parseResponse:(id)rawResponse
 {
     return [CSSocialUserFacebook usersWithResponse:rawResponse];
 }
-
--(NSString*) APIcall { return kCSGraphPathFriends; }
-
--(id) method { return @"GET"; }
-
--(NSString*) permission {return @"user_about_me";}
 
 @end
 
@@ -121,21 +125,25 @@
 
 @implementation CSSocialRequestFacebookPostWall
 
--(NSString*) APIcall { return kCSGraphPathFeed; }
-
--(id) method  { return @"POST"; }
-
--(NSString*) permission {return @"publish_stream";}
+-(id) initWithService:(id)service parameters:(NSDictionary *)parameters {
+    return [self initWithService:service
+                         apiCall:kCSGraphPathFeed
+                      httpMethod:@"POST"
+                      parameters:parameters
+                     permissions:@[@"publish_stream"]];
+}
 
 @end
 
 @implementation CSSocialRequestFacebookPostPhoto
 
--(NSString*) APIcall { return kCSGraphPathPhotos; }
-
--(id) method  { return @"POST"; }
-
--(NSString*) permission {return @"publish_stream";}
+-(id) initWithService:(id)service parameters:(NSDictionary *)parameters {
+    return [self initWithService:service
+                         apiCall:kCSGraphPathPhotos
+                      httpMethod:@"POST"
+                      parameters:parameters
+                     permissions:@[@"publish_stream"]];
+}
 
 @end
 
@@ -143,6 +151,15 @@
 {
     FBRequestConnection *_connection;
 }
+
+-(id) initWithService:(id)service parameters:(NSDictionary *)parameters {
+    return [self initWithService:service
+                         apiCall:kCSGraphPathMe
+                      httpMethod:@"GET"
+                      parameters:parameters
+                     permissions:@[@"user_photos"]];
+}
+
 -(void) makeRequest
 {
     _connection = [FBRequestConnection startWithGraphPath:[self APIcall]
@@ -174,11 +191,5 @@
 {
     return [UIImage imageWithData:rawResponse];
 }
-
--(NSString*) APIcall { return kCSGraphPathMe; }
-
--(id) method  { return @"GET"; }
-
--(NSString*) permission {return @"user_photos";}
 
 @end

@@ -13,4 +13,17 @@
 ///Facebook specific, people you want to share your published stuff with
 ///@default FBSessionDefaultAudienceEveryone
 @property (nonatomic) FBSessionDefaultAudience audience;
+
+///returns accessToken of the current FBSession
+@property (nonatomic, readonly) NSString *accessToken;
+
+///requests read permissions for the current session
+///@param permissions an array of permissions
+///@parama errorBlock returns an error if one occured or nil 
+-(void) requestReadPermissions:(NSArray*) permissions errorBlock:(CSErrorBlock) errorBlock;
+
+///requests publish permissions for the current session
+///@param permissions an array of permissions
+///@parama errorBlock returns an error if one occured or nil
+-(void) requestPublishPermissions:(NSArray*) permissions errorBlock:(CSErrorBlock) errorBlock;
 @end

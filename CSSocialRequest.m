@@ -128,10 +128,5 @@
     return _finished;
 }
 
--(id) method
-{
-    return nil;
-}
-
 @end
 
