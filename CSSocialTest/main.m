@@ -2,7 +2,7 @@
 //  main.m
 //  CSSocialTest
 //
-//  Created by marko.hlebar on 10/12/12.
+//  Created by Marko Hlebar on 10/12/12.
 //  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
