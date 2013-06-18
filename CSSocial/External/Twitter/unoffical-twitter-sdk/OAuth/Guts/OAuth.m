@@ -7,9 +7,9 @@
 
 #import "OAuth.h"
 #include <CommonCrypto/CommonDigest.h>
-#import "OAHMAC_SHA1SignatureProvider.h"
+#import "CSOAHMAC_SHA1SignatureProvider.h"
 #import "NSString+URLEncoding.h"
-#import "ASIFormDataRequest.h"
+#import "CSASIFormDataRequest.h"
 #import "OAuthTwitterCallbacks.h"
 
 
@@ -162,7 +162,7 @@
 						  andParams:(NSDictionary *)params
 					 andTokenSecret:(NSString *)token_secret {
 
-	OAHMAC_SHA1SignatureProvider *sigProvider = [[OAHMAC_SHA1SignatureProvider alloc] init];
+	CSOAHMAC_SHA1SignatureProvider *sigProvider = [[CSOAHMAC_SHA1SignatureProvider alloc] init];
 	
 	// If there were any params, URLencode them.
 	NSMutableDictionary *_params = [NSMutableDictionary dictionaryWithCapacity:[params count]];
@@ -232,7 +232,7 @@
 	NSString *oauth_header = [self oAuthHeaderForMethod:@"POST" andUrl:url andParams:params];
 	
 	// Synchronously perform the HTTP request.
-	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
+	CSASIHTTPRequest *request = [CSASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
 	request.requestMethod = @"POST";
 	[request addRequestHeader:@"Authorization" value:oauth_header];
 	[request startSynchronous];
@@ -277,7 +277,7 @@
 	
 	NSString *oauth_header = [self oAuthHeaderForMethod:@"POST" andUrl:url andParams:params andTokenSecret:oauth_token_secret];
 
-	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
+	CSASIHTTPRequest *request = [CSASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
 	request.requestMethod = @"POST";
 	[request addRequestHeader:@"Authorization" value:oauth_header];
 	[request startSynchronous];
@@ -316,7 +316,7 @@
 	
 	NSString *oauth_header = [self oAuthHeaderForMethod:@"GET" andUrl:url andParams:nil];
 	
-	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
+	CSASIHTTPRequest *request = [CSASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
 	request.requestMethod = @"GET";
 	[request addRequestHeader:@"Authorization" value:oauth_header];
 	[request startSynchronous];

@@ -314,8 +314,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 #endif
     return obj;
   } else {
-    // try SBJsonParser or SBJSON
-    Class jsonParseClass = NSClassFromString(@"SBJsonParser");
+    // try CSSBJsonParser or SBJSON
+    Class jsonParseClass = NSClassFromString(@"CSSBJsonParser");
     if (!jsonParseClass) {
       jsonParseClass = NSClassFromString(@"SBJSON");
     }

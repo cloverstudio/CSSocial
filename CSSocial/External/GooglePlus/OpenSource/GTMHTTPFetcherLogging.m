@@ -1049,8 +1049,8 @@ static NSString* gLoggingProcessName = nil;
                                    error:NULL];
     return obj;
   } else {
-    // Try SBJsonParser or SBJSON
-    Class jsonParseClass = NSClassFromString(@"SBJsonParser");
+    // Try CSSBJsonParser or SBJSON
+    Class jsonParseClass = NSClassFromString(@"CSSBJsonParser");
     if (!jsonParseClass) {
       jsonParseClass = NSClassFromString(@"SBJSON");
     }
@@ -1081,8 +1081,8 @@ static NSString* gLoggingProcessName = nil;
       return jsonStr;
     }
   } else {
-    // Try SBJsonParser or SBJSON
-    Class jsonWriterClass = NSClassFromString(@"SBJsonWriter");
+    // Try CSSBJsonParser or SBJSON
+    Class jsonWriterClass = NSClassFromString(@"CSSBJsonWriter");
     if (!jsonWriterClass) {
       jsonWriterClass = NSClassFromString(@"SBJSON");
     }

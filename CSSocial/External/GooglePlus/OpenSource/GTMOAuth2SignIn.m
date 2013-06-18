@@ -661,9 +661,9 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   delegate_ = nil;
 }
 
-#pragma mark Reachability monitoring
+#pragma mark CSReachability monitoring
 
-static void ReachabilityCallBack(SCNetworkReachabilityRef target,
+static void CSReachabilityCallBack(SCNetworkReachabilityRef target,
                                  SCNetworkConnectionFlags flags,
                                  void *info) {
   // pass the flags to the signIn object
@@ -691,7 +691,7 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
     SCNetworkReachabilityContext ctx = { 0, self, NULL, NULL, NULL };
 
     if (SCNetworkReachabilitySetCallback(reachabilityRef_,
-                                         ReachabilityCallBack, &ctx)) {
+                                         CSReachabilityCallBack, &ctx)) {
       if (SCNetworkReachabilityScheduleWithRunLoop(reachabilityRef_,
                                                    CFRunLoopGetCurrent(),
                                                    kCFRunLoopDefaultMode)) {

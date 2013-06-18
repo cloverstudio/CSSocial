@@ -48,8 +48,8 @@
 #if DEBUG && !GTL_REQUIRES_NSJSONSERIALIZATION
 // When compiling for iOS 4 compatibility, SBJSON must be available
 + (void)load {
-  Class writer = NSClassFromString(@"SBJsonWriter");
-  Class parser = NSClassFromString(@"SBJsonParser");
+  Class writer = NSClassFromString(@"CSSBJsonWriter");
+  Class parser = NSClassFromString(@"CSSBJsonParser");
   Class oldParser = NSClassFromString(@"SBJSON");
   GTL_ASSERT((oldParser != Nil)
              || (writer != Nil && parser != Nil),
@@ -89,7 +89,7 @@
                                             error:error];
     return data;
   } else {
-    Class jsonWriteClass = NSClassFromString(@"SBJsonWriter");
+    Class jsonWriteClass = NSClassFromString(@"CSSBJsonWriter");
     if (!jsonWriteClass) {
       jsonWriteClass = NSClassFromString(@"SBJSON");
     }
@@ -129,7 +129,7 @@
                                                         error:error];
     return obj;
   } else {
-    Class jsonParseClass = NSClassFromString(@"SBJsonParser");
+    Class jsonParseClass = NSClassFromString(@"CSSBJsonParser");
     if (!jsonParseClass) {
       jsonParseClass = NSClassFromString(@"SBJSON");
     }
