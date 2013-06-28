@@ -29,7 +29,6 @@
 
 #import "CSTwitteriOS5Plugin.h"
 #import <Twitter/Twitter.h>
-#import "OAuthCore.h"
 #import "OAuth.h"
 #import "CSSocial.h"
 
@@ -58,11 +57,11 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
         [self performReverseAuth:^(NSDictionary *JSONDict, NSError *error) {
             if (error)
             {
-                self.loginFailedBlock(error);
+                if(self.loginFailedBlock) self.loginFailedBlock(error);
             }
             else
             {
-                self.loginSuccessBlock();
+                if(self.loginSuccessBlock) self.loginSuccessBlock();
             }
         }];
     }
@@ -144,7 +143,6 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
                           dictionaryWithObject:TW_X_AUTH_MODE_REVERSE_AUTH
                           forKey:TW_X_AUTH_MODE_KEY];
     
-    
     //  Build our parameter string
     NSMutableString *paramsAsString = [[NSMutableString alloc] init];
     [params enumerateKeysAndObjectsUsingBlock:
@@ -153,8 +151,10 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
      }];
     
     NSData *bodyData = [paramsAsString dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *authHeader = OAuthorizationHeader(url, @"POST", bodyData, [self consumerKey], [self consumerSecret], nil, nil);
-    
+    NSString *authHeader = [self.oAuth oAuthHeaderForMethod:@"POST"
+                                                     andUrl:[url absoluteString]
+                                                  andParams:params];
+        
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:authHeader forHTTPHeaderField:TW_HTTP_HEADER_AUTHORIZATION];
@@ -253,7 +253,7 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
 
         if (error || accounts.count == 0)
         {
-            self.loginFailedBlock([self errorAccountNotFound]);
+            if(self.loginFailedBlock) self.loginFailedBlock([self errorAccountNotFound]);
             return;
         }
         

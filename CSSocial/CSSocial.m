@@ -108,6 +108,10 @@
     return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceGoogle class]];
 }
 
++ (CSSocialService *)linkedin {
+    return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceLinkedin class]];
+}
+
 - (CSSocialService *)serviceWithClass:(Class)class {
     NSString *className = NSStringFromClass(class);
     CSSocialService *service = [self.services objectForKey:className];

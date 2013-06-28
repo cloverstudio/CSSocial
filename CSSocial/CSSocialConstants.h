@@ -38,6 +38,9 @@
 
 #define kCSFacebookAppID @"CSSOCIAL_FACEBOOK_APP_ID"
 
+#define kCSLinkedinConsumerKey @"CSSOCIAL_LINKEDIN_API_KEY"
+#define kCSLinkedinConsumerSecret @"CSSOCIAL_LINKEDIN_API_SECRET"
+
 #define kCSTwitterConsumerKey @"CSSOCIAL_TWITTER_CONSUMER_KEY"
 #define kCSTwitterConsumerSecret @"CSSOCIAL_TWITTER_CONSUMER_SECRET"
 
@@ -48,8 +51,9 @@
 #define kCSTwitterOAuthTokenAuthorized @"CSSocialTwitterOAuthTokenAuthorized"
 #define kCSTwitterOAuthDictionary [NSString stringWithFormat:@"%@.CSSocialTwitterOAuthDictionary", CS_BUNDLE_ID]
 
-#define CSFacebook (CSSocialServiceFacebook*)[CSSocial facebook]
-#define CSTwitter (CSSocialServiceTwitter*)[CSSocial twitter]
-#define CSGoogle (CSSocialServiceGoogle*)[CSSocial google]
+#define CSFacebook  (CSSocialServiceFacebook*)[CSSocial facebook]
+#define CSTwitter   (CSSocialServiceTwitter*)[CSSocial twitter]
+#define CSGoogle    (CSSocialServiceGoogle*)[CSSocial google]
+#define CSLinkedin  (CSSocialServiceLinkedin*)[CSSocial linkedin]
 
 #endif

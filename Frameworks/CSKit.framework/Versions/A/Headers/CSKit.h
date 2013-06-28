@@ -6,6 +6,12 @@
 //  Copyright (c) 2012 Clover Studio. All rights reserved.
 //
 
+//Constants
+#import "CSConstants.h"
+#import "CSBlocks.h"
+#import "CSArcMacros.h"
+
+//Classes
 #import "CSNavigationController.h"
 #import "CSButton.h"
 #import "CSBarButtonItem.h"
@@ -29,6 +35,3 @@
 ///#import "UIView+Animations.h"
 ///#import "UIView+Extensions.h"
 ///#import "UIView+CoreGraphics.h"
-
-///Constants
-#import "CSConstants.h"

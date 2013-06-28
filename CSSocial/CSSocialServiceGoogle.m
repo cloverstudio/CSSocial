@@ -102,11 +102,11 @@
 {
     if (error)
     {
-        self.loginFailedBlock(error);
+        if(self.loginFailedBlock) self.loginFailedBlock(error);
     }
     else
     {
-        self.loginSuccessBlock();
+        if(self.loginSuccessBlock) self.loginSuccessBlock();
     }
 }
 

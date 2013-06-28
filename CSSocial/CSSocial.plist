@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CSSOCIAL_LINKEDIN_API_KEY</key>
+	<string>f7pngdlw4igs</string>
+	<key>CSSOCIAL_LINKEDIN_API_SECRET</key>
+	<string>jxE5E2efLIBJD278</string>
 	<key>CSSOCIAL_TWITTER_CONSUMER_KEY</key>
 	<string>nyuD5tXoKAgFbKavnQXrtg</string>
 	<key>CSSOCIAL_TWITTER_CONSUMER_SECRET</key>

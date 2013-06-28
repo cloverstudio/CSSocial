@@ -178,7 +178,7 @@
 @end
 
 @implementation CSSocialRequestTwitterMessage
--(NSString*) APIcall {return @"https://api.twitter.com/1/statuses/update.json";}
+-(NSString*) APIcall {return @"https://api.twitter.com/1.1/statuses/update.json";}
 
 -(NSMutableURLRequest*) request
 {
@@ -189,15 +189,17 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:postUrl]];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[postBodyString dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setValue:[oAuth oAuthHeaderForMethod:@"POST"
-                                           andUrl:postUrl
-                                        andParams:postInfo] forHTTPHeaderField:@"Authorization"];
+    
+    NSString *authHeader = [oAuth oAuthHeaderForMethod:@"POST"
+                                                andUrl:postUrl
+                                             andParams:postInfo];
+    [request setValue:authHeader forHTTPHeaderField:@"Authorization"];
     return request;
 }
 @end
 
 @implementation CSSocialRequestTwitterGetUserImage
--(NSString*) APIcall { return @"https://api.twitter.com/1/users/profile_image"; }
+-(NSString*) APIcall { return @"https://api.twitter.com/1.1/users/profile_image"; }
 -(id) method { return [NSNumber numberWithInteger:TWRequestMethodGET]; }
 -(id) parseResponseData:(id)responseData error:(NSError**) error
 {
@@ -211,7 +213,7 @@
 @end
 
 @implementation CSSocialRequestTwitterFriends
--(NSString*) APIcall { return @"https://api.twitter.com/1/friends/ids.json"; }
+-(NSString*) APIcall { return @"https://api.twitter.com/1.1/friends/ids.json"; }
 -(id) method { return [NSNumber numberWithInteger:TWRequestMethodGET]; }
 -(id) parseResponseData:(id)responseData error:(NSError**) error
 {

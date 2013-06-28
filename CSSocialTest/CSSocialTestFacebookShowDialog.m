@@ -34,6 +34,7 @@
 -(void) performTest:(CSSocialResponseBlock)resultBlock
 {
     [CSFacebook showDialogWithMessage:[CSKit loremIpsum]
+                                  url:[NSURL URLWithString:@"http://www.clover-studio.com/blog/"]
                                 photo:[UIImage imageNamed:@"test"]
                               handler:^(NSError *error)
     {

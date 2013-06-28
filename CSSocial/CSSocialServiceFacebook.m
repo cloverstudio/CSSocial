@@ -132,7 +132,7 @@
     self.loginFailedBlock = error;
 
     if (_session.isOpen) {
-        self.loginSuccessBlock();
+        if(self.loginSuccessBlock) self.loginSuccessBlock();
     } else {
         [FBSession openActiveSessionWithReadPermissions:[self readPermissions]
                                            allowLoginUI:YES
@@ -150,12 +150,12 @@
 
     switch (status) {
         case FBSessionStateOpen:
-            self.loginSuccessBlock();
+            if(self.loginSuccessBlock) self.loginSuccessBlock();
             break;
         case FBSessionStateClosed:
             break;
         case FBSessionStateClosedLoginFailed:
-            self.loginFailedBlock(error);
+            if(self.loginFailedBlock) self.loginFailedBlock(error);
             break;
         default:
             break;
@@ -286,46 +286,89 @@
 
 #pragma mark - Dialogs
 
+- (NSDictionary*)parseURLParams:(NSString *)query {
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    for (NSString *pair in pairs) {
+        NSArray *kv = [pair componentsSeparatedByString:@"="];
+        NSString *val =
+        [[kv objectAtIndex:1]
+         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        [params setObject:val forKey:[kv objectAtIndex:0]];
+    }
+    return params;
+}
+
 - (id)showDialogWithMessage:(NSString *)message
+                        url:(NSURL*) url
                       photo:(UIImage *)photo
                     handler:(CSErrorBlock)handlerBlock {
-    if (![self isAuthenticated]) {
-        handlerBlock([self errorWithLocalizedDescription:@"Facebook not logged in. Please login before trying to use the dialog."]);
-    }
-
+    
     if ([SLComposeViewController class]) {
         SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         [viewController setInitialText:message];
         [viewController addImage:photo];
         [viewController setCompletionHandler:^(SLComposeViewControllerResult result)
-        {
-            switch (result) {
-                case SLComposeViewControllerResultDone:
-                    handlerBlock(nil);
-                    break;
-                case SLComposeViewControllerResultCancelled:
-                    handlerBlock([self errorWithLocalizedDescription:@"Dialog cancelled."]);
-                    break;
-                default:
-                    break;
-            }
-        }];
-
+         {
+             switch (result) {
+                 case SLComposeViewControllerResultDone:
+                     handlerBlock(nil);
+                     break;
+                 case SLComposeViewControllerResultCancelled:
+                     handlerBlock([self errorWithLocalizedDescription:@"Dialog cancelled."]);
+                     break;
+                 default:
+                     break;
+             }
+             [[CSSocial viewController] dismissViewControllerAnimated:YES completion:nil];
+         }];
+        
         [[CSSocial viewController] presentViewController:viewController animated:YES completion:nil];
         return viewController;
     } else {
-        NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    message, @"caption",
-                                    nil];
-
-        [FBWebDialogs presentFeedDialogModallyWithSession:_session
-                                               parameters:parameters
-                                                  handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-            handlerBlock(error);
-        }];
+        [self login:^{
+            
+            // Put together the dialog parameters
+            NSMutableDictionary *params =
+            [NSMutableDictionary dictionaryWithObjectsAndKeys:
+             //[url absoluteString],  @"title",
+             message,               @"description",
+             [url absoluteString],  @"link",
+             //@"https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png", @"picture",
+             nil];
+            
+            // Invoke the dialog
+            [FBWebDialogs presentFeedDialogModallyWithSession:nil
+                                                   parameters:params
+                                                      handler:
+             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                 if (error) {
+                     // Error launching the dialog or publishing a story.
+                     handlerBlock(error);
+                 } else {
+                     NSError *userCancelledError = [NSError errorWithDomain:@"com.clover-studio.cssocial"
+                                                                       code:CSSocialErrorCodeUserCancelled
+                                                                   userInfo:nil];
+                     
+                     if (result == FBWebDialogResultDialogNotCompleted) {
+                         // User clicked the "x" icon
+                         handlerBlock(userCancelledError);
+                     } else {
+                         // Handle the publish feed callback
+                         NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
+                         if (![urlParams valueForKey:@"post_id"]) {
+                             handlerBlock(userCancelledError);
+                         } else {
+                             handlerBlock(nil);
+                         }
+                     }
+                 }
+             }];
+        }
+              error:handlerBlock];
     }
-
     return nil;
 }
-
+         
 @end

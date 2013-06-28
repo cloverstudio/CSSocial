@@ -30,9 +30,14 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "CSConstants.h"
+#import "CSBlocks.h"
+#import "CSArcMacros.h"
+
 #import "CSSocialServiceFacebook.h"
 #import "CSSocialServiceTwitter.h"
 #import "CSSocialServiceGoogle.h"
+#import "CSSocialServiceLinkedin.h"
 
 #import "CSSocialConstants.h"
 #import "CSSocialUser.h"
@@ -56,6 +61,7 @@
 +(CSSocialService*) facebook;
 +(CSSocialService*) twitter;
 +(CSSocialService*) google;
++(CSSocialService*) linkedin;
 //+(CSSocialService*) mixi;
 
 +(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation;

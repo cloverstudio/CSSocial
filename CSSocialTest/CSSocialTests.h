@@ -44,4 +44,7 @@
 #import "CSSocialTestGoogleLogin.h"
 #import "CSSocialTestGoogleShowDialog.h"
 
+#import "CSSocialTestLinkedinLogin.h"
+#import "CSSocialTestLinkedinMessage.h"
+
 #endif

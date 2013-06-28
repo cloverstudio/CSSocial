@@ -122,14 +122,10 @@
     return nil;
 }
 
--(id) showDialogWithMessage:(NSString*) message
-                      photo:(UIImage*) photo
-                    handler:(CSErrorBlock) handlerBlock
-{
-    if (![self isAuthenticated]) {
-        handlerBlock([self errorWithLocalizedDescription:@"Twitter not logged in. Please login before trying to use the dialog."]);
-        return nil;
-    }
+- (id)showDialogWithMessage:(NSString *)message
+                        url:(NSURL*) url
+                      photo:(UIImage *)photo
+                    handler:(CSErrorBlock)handlerBlock {
     return [_plugin showDialogWithMessage:message photo:photo handler:handlerBlock];
 }
 

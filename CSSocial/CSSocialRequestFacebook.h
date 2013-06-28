@@ -38,7 +38,7 @@
 ///@param apiCall path to graph api, for instance me/friends
 ///@param method HTTP method (GET, POST, PUT)
 ///@param parameters parameters to use when making a request
-///@param permission permission needed for this API
+///@param permissions permissions needed for this API
 ///@return CSSocialRequestFacebook object
 +(CSSocialRequestFacebook*) requestWithApiCall:(NSString*) apiCall
                                     httpMethod:(NSString*) method

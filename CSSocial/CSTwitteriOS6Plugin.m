@@ -64,6 +64,7 @@
                 default:
                     break;
             }
+            [[CSSocial viewController] dismissViewControllerAnimated:YES completion:nil];
          }];
         
         [[CSSocial viewController] presentViewController:viewController

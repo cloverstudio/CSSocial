@@ -85,4 +85,15 @@ __attribute__((deprecated));
                       photo:(UIImage*) photo
                     handler:(CSErrorBlock) handlerBlock;
 
+///@abstract shows the dialog box of the service (where available) with initial message and photo parameters
+///@param message initial message
+///@param url url to share
+///@param photo photo to upload
+///@param handlerBlock callback block containing an error if one occured.
+///@return instance od the dialog if available or nil if unavailable.
+-(id) showDialogWithMessage:(NSString*) message
+                        url:(NSURL*) url
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock;
+
 @end

@@ -105,7 +105,7 @@
     }
     else
     {
-        self.loginSuccessBlock();
+        if(self.loginSuccessBlock) self.loginSuccessBlock();
     }
 }
 

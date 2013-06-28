@@ -10,38 +10,6 @@
 #define CS_CONSTANTS_h
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIImage.h>
-
-#pragma mark - ARC macros
-
-#if !__has_feature(objc_arc)
-#define CS_AUTORELEASE(__OBJECT__) [__OBJECT__ autorelease]
-#define CS_RELEASE(__OBJECT__) [__OBJECT__ release]
-#define CS_RETAIN(__OBJECT__) [__OBJECT__ retain]
-#define CS_QUEUE_RETAIN(__OBJECT__) dispatch_retain(__OBJECT__)
-#define CS_QUEUE_RELEASE(__OBJECT__) dispatch_release(__OBJECT__)
-#define CS_DEALLOC(__OBJECT__) [__OBJECT__ dealloc]
-#define CS_SUPER_DEALLOC [super dealloc]
-#else
-#define CS_AUTORELEASE(__OBJECT__) [__OBJECT__ self]
-#define CS_RELEASE(__OBJECT__) [__OBJECT__ self]
-#define CS_RETAIN(__OBJECT__) [__OBJECT__ self]
-#define CS_QUEUE_RETAIN(__OBJECT__) nil
-#define CS_QUEUE_RELEASE(__OBJECT__) nil
-#define CS_DEALLOC(__OBJECT__) nil
-#define CS_SUPER_DEALLOC nil
-#endif
-
-#pragma mark - Blocks
-typedef void (^CSVoidBlock)(void);
-typedef void (^CSBoolBlock)(BOOL yesOrNo);
-typedef void (^CSArrayBlock)(NSArray *array);
-typedef void (^CSDictionaryBlock)(NSDictionary *dictionary);
-typedef void (^CSResultBlock)(id result);
-typedef void (^CSImageBlock)(UIImage* image);
-typedef void (^CSErrorBlock)(NSError* error);
-typedef void (^CSUploadProgressBlock)(NSInteger, long long, long long);
-typedef void (^CSResponseBlock)(NSDictionary *JSONDict, NSError* error);
 
 #pragma mark -
 #pragma mark Debug macros

@@ -33,7 +33,7 @@
 -(void) performTest:(CSSocialResponseBlock)resultBlock
 {
 
-    [CSTwitter tweet:@"This is a test tweet"
+    [CSTwitter tweet:@"This is a test"
      completionBlock:^(CSSocialRequest *request, id response, NSError *error) {
          if(!error) self.passed = YES;
          else CSLog(@"%@\n%@", [error localizedDescription], [error description]);

@@ -50,14 +50,14 @@
 - (void)twitterDidLogin
 {
     [self saveOAuth:self.oAuth];
-    self.loginSuccessBlock();
+    if(self.loginSuccessBlock) self.loginSuccessBlock();
 }
 
 - (void)twitterDidNotLogin:(BOOL)cancelled
 {
     
     [self resetOAuth];
-    self.loginFailedBlock(cancelled ? [self errorTwitterUserCancelled] : [self errorTwitterLoginFailed]);
+    if(self.loginFailedBlock) self.loginFailedBlock(cancelled ? [self errorTwitterUserCancelled] : [self errorTwitterLoginFailed]);
 }
 
 @end

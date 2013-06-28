@@ -36,6 +36,8 @@ typedef enum
 }
 CSSocialServiceErrorCode;
 
+#define CSSocialErrorDomain @"com.clover-studio.CSSocial"
+
 @interface CSSocialError : NSObject
 
 @end

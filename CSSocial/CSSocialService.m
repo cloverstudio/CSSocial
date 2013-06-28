@@ -111,8 +111,14 @@
 
 -(id) showDialogWithMessage:(NSString*) message
                       photo:(UIImage*) photo
-                    handler:(CSErrorBlock) handlerBlock
-{
+                    handler:(CSErrorBlock) handlerBlock {
+    return [self showDialogWithMessage:message url:nil photo:photo handler:handlerBlock];
+}
+
+-(id) showDialogWithMessage:(NSString*) message
+                        url:(NSURL*) url
+                      photo:(UIImage*) photo
+                    handler:(CSErrorBlock) handlerBlock{
     ///override this in a subclass to support dialog.
     handlerBlock([self errorWithLocalizedDescription:@"Dialog unavaliable"]);
     return nil;
