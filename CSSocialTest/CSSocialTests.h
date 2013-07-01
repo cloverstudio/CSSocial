@@ -47,4 +47,6 @@
 #import "CSSocialTestLinkedinLogin.h"
 #import "CSSocialTestLinkedinMessage.h"
 
+#import "CSSocialTestOAuthViewController.h"
+
 #endif

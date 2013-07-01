@@ -57,6 +57,7 @@
                   [CSSocialTestGoogleShowDialog test],
                   [CSSocialTestLinkedinLogin test],
                   [CSSocialTestLinkedinMessage test],
+                  [CSSocialTestOAuthViewController test],
                   nil];
 
         [[NSNotificationCenter defaultCenter] addObserver:self.tableView

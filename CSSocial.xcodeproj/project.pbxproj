@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */; };
+		AD07A13D177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */; };
+		AD07A13E177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */; };
+		AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = AD07A143177DDF83007CDA40 /* CSOAuthViewController.h */; };
+		AD07A146177DDF83007CDA40 /* CSOAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A144177DDF83007CDA40 /* CSOAuthViewController.m */; };
+		AD07A147177DDF83007CDA40 /* CSOAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A144177DDF83007CDA40 /* CSOAuthViewController.m */; };
+		AD07A14B177DE491007CDA40 /* CSSocialTestOAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A14A177DE491007CDA40 /* CSSocialTestOAuthViewController.m */; };
 		AD0B1A5616414EBD000B88B7 /* TestResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0B1A5516414EBD000B88B7 /* TestResultsViewController.m */; };
 		AD0B1A811641505F000B88B7 /* SocialFriendsTestResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0B1A801641505F000B88B7 /* SocialFriendsTestResultsViewController.m */; };
 		AD104FB816B6701400E6AD1B /* CSSocialTestFacebookLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = AD104FB716B6701400E6AD1B /* CSSocialTestFacebookLogin.m */; };
@@ -501,6 +508,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialOAuthRequest.h; sourceTree = "<group>"; };
+		AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialOAuthRequest.m; sourceTree = "<group>"; };
+		AD07A143177DDF83007CDA40 /* CSOAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSOAuthViewController.h; sourceTree = "<group>"; };
+		AD07A144177DDF83007CDA40 /* CSOAuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSOAuthViewController.m; sourceTree = "<group>"; };
+		AD07A149177DE491007CDA40 /* CSSocialTestOAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialTestOAuthViewController.h; sourceTree = "<group>"; };
+		AD07A14A177DE491007CDA40 /* CSSocialTestOAuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialTestOAuthViewController.m; sourceTree = "<group>"; };
 		AD0B1A5416414EBD000B88B7 /* TestResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestResultsViewController.h; sourceTree = "<group>"; };
 		AD0B1A5516414EBD000B88B7 /* TestResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestResultsViewController.m; sourceTree = "<group>"; };
 		AD0B1A7F1641505F000B88B7 /* SocialFriendsTestResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialFriendsTestResultsViewController.h; sourceTree = "<group>"; };
@@ -1196,6 +1209,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AD07A142177DDF4E007CDA40 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				AD07A143177DDF83007CDA40 /* CSOAuthViewController.h */,
+				AD07A144177DDF83007CDA40 /* CSOAuthViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		AD07A148177DE459007CDA40 /* OAuth */ = {
+			isa = PBXGroup;
+			children = (
+				AD07A149177DE491007CDA40 /* CSSocialTestOAuthViewController.h */,
+				AD07A14A177DE491007CDA40 /* CSSocialTestOAuthViewController.m */,
+			);
+			name = OAuth;
+			sourceTree = "<group>";
+		};
 		AD0B1A5716414FD3000B88B7 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -1905,6 +1936,7 @@
 		AD7142D4163017C500E77443 /* CSSocialTest */ = {
 			isa = PBXGroup;
 			children = (
+				AD07A148177DE459007CDA40 /* OAuth */,
 				ADF3483B177073EF000B915B /* Linkedin */,
 				AD108B4416E3CA5B00F5D068 /* Google */,
 				AD10898D16DE3A8000F5D068 /* Twitter */,
@@ -2057,6 +2089,7 @@
 		ADB9BB3116271EFB008DF4C7 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				AD07A142177DDF4E007CDA40 /* ViewControllers */,
 				AD3F105E16F2406B00DDBAB5 /* Errors */,
 				AD108B3316E1035E00F5D068 /* Services */,
 				ADFA7FB81681C50900517CC9 /* Users */,
@@ -2189,6 +2222,8 @@
 		ADFA7FAD1681BB6700517CC9 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
+				AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */,
+				AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */,
 				ADB9BB3C16271F93008DF4C7 /* CSSocialRequest.h */,
 				ADB9BB3D16271F93008DF4C7 /* CSSocialRequest.m */,
 				ADFA7FAE1681BC8E00517CC9 /* CSSocialRequestFacebook.h */,
@@ -2368,6 +2403,8 @@
 				ADF34912177096A5000B915B /* OAuthLoginView.h in Headers */,
 				ADF3491D177096A5000B915B /* ProfileTabView.h in Headers */,
 				ADF3492617709A6A000B915B /* CSSocialTestLinkedinMessage.h in Headers */,
+				AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */,
+				AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2732,6 +2769,8 @@
 				ADF3490F177096A5000B915B /* OATokenManager.m in Sources */,
 				ADF34913177096A5000B915B /* OAuthLoginView.m in Sources */,
 				ADF3491E177096A5000B915B /* ProfileTabView.m in Sources */,
+				AD07A13D177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */,
+				AD07A146177DDF83007CDA40 /* CSOAuthViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2866,6 +2905,9 @@
 				ADF34914177096A5000B915B /* OAuthLoginView.m in Sources */,
 				ADF3491F177096A5000B915B /* ProfileTabView.m in Sources */,
 				ADF3492817709A6A000B915B /* CSSocialTestLinkedinMessage.m in Sources */,
+				AD07A13E177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */,
+				AD07A147177DDF83007CDA40 /* CSOAuthViewController.m in Sources */,
+				AD07A14B177DE491007CDA40 /* CSSocialTestOAuthViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
