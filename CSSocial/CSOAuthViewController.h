@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "OAToken.h"
+#import "OAConsumer.h"
 
-@interface CSOAuthViewController : UIViewController
+@protocol CSOAuthService;
+@interface CSOAuthViewController : UIViewController <UIWebViewDelegate>
 
++(id) viewControllerWithService:(id<CSOAuthService>) service
+                   successBlock:(CSVoidBlock) successBlock
+                     errorBlock:(CSErrorBlock) errorBlock;
 @end

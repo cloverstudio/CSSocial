@@ -32,8 +32,23 @@
 #import "CSRequests.h"
 #import "CSSocialRequest.h"
 
+@class OAToken;
+@class OAConsumer;
+
 @protocol CSSocialUser;
 @protocol CSSocialParameter;
+
+@protocol CSOAuthService <NSObject>
+-(NSString*) apiKey;
+-(NSString*) secretKey;
+-(NSString*) realm;
+-(NSURL*) requestTokenURL;
+-(NSURL*) accessTokenURL;
+-(NSURL*) loginURL;
+-(NSURL*) callbackURL;
+-(OAConsumer*) consumer;
+-(void) setAccessToken:(OAToken*) token;
+@end
 
 ///private protocol classes
 @protocol CSSocialService <NSObject>

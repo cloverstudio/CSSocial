@@ -27,7 +27,6 @@
 #import "OAMutableURLRequest.h"
 #import "OAServiceTicket.h"
 
-
 @interface OADataFetcher : NSObject {
 @private
     OAMutableURLRequest *request;

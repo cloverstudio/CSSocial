@@ -339,6 +339,10 @@
 		ADA49D96162BF2B0006B3AB7 /* CSSocialParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = ADA49D94162BF2B0006B3AB7 /* CSSocialParameter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ADA49D97162BF2B0006B3AB7 /* CSSocialParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA49D95162BF2B0006B3AB7 /* CSSocialParameter.m */; };
 		ADA49D98162BF2B0006B3AB7 /* CSSocialParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA49D95162BF2B0006B3AB7 /* CSSocialParameter.m */; };
+		ADA98A6817982A0F00B456B3 /* OADataFetcher+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = ADA98A6617982A0F00B456B3 /* OADataFetcher+Blocks.h */; };
+		ADA98A6917982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */; };
+		ADA98A6A17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */; };
+		ADA98A6B17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */; };
 		ADAAE4CD177059EA00312657 /* CSSocialServiceLinkedin.h in Headers */ = {isa = PBXBuildFile; fileRef = ADAAE4CB177059EA00312657 /* CSSocialServiceLinkedin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ADAAE4CE177059EA00312657 /* CSSocialServiceLinkedin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */; };
 		ADAAE4CF177059EA00312657 /* CSSocialServiceLinkedin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */; };
@@ -1035,6 +1039,8 @@
 		AD97765B1642DC88001B72A3 /* CSSocialTestFacebookFriends.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialTestFacebookFriends.m; sourceTree = "<group>"; };
 		ADA49D94162BF2B0006B3AB7 /* CSSocialParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialParameter.h; sourceTree = "<group>"; };
 		ADA49D95162BF2B0006B3AB7 /* CSSocialParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialParameter.m; sourceTree = "<group>"; };
+		ADA98A6617982A0F00B456B3 /* OADataFetcher+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "OADataFetcher+Blocks.h"; path = "Extensions/OADataFetcher+Blocks.h"; sourceTree = "<group>"; };
+		ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "OADataFetcher+Blocks.m"; path = "Extensions/OADataFetcher+Blocks.m"; sourceTree = "<group>"; };
 		ADAAE4CB177059EA00312657 /* CSSocialServiceLinkedin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialServiceLinkedin.h; sourceTree = "<group>"; };
 		ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialServiceLinkedin.m; sourceTree = "<group>"; };
 		ADAAE4DD177069CE00312657 /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
@@ -1997,6 +2003,15 @@
 			name = Plugins;
 			sourceTree = "<group>";
 		};
+		ADA98A62179829EA00B456B3 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				ADA98A6617982A0F00B456B3 /* OADataFetcher+Blocks.h */,
+				ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		ADAAE4DB177069CE00312657 /* Linkedin */ = {
 			isa = PBXGroup;
 			children = (
@@ -2089,6 +2104,7 @@
 		ADB9BB3116271EFB008DF4C7 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				ADA98A62179829EA00B456B3 /* Extensions */,
 				AD07A142177DDF4E007CDA40 /* ViewControllers */,
 				AD3F105E16F2406B00DDBAB5 /* Errors */,
 				AD108B3316E1035E00F5D068 /* Services */,
@@ -2405,6 +2421,7 @@
 				ADF3492617709A6A000B915B /* CSSocialTestLinkedinMessage.h in Headers */,
 				AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */,
 				AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */,
+				ADA98A6817982A0F00B456B3 /* OADataFetcher+Blocks.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2656,6 +2673,7 @@
 				AD266FA9170600D90079BDEF /* TestViewController.m in Sources */,
 				AD266FAA170600D90079BDEF /* TestResultsViewController.m in Sources */,
 				AD266F891706008A0079BDEF /* main.m in Sources */,
+				ADA98A6B17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2771,6 +2789,7 @@
 				ADF3491E177096A5000B915B /* ProfileTabView.m in Sources */,
 				AD07A13D177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */,
 				AD07A146177DDF83007CDA40 /* CSOAuthViewController.m in Sources */,
+				ADA98A6917982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2908,6 +2927,7 @@
 				AD07A13E177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */,
 				AD07A147177DDF83007CDA40 /* CSOAuthViewController.m in Sources */,
 				AD07A14B177DE491007CDA40 /* CSSocialTestOAuthViewController.m in Sources */,
+				ADA98A6A17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
