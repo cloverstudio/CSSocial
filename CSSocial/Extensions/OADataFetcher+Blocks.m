@@ -11,6 +11,7 @@
 
 @implementation OADataFetcher (Blocks)
 +(void) fetchDataWithRequest:(OAMutableURLRequest *) request ticketBlock:(OATicketBlock) ticketBlock {
+    [request prepare];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {

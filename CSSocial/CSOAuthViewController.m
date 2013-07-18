@@ -13,8 +13,8 @@
 #import "OADataFetcher+Blocks.h"
 
 @interface CSOAuthViewController ()
-@property (nonatomic, unsafe_unretained) UIWebView *webView;
-@property (nonatomic, unsafe_unretained) id<CSOAuthService> service;
+@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) id<CSOAuthService> service;
 @property (nonatomic, strong) OAToken *requestToken;
 @property (nonatomic, strong) OAToken *accessToken;
 //@property (nonatomic, strong) OAConsumer *consumer;
@@ -40,10 +40,6 @@
         self.successBlock = successBlock;
         self.errorBlock = errorBlock;
         self.service = service;
-//        self.consumer = [[OAConsumer alloc] initWithKey:_service.apiKey
-//                                                 secret:_service.secretKey
-//                                                  realm:_service.realm];
-        
     }
     return self;
 }
@@ -53,6 +49,10 @@
     self.webView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     _webView.delegate = self;
     self.view = _webView;
+}
+
+-(void) viewDidLoad {
+    [self requestTokenFromProvider];
 }
 
 //
@@ -84,10 +84,12 @@
     
     [request setParameters:[NSArray arrayWithObject:scopeParameter]];
     
-    __block CSOAuthViewController *this;
+    __block CSOAuthViewController *this = self;
     
     [OADataFetcher fetchDataWithRequest:request
                             ticketBlock:^(OAServiceTicket *ticket, id responseData, NSError *error) {
+                                
+                                NSLog(@"%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
                                 
                                 if (!error) {
                                     if (ticket.didSucceed) {

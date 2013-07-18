@@ -8,6 +8,6 @@
 
 #import <CSSocial/CSSocial.h>
 
-@interface CSSocialServiceLinkedin : CSSocialService
+@interface CSSocialServiceLinkedin : CSSocialService <CSOAuthService>
 
 @end

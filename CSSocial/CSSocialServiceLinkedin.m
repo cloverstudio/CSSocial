@@ -7,13 +7,17 @@
 //
 
 #import "CSSocialServiceLinkedin.h"
-#import "OAuthLoginView.h"
 #import "OAMutableURLRequest.h"
 #import "OADataFetcher.h"
+#import "OAConsumer.h"
+#import "CSOAuthViewController.h"
+#import "JSONKit.h"
 
 @interface CSSocialServiceLinkedin ()
-@property (nonatomic, strong) OAuthLoginView *loginViewController;
 @property (nonatomic, copy) CSErrorBlock dialogHandlerBlock;
+
+@property (nonatomic, strong) OAConsumer *consumer;
+@property (nonatomic, strong) OAToken *accessToken;
 @end
 
 @implementation CSSocialServiceLinkedin
@@ -22,13 +26,16 @@
 {
     self = [super init];
     if (self) {
+        self.consumer = [[OAConsumer alloc] initWithKey:self.consumerKey
+                                                 secret:self.consumerSecret
+                                                  realm:self.realm];
     }
     return self;
 }
 
 -(BOOL) isAuthenticated
 {
-    return self.loginViewController.accessToken != nil;
+    return self.accessToken && self.accessToken.isValid;
 }
 
 -(NSString*) consumerKey
@@ -53,40 +60,18 @@
     self.loginFailedBlock = error;
     
     if (!self.isAuthenticated) {
-        NSString *nibName = @"OAuthLoginView";
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            nibName = [nibName stringByAppendingString:@"~iPad"];
-        }
-        
-        self.loginViewController = [[OAuthLoginView alloc] initWithNibName:nil bundle:nil];
-        _loginViewController.apiKey = [self consumerKey];
-        _loginViewController.secretkey = [self consumerSecret];
-        [[CSSocial viewController] presentModalViewController:_loginViewController animated:YES];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(loginViewDidFinish:)
-                                                     name:@"loginViewDidFinish"
-                                                   object:_loginViewController];
+        UIViewController *viewController = [CSOAuthViewController viewControllerWithService:self
+                                                                               successBlock:success
+                                                                                 errorBlock:error];
+
+        [[CSSocial viewController] presentModalViewController:viewController animated:YES];
     }
     else {
         if(self.loginSuccessBlock) self.loginSuccessBlock();
     }
 }
 
--(void) loginViewDidFinish:(NSNotification*)notification
-{
-	if (_loginViewController.accessToken) {
-        if(self.loginSuccessBlock) self.loginSuccessBlock();
-    }
-    else {
-        
-        NSError *error = [notification userInfo][@"error"];
-        if(self.loginFailedBlock) self.loginFailedBlock(error);
-    }
-}
-
--(void) logout
-{
+-(void) logout {
 }
 
 -(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation
@@ -95,7 +80,6 @@
 }
 
 #pragma mark - GPPSignInDelegate
-
 
 -(id) showDialogWithMessage:(NSString *)message
                         url:(NSURL *)url
@@ -107,8 +91,8 @@
         NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/shares"];
         OAMutableURLRequest *request =
         [[OAMutableURLRequest alloc] initWithURL:url
-                                        consumer:_loginViewController.consumer
-                                           token:_loginViewController.accessToken
+                                        consumer:self.consumer
+                                           token:self.accessToken
                                         callback:nil
                                signatureProvider:nil];
         
@@ -148,6 +132,36 @@
     self.dialogHandlerBlock([NSError errorWithDomain:nil
                                                 code:0
                                             userInfo:@{NSLocalizedDescriptionKey: errorString}]);
+}
+
+#pragma mark - CSOAuthService
+
+-(NSString*) apiKey {
+    return [self consumerKey];
+}
+
+-(NSString*) secretKey {
+    return [self consumerSecret];
+}
+
+-(NSString*) realm {
+    return @"http://api.linkedin.com/";
+}
+
+-(NSURL*) requestTokenURL {
+    return [NSURL URLWithString:@"https://api.linkedin.com/uas/oauth/requestToken"];
+}
+
+-(NSURL*) accessTokenURL {
+    return [NSURL URLWithString:@"https://api.linkedin.com/uas/oauth/accessToken"];
+}
+
+-(NSURL*) loginURL {
+    return [NSURL URLWithString:@"https://www.linkedin.com/uas/oauth/authorize"];
+}
+
+-(NSURL*) callbackURL {
+    return [NSURL URLWithString:@"hdlinked://linkedin/oauth"];
 }
 
 @end
