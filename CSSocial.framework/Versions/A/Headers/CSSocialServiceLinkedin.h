@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Clover Studio. All rights reserved.
 //
 
-#import <CSSocial/CSSocial.h>
-
-@interface CSSocialServiceLinkedin : CSSocialService <CSOAuthService>
-
+#import "CSOAuthService.h"
+@interface CSSocialServiceLinkedin : CSOAuthService
 @end

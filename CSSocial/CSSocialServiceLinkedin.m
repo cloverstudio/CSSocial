@@ -15,71 +15,9 @@
 
 @interface CSSocialServiceLinkedin ()
 @property (nonatomic, copy) CSErrorBlock dialogHandlerBlock;
-
-@property (nonatomic, strong) OAConsumer *consumer;
-@property (nonatomic, strong) OAToken *accessToken;
 @end
 
 @implementation CSSocialServiceLinkedin
-
--(id) init
-{
-    self = [super init];
-    if (self) {
-        self.consumer = [[OAConsumer alloc] initWithKey:self.consumerKey
-                                                 secret:self.consumerSecret
-                                                  realm:self.realm];
-    }
-    return self;
-}
-
--(BOOL) isAuthenticated
-{
-    return self.accessToken && self.accessToken.isValid;
-}
-
--(NSString*) consumerKey
-{
-    NSString *consumerKey = [[CSSocial configDictionary] objectForKey:kCSLinkedinConsumerKey];
-    NSString *message = [NSString stringWithFormat:@"Add Consumer Key with %@ key to CSSocial.plist", kCSLinkedinConsumerKey];
-    NSAssert(consumerKey, message);
-    return consumerKey;
-}
-
--(NSString*) consumerSecret
-{
-    NSString *consumerSecret = [[CSSocial configDictionary] objectForKey:kCSLinkedinConsumerSecret];
-    NSString *message = [NSString stringWithFormat:@"Add Consumer Secret with %@ key to CSSocial.plist", kCSLinkedinConsumerSecret];
-    NSAssert(consumerSecret, message);
-    return consumerSecret;
-}
-
--(void) login:(CSVoidBlock) success error:(CSErrorBlock) error
-{
-    self.loginSuccessBlock = success;
-    self.loginFailedBlock = error;
-    
-    if (!self.isAuthenticated) {
-        UIViewController *viewController = [CSOAuthViewController viewControllerWithService:self
-                                                                               successBlock:success
-                                                                                 errorBlock:error];
-
-        [[CSSocial viewController] presentModalViewController:viewController animated:YES];
-    }
-    else {
-        if(self.loginSuccessBlock) self.loginSuccessBlock();
-    }
-}
-
--(void) logout {
-}
-
--(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation
-{
-    return YES;
-}
-
-#pragma mark - GPPSignInDelegate
 
 -(id) showDialogWithMessage:(NSString *)message
                         url:(NSURL *)url
@@ -136,14 +74,6 @@
 
 #pragma mark - CSOAuthService
 
--(NSString*) apiKey {
-    return [self consumerKey];
-}
-
--(NSString*) secretKey {
-    return [self consumerSecret];
-}
-
 -(NSString*) realm {
     return @"http://api.linkedin.com/";
 }
@@ -162,6 +92,29 @@
 
 -(NSURL*) callbackURL {
     return [NSURL URLWithString:@"hdlinked://linkedin/oauth"];
+}
+
+//OK        hdlinked://linkedin/oauth?oauth_token=<token value>&oauth_verifier=63600
+//Cancel    hdlinked://linkedin/oauth?user_refused
+
+-(NSString*) cancelAuthenticationKeyword {
+    return @"user_refused";
+}
+
+-(NSString*) socialPlistApiKeyName {
+    return kCSLinkedinConsumerKey;
+}
+
+-(NSString*) socialPlistSecretKeyName {
+    return kCSLinkedinConsumerSecret;
+}
+
+-(BOOL) isCancellationURL:(NSURL *)url {
+    NSString *urlString = [url absoluteString];
+    if ([urlString rangeOfString:self.cancelAuthenticationKeyword].location != NSNotFound) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

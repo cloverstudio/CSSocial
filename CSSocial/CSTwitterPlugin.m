@@ -43,19 +43,13 @@
     if([SLComposeViewController class])
     {
         ///iOS 6
-        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
-        {
-             return [[NSClassFromString(@"CSTwitteriOS6Plugin") alloc] init];
-        }
+        return [[NSClassFromString(@"CSTwitteriOS6Plugin") alloc] init];
     }
     
     if([TWTweetComposeViewController class])
     {
         ///iOS 5
-        if([TWTweetComposeViewController canSendTweet])
-        {
-            return [[NSClassFromString(@"CSTwitteriOS5Plugin") alloc] init];
-        }
+        return [[NSClassFromString(@"CSTwitteriOS5Plugin") alloc] init];    
     }
     
     ///final fallback = iOS 4

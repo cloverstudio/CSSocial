@@ -100,9 +100,8 @@
 
 -(void) makeRequest
 {
-    NSAssert(NO, @"Override me in subclass");
+    [self doesNotRecognizeSelector:_cmd];
 }
-
 
 -(void) receivedResponse:(id)result error:(NSError *)error
 {

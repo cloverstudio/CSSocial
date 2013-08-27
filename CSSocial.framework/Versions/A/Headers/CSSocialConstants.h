@@ -38,6 +38,12 @@
 
 #define kCSFacebookAppID @"CSSOCIAL_FACEBOOK_APP_ID"
 
+#define kCSEvernoteConsumerKey @"CSSOCIAL_EVERNOTE_API_KEY"
+#define kCSEvernoteConsumerSecret @"CSSOCIAL_EVERNOTE_API_SECRET"
+
+#define kCSTumblrConsumerKey @"CSSOCIAL_TUMBLR_API_KEY"
+#define kCSTumblrConsumerSecret @"CSSOCIAL_TUMBLR_API_SECRET"
+
 #define kCSLinkedinConsumerKey @"CSSOCIAL_LINKEDIN_API_KEY"
 #define kCSLinkedinConsumerSecret @"CSSOCIAL_LINKEDIN_API_SECRET"
 
@@ -55,5 +61,6 @@
 #define CSTwitter   (CSSocialServiceTwitter*)[CSSocial twitter]
 #define CSGoogle    (CSSocialServiceGoogle*)[CSSocial google]
 #define CSLinkedin  (CSSocialServiceLinkedin*)[CSSocial linkedin]
-
+#define CSTumblr    (CSSocialServiceTumblr*)[CSSocial tumblr]
+#define CSEvernote  (CSSocialServiceEvernote*)[[CSSocial sharedManager] serviceWithClass:[CSSocialServiceEvernote class]]
 #endif

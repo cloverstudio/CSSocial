@@ -12,18 +12,18 @@
 
 -(void) performTest:(CSSocialResponseBlock)resultBlock
 {
-    [CSLinkedin showDialogWithMessage:[CSKit loremIpsum]
-                                photo:[UIImage imageNamed:@"test"]
-                              handler:^(NSError *error)
+    [CSLinkedin comment:[CSKit loremIpsum]
+        completionBlock:^(CSSocialRequest *request, id response, NSError *error)
      {
-         if (!error) self.passed = YES;
-         resultBlock(nil,nil,error);
+         if(!error) self.passed = YES;
+         else CSLog(@"%@\n%@", [error localizedDescription], [error description]);
+         resultBlock(request, response, error);
      }];
 }
 
 -(NSString*) name
 {
-    return @"Linekdin Show Dialog";
+    return @"Linekdin Message";
 }
 
 @end

@@ -112,6 +112,10 @@
     return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceLinkedin class]];
 }
 
++(CSSocialService*) tumblr {
+    return [[CSSocial sharedManager] serviceWithClass:[CSSocialServiceTumblr class]];
+}
+
 - (CSSocialService *)serviceWithClass:(Class)class {
     NSString *className = NSStringFromClass(class);
     CSSocialService *service = [self.services objectForKey:className];
@@ -207,3 +211,95 @@
 }
 
 @end
+
+#pragma mark LinkedIn 
+@implementation CSSocialServiceLinkedin (Helper)
+
+///comment:completionBlock:
+///posts a simple tweet to selected LinkedIn account
+///@param comment comment to post
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(CSSocialRequest*) comment:(NSString*) comment completionBlock:(CSSocialResponseBlock) responseBlock {
+    
+    NSDictionary *parameters = [[NSDictionary alloc] initWithObjectsAndKeys:
+                            [[NSDictionary alloc]
+                             initWithObjectsAndKeys:
+                             @"anyone",@"code",nil], @"visibility",
+                            comment, @"comment", nil];
+    
+    CSSocialRequest *request = [CSSocialOAuthRequest requestWithService:CSLinkedin
+                                                                apiCall:@"http://api.linkedin.com/v1/people/~/shares"
+                                                             httpMethod:@"POST"
+                                                             parameters:parameters];
+    [CSLinkedin sendRequest:request
+                   response:^(CSSocialRequest *request, id response, NSError *error) {
+                       if (responseBlock) responseBlock(request, response, error);
+                   }];
+    return request;
+}
+
+@end
+
+/*
+#pragma mark Evernote
+@implementation CSSocialServiceEvernote (Helper)
+///createNote:completionBlock:
+///creates a note on the selected Evernote account
+///@param note note to create
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(CSSocialRequest*) createNote:(NSString*) note completionBlock:(CSSocialResponseBlock) responseBlock {
+    NSDictionary *parameters = @{@"note": note};
+    
+    CSSocialRequest *request = [CSSocialRequestEvernote requestWithService:CSEvernote
+                                                                   apiCall:@"https://sandbox.evernote.com/NoteStore.createNote"
+                                                                httpMethod:@"POST"
+                                                                parameters:parameters];
+    [CSEvernote sendRequest:request
+                   response:^(CSSocialRequest *request, id response, NSError *error) {
+                       if (responseBlock) responseBlock(request, response, error);
+                   }];
+    return request;
+}
+ 
+@end
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

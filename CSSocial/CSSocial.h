@@ -38,15 +38,20 @@
 #import "CSSocialServiceTwitter.h"
 #import "CSSocialServiceGoogle.h"
 #import "CSSocialServiceLinkedin.h"
+#import "CSSocialServiceTumblr.h"
+#import "CSSocialServiceEvernote.h"
 
 #import "CSSocialConstants.h"
 #import "CSSocialUser.h"
 #import "CSSocialRequest.h"
+#import "CSSocialOAuthRequest.h"
 #import "CSSocialService.h"
+#import "CSOAuthService.h"
 #import "CSRequests.h"
 #import "CSFacebookParameter.h"
 #import "CSTwitterParameter.h"
 #import "CSSocialError.h"
+//#import "CSSocialRequestEvernote.h"
 
 @protocol CSSocialService;
 @protocol CSSocialManagerDataSource <NSObject>
@@ -62,13 +67,14 @@
 +(CSSocialService*) twitter;
 +(CSSocialService*) google;
 +(CSSocialService*) linkedin;
-//+(CSSocialService*) mixi;
++(CSSocialService*) tumblr;
 
 +(BOOL) openURL:(NSURL*) url sourceApplication:(NSString*) sourceApplication annotation:(id) annotation;
 +(BOOL) handleOpenURL:(NSURL *)url;
 +(UIViewController*) viewController;
 +(void) setViewController:(UIViewController*) viewController;
 +(NSDictionary*) configDictionary;
+- (CSSocialService *)serviceWithClass:(Class)class;
 @end
 
 
@@ -101,4 +107,22 @@
 ///@param tweet tweet to post
 ///@param responseBlock contains error if there was an error when posting or nil if all went OK
 -(CSSocialRequest*) tweet:(NSString*) tweet  completionBlock:(CSSocialResponseBlock) responseBlock;
-@end    
+@end
+
+@interface CSSocialServiceLinkedin (Helper)
+///comment:completionBlock:
+///posts a simple tweet to selected LinkedIn account
+///@param comment comment to post
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(CSSocialRequest*) comment:(NSString*) comment completionBlock:(CSSocialResponseBlock) responseBlock;
+@end
+
+@interface CSSocialServiceEvernote (Helper)
+///createNote:completionBlock:
+///creates a note on the selected Evernote account
+///@param note note to create
+///@param responseBlock contains error if there was an error when posting or nil if all went OK
+-(CSSocialRequest*) createNote:(NSString*) comment completionBlock:(CSSocialResponseBlock) responseBlock;
+@end
+
+

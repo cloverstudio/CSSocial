@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */; };
+		AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD07A13D177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */; };
 		AD07A13E177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */; };
-		AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = AD07A143177DDF83007CDA40 /* CSOAuthViewController.h */; };
+		AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = AD07A143177DDF83007CDA40 /* CSOAuthViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD07A146177DDF83007CDA40 /* CSOAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A144177DDF83007CDA40 /* CSOAuthViewController.m */; };
 		AD07A147177DDF83007CDA40 /* CSOAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A144177DDF83007CDA40 /* CSOAuthViewController.m */; };
 		AD07A14B177DE491007CDA40 /* CSSocialTestOAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD07A14A177DE491007CDA40 /* CSSocialTestOAuthViewController.m */; };
@@ -205,6 +205,16 @@
 		AD108B9416E3D68700F5D068 /* CSSocialTestGoogleShowDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = AD108B9116E3D68600F5D068 /* CSSocialTestGoogleShowDialog.m */; };
 		AD108DEC1734D6FA0096AF09 /* libfacebook_ios_sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD108DE71734D6950096AF09 /* libfacebook_ios_sdk.a */; };
 		AD108DEE1734D7700096AF09 /* FBSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = AD108DED1734D7700096AF09 /* FBSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AD1FB260179941CA0037F71F /* CSOAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = AD1FB25E179941CA0037F71F /* CSOAuthService.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AD1FB261179941CA0037F71F /* CSOAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB25F179941CA0037F71F /* CSOAuthService.m */; };
+		AD1FB262179941CA0037F71F /* CSOAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB25F179941CA0037F71F /* CSOAuthService.m */; };
+		AD1FB26817994AF50037F71F /* CSSocialServiceEvernote.h in Headers */ = {isa = PBXBuildFile; fileRef = AD1FB26617994AF50037F71F /* CSSocialServiceEvernote.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AD1FB26917994AF50037F71F /* CSSocialServiceEvernote.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB26717994AF50037F71F /* CSSocialServiceEvernote.m */; };
+		AD1FB26A17994AF50037F71F /* CSSocialServiceEvernote.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB26717994AF50037F71F /* CSSocialServiceEvernote.m */; };
+		AD1FB270179950480037F71F /* CSSocialTestEvernoteLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB26D179950480037F71F /* CSSocialTestEvernoteLogin.m */; };
+		AD1FB274179962750037F71F /* CSSocialRequestLinkedIn.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB272179962740037F71F /* CSSocialRequestLinkedIn.m */; };
+		AD1FB275179962750037F71F /* CSSocialRequestLinkedIn.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB272179962740037F71F /* CSSocialRequestLinkedIn.m */; };
+		AD1FB27F17997C990037F71F /* CSSocialTestEvernoteCreateNote.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB27C17997C990037F71F /* CSSocialTestEvernoteCreateNote.m */; };
 		AD266F761705FBFF0079BDEF /* CSConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = ADB9BB5D1627206A008DF4C7 /* CSConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD266F7F1706008A0079BDEF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADECD07D16285DE20042B7C3 /* UIKit.framework */; };
 		AD266F801706008A0079BDEF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADB9BB1F16271CCC008DF4C7 /* Foundation.framework */; };
@@ -343,6 +353,10 @@
 		ADA98A6917982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */; };
 		ADA98A6A17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */; };
 		ADA98A6B17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */; };
+		ADA98A6E1798435300B456B3 /* CSSocialServiceTumblr.h in Headers */ = {isa = PBXBuildFile; fileRef = ADA98A6C1798435000B456B3 /* CSSocialServiceTumblr.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ADA98A6F1798435300B456B3 /* CSSocialServiceTumblr.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6D1798435100B456B3 /* CSSocialServiceTumblr.m */; };
+		ADA98A701798435300B456B3 /* CSSocialServiceTumblr.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A6D1798435100B456B3 /* CSSocialServiceTumblr.m */; };
+		ADA98A76179846B800B456B3 /* CSSocialTestTumblrLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A73179846B800B456B3 /* CSSocialTestTumblrLogin.m */; };
 		ADAAE4CD177059EA00312657 /* CSSocialServiceLinkedin.h in Headers */ = {isa = PBXBuildFile; fileRef = ADAAE4CB177059EA00312657 /* CSSocialServiceLinkedin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ADAAE4CE177059EA00312657 /* CSSocialServiceLinkedin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */; };
 		ADAAE4CF177059EA00312657 /* CSSocialServiceLinkedin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */; };
@@ -384,6 +398,11 @@
 		ADB9BB5A16271F93008DF4C7 /* CSTwitterParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB9BB4716271F93008DF4C7 /* CSTwitterParameter.m */; };
 		ADB9BB6516272455008DF4C7 /* CSRequests.h in Headers */ = {isa = PBXBuildFile; fileRef = ADB9BB6416272455008DF4C7 /* CSRequests.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ADC3CD881760E02700F076E5 /* FBWebDialogs.h in Headers */ = {isa = PBXBuildFile; fileRef = ADE832A216FB12F600D89938 /* FBWebDialogs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ADD9E5EA17B8E65B003D950F /* CSSocialTestEvernoteLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB26D179950480037F71F /* CSSocialTestEvernoteLogin.m */; };
+		ADD9E5EB17B8E65E003D950F /* CSSocialTestEvernoteCreateNote.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1FB27C17997C990037F71F /* CSSocialTestEvernoteCreateNote.m */; };
+		ADD9E5EC17B8E661003D950F /* CSSocialTestTumblrLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA98A73179846B800B456B3 /* CSSocialTestTumblrLogin.m */; };
+		ADD9E5ED17B8E665003D950F /* CSSocialTestLinkedinLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF348401770742E000B915B /* CSSocialTestLinkedinLogin.m */; };
+		ADD9E5EE17B8E667003D950F /* CSSocialTestLinkedinMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF3492517709A6A000B915B /* CSSocialTestLinkedinMessage.m */; };
 		ADE832A916FB167900D89938 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE832A816FB167900D89938 /* MessageUI.framework */; };
 		ADECD06D16283A860042B7C3 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADECD06C16283A860042B7C3 /* Twitter.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		ADECD070162859100042B7C3 /* CSSocial.m in Sources */ = {isa = PBXBuildFile; fileRef = ADECD06F162859100042B7C3 /* CSSocial.m */; };
@@ -410,7 +429,6 @@
 		ADECD0B316285EB70042B7C3 /* CSTwitterParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB9BB4716271F93008DF4C7 /* CSTwitterParameter.m */; };
 		ADECD0B5162863F30042B7C3 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADECD0B4162863F30042B7C3 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		ADECD0C4162865D70042B7C3 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADECD0B4162863F30042B7C3 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		ADECD0C7162866C40042B7C3 /* TestViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ADECD0C5162866C40042B7C3 /* TestViewController.h */; };
 		ADECD0C9162866C40042B7C3 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADECD0C6162866C40042B7C3 /* TestViewController.m */; };
 		ADEDDC5F1771AD180097E10D /* OAuthLoginView~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEDDC5E1771AD180097E10D /* OAuthLoginView~ipad.xib */; };
 		ADEDDC601771AD180097E10D /* OAuthLoginView~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEDDC5E1771AD180097E10D /* OAuthLoginView~ipad.xib */; };
@@ -471,7 +489,6 @@
 		ADF34921177096A5000B915B /* ProfileTabView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADF348D6177096A5000B915B /* ProfileTabView.xib */; };
 		ADF34922177096A5000B915B /* READ_ME.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADF348D7177096A5000B915B /* READ_ME.txt */; };
 		ADF34923177096A5000B915B /* READ_ME.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADF348D7177096A5000B915B /* READ_ME.txt */; };
-		ADF3492617709A6A000B915B /* CSSocialTestLinkedinMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = ADF3492417709A6A000B915B /* CSSocialTestLinkedinMessage.h */; };
 		ADF3492817709A6A000B915B /* CSSocialTestLinkedinMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF3492517709A6A000B915B /* CSSocialTestLinkedinMessage.m */; };
 		ADFA7FB01681BC8E00517CC9 /* CSSocialRequestFacebook.h in Headers */ = {isa = PBXBuildFile; fileRef = ADFA7FAE1681BC8E00517CC9 /* CSSocialRequestFacebook.h */; };
 		ADFA7FB11681BC8E00517CC9 /* CSSocialRequestFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFA7FAF1681BC8E00517CC9 /* CSSocialRequestFacebook.m */; };
@@ -664,6 +681,16 @@
 		AD108B9116E3D68600F5D068 /* CSSocialTestGoogleShowDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialTestGoogleShowDialog.m; sourceTree = "<group>"; };
 		AD108DDE1734D6940096AF09 /* facebook-ios-sdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "facebook-ios-sdk.xcodeproj"; sourceTree = "<group>"; };
 		AD108DED1734D7700096AF09 /* FBSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBSettings.h; sourceTree = "<group>"; };
+		AD1FB25E179941CA0037F71F /* CSOAuthService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSOAuthService.h; sourceTree = "<group>"; };
+		AD1FB25F179941CA0037F71F /* CSOAuthService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSOAuthService.m; sourceTree = "<group>"; };
+		AD1FB26617994AF50037F71F /* CSSocialServiceEvernote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialServiceEvernote.h; sourceTree = "<group>"; };
+		AD1FB26717994AF50037F71F /* CSSocialServiceEvernote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialServiceEvernote.m; sourceTree = "<group>"; };
+		AD1FB26C179950480037F71F /* CSSocialTestEvernoteLogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialTestEvernoteLogin.h; sourceTree = "<group>"; };
+		AD1FB26D179950480037F71F /* CSSocialTestEvernoteLogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialTestEvernoteLogin.m; sourceTree = "<group>"; };
+		AD1FB271179962740037F71F /* CSSocialRequestLinkedIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialRequestLinkedIn.h; sourceTree = "<group>"; };
+		AD1FB272179962740037F71F /* CSSocialRequestLinkedIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialRequestLinkedIn.m; sourceTree = "<group>"; };
+		AD1FB27B17997C990037F71F /* CSSocialTestEvernoteCreateNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialTestEvernoteCreateNote.h; sourceTree = "<group>"; };
+		AD1FB27C17997C990037F71F /* CSSocialTestEvernoteCreateNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialTestEvernoteCreateNote.m; sourceTree = "<group>"; };
 		AD266F7E1706008A0079BDEF /* CSSocialFrameworkTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSSocialFrameworkTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD266F841706008A0079BDEF /* CSSocialFrameworkTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CSSocialFrameworkTest-Info.plist"; sourceTree = "<group>"; };
 		AD266F861706008A0079BDEF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1041,6 +1068,10 @@
 		ADA49D95162BF2B0006B3AB7 /* CSSocialParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialParameter.m; sourceTree = "<group>"; };
 		ADA98A6617982A0F00B456B3 /* OADataFetcher+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "OADataFetcher+Blocks.h"; path = "Extensions/OADataFetcher+Blocks.h"; sourceTree = "<group>"; };
 		ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "OADataFetcher+Blocks.m"; path = "Extensions/OADataFetcher+Blocks.m"; sourceTree = "<group>"; };
+		ADA98A6C1798435000B456B3 /* CSSocialServiceTumblr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialServiceTumblr.h; sourceTree = "<group>"; };
+		ADA98A6D1798435100B456B3 /* CSSocialServiceTumblr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialServiceTumblr.m; sourceTree = "<group>"; };
+		ADA98A72179846B800B456B3 /* CSSocialTestTumblrLogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialTestTumblrLogin.h; sourceTree = "<group>"; };
+		ADA98A73179846B800B456B3 /* CSSocialTestTumblrLogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialTestTumblrLogin.m; sourceTree = "<group>"; };
 		ADAAE4CB177059EA00312657 /* CSSocialServiceLinkedin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSocialServiceLinkedin.h; sourceTree = "<group>"; };
 		ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSocialServiceLinkedin.m; sourceTree = "<group>"; };
 		ADAAE4DD177069CE00312657 /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
@@ -1423,6 +1454,8 @@
 			children = (
 				ADB9BB3E16271F93008DF4C7 /* CSSocialService.h */,
 				ADB9BB3F16271F93008DF4C7 /* CSSocialService.m */,
+				AD1FB25E179941CA0037F71F /* CSOAuthService.h */,
+				AD1FB25F179941CA0037F71F /* CSOAuthService.m */,
 				ADB9BB4016271F93008DF4C7 /* CSSocialServiceFacebook.h */,
 				ADB9BB4116271F93008DF4C7 /* CSSocialServiceFacebook.m */,
 				ADB9BB4216271F93008DF4C7 /* CSSocialServiceTwitter.h */,
@@ -1431,6 +1464,10 @@
 				AD108B3516E103A300F5D068 /* CSSocialServiceGoogle.m */,
 				ADAAE4CB177059EA00312657 /* CSSocialServiceLinkedin.h */,
 				ADAAE4CC177059EA00312657 /* CSSocialServiceLinkedin.m */,
+				ADA98A6C1798435000B456B3 /* CSSocialServiceTumblr.h */,
+				ADA98A6D1798435100B456B3 /* CSSocialServiceTumblr.m */,
+				AD1FB26617994AF50037F71F /* CSSocialServiceEvernote.h */,
+				AD1FB26717994AF50037F71F /* CSSocialServiceEvernote.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -1487,6 +1524,17 @@
 				AD108DEB1734D6950096AF09 /* FacebookSDKIntegrationTests.octest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AD1FB26B179950290037F71F /* Evernote */ = {
+			isa = PBXGroup;
+			children = (
+				AD1FB26C179950480037F71F /* CSSocialTestEvernoteLogin.h */,
+				AD1FB26D179950480037F71F /* CSSocialTestEvernoteLogin.m */,
+				AD1FB27B17997C990037F71F /* CSSocialTestEvernoteCreateNote.h */,
+				AD1FB27C17997C990037F71F /* CSSocialTestEvernoteCreateNote.m */,
+			);
+			name = Evernote;
 			sourceTree = "<group>";
 		};
 		AD266F821706008A0079BDEF /* CSSocialFrameworkTest */ = {
@@ -1942,7 +1990,9 @@
 		AD7142D4163017C500E77443 /* CSSocialTest */ = {
 			isa = PBXGroup;
 			children = (
+				AD1FB26B179950290037F71F /* Evernote */,
 				AD07A148177DE459007CDA40 /* OAuth */,
+				ADA98A711798467F00B456B3 /* Tumblr */,
 				ADF3483B177073EF000B915B /* Linkedin */,
 				AD108B4416E3CA5B00F5D068 /* Google */,
 				AD10898D16DE3A8000F5D068 /* Twitter */,
@@ -2010,6 +2060,15 @@
 				ADA98A6717982A0F00B456B3 /* OADataFetcher+Blocks.m */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		ADA98A711798467F00B456B3 /* Tumblr */ = {
+			isa = PBXGroup;
+			children = (
+				ADA98A72179846B800B456B3 /* CSSocialTestTumblrLogin.h */,
+				ADA98A73179846B800B456B3 /* CSSocialTestTumblrLogin.m */,
+			);
+			name = Tumblr;
 			sourceTree = "<group>";
 		};
 		ADAAE4DB177069CE00312657 /* Linkedin */ = {
@@ -2238,16 +2297,18 @@
 		ADFA7FAD1681BB6700517CC9 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */,
-				AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */,
 				ADB9BB3C16271F93008DF4C7 /* CSSocialRequest.h */,
 				ADB9BB3D16271F93008DF4C7 /* CSSocialRequest.m */,
+				AD07A13A177DDF32007CDA40 /* CSSocialOAuthRequest.h */,
+				AD07A13B177DDF32007CDA40 /* CSSocialOAuthRequest.m */,
 				ADFA7FAE1681BC8E00517CC9 /* CSSocialRequestFacebook.h */,
 				ADFA7FAF1681BC8E00517CC9 /* CSSocialRequestFacebook.m */,
 				ADFA7FB31681BD6200517CC9 /* CSSocialRequestTwitter.h */,
 				ADFA7FB41681BD6200517CC9 /* CSSocialRequestTwitter.m */,
 				AD108B8B16E3D3B300F5D068 /* CSSocialRequestGoogle.h */,
 				AD108B8C16E3D3B300F5D068 /* CSSocialRequestGoogle.m */,
+				AD1FB271179962740037F71F /* CSSocialRequestLinkedIn.h */,
+				AD1FB272179962740037F71F /* CSSocialRequestLinkedIn.m */,
 			);
 			name = Requests;
 			sourceTree = "<group>";
@@ -2289,6 +2350,7 @@
 				ADA49D96162BF2B0006B3AB7 /* CSSocialParameter.h in Headers */,
 				ADB9BB4F16271F93008DF4C7 /* CSSocialRequest.h in Headers */,
 				ADB9BB4816271F93008DF4C7 /* CSSocialConstants.h in Headers */,
+				AD1FB260179941CA0037F71F /* CSOAuthService.h in Headers */,
 				AD8FA17D16DE1A860005B2B3 /* FBRequestConnection.h in Headers */,
 				AD8FA17B16DE18EE0005B2B3 /* FBRequest.h in Headers */,
 				AD10899A16DE658E00F5D068 /* FBURLConnection.h in Headers */,
@@ -2297,9 +2359,12 @@
 				ADC3CD881760E02700F076E5 /* FBWebDialogs.h in Headers */,
 				AD1089A716DF67BE00F5D068 /* FBGraphObject.h in Headers */,
 				AD8BF7A0170D72DA00AEFF22 /* FBSession.h in Headers */,
+				ADA98A6E1798435300B456B3 /* CSSocialServiceTumblr.h in Headers */,
+				AD1FB26817994AF50037F71F /* CSSocialServiceEvernote.h in Headers */,
+				AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */,
+				AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */,
 				ADEDDC611771B76B0097E10D /* OAuthLoginView~iphone.xib in Headers */,
 				ADEDDC621771B76D0097E10D /* OAuthLoginView~ipad.xib in Headers */,
-				ADECD0C7162866C40042B7C3 /* TestViewController.h in Headers */,
 				AD3A62751631411300307BF2 /* CSASIAuthenticationDialog.h in Headers */,
 				AD3A62771631411300307BF2 /* CSASICacheDelegate.h in Headers */,
 				AD3A62781631411300307BF2 /* CSASIDownloadCache.h in Headers */,
@@ -2418,9 +2483,6 @@
 				ADF34911177096A5000B915B /* OAuthConsumer.h in Headers */,
 				ADF34912177096A5000B915B /* OAuthLoginView.h in Headers */,
 				ADF3491D177096A5000B915B /* ProfileTabView.h in Headers */,
-				ADF3492617709A6A000B915B /* CSSocialTestLinkedinMessage.h in Headers */,
-				AD07A13C177DDF32007CDA40 /* CSSocialOAuthRequest.h in Headers */,
-				AD07A145177DDF83007CDA40 /* CSOAuthViewController.h in Headers */,
 				ADA98A6817982A0F00B456B3 /* OADataFetcher+Blocks.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2674,6 +2736,11 @@
 				AD266FAA170600D90079BDEF /* TestResultsViewController.m in Sources */,
 				AD266F891706008A0079BDEF /* main.m in Sources */,
 				ADA98A6B17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */,
+				ADD9E5EA17B8E65B003D950F /* CSSocialTestEvernoteLogin.m in Sources */,
+				ADD9E5EB17B8E65E003D950F /* CSSocialTestEvernoteCreateNote.m in Sources */,
+				ADD9E5EC17B8E661003D950F /* CSSocialTestTumblrLogin.m in Sources */,
+				ADD9E5ED17B8E665003D950F /* CSSocialTestLinkedinLogin.m in Sources */,
+				ADD9E5EE17B8E667003D950F /* CSSocialTestLinkedinMessage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2790,6 +2857,10 @@
 				AD07A13D177DDF32007CDA40 /* CSSocialOAuthRequest.m in Sources */,
 				AD07A146177DDF83007CDA40 /* CSOAuthViewController.m in Sources */,
 				ADA98A6917982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */,
+				ADA98A6F1798435300B456B3 /* CSSocialServiceTumblr.m in Sources */,
+				AD1FB261179941CA0037F71F /* CSOAuthService.m in Sources */,
+				AD1FB26917994AF50037F71F /* CSSocialServiceEvernote.m in Sources */,
+				AD1FB274179962750037F71F /* CSSocialRequestLinkedIn.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2928,6 +2999,13 @@
 				AD07A147177DDF83007CDA40 /* CSOAuthViewController.m in Sources */,
 				AD07A14B177DE491007CDA40 /* CSSocialTestOAuthViewController.m in Sources */,
 				ADA98A6A17982A0F00B456B3 /* OADataFetcher+Blocks.m in Sources */,
+				ADA98A701798435300B456B3 /* CSSocialServiceTumblr.m in Sources */,
+				ADA98A76179846B800B456B3 /* CSSocialTestTumblrLogin.m in Sources */,
+				AD1FB262179941CA0037F71F /* CSOAuthService.m in Sources */,
+				AD1FB26A17994AF50037F71F /* CSSocialServiceEvernote.m in Sources */,
+				AD1FB270179950480037F71F /* CSSocialTestEvernoteLogin.m in Sources */,
+				AD1FB275179962750037F71F /* CSSocialRequestLinkedIn.m in Sources */,
+				AD1FB27F17997C990037F71F /* CSSocialTestEvernoteCreateNote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

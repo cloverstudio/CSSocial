@@ -48,7 +48,7 @@
                       photo:(UIImage*) photo
                     handler:(CSErrorBlock) handlerBlock
 {
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    if ([SLComposeViewController class])
     {
         SLComposeViewController *viewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         [viewController setInitialText:message];

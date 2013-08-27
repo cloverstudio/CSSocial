@@ -91,7 +91,7 @@ typedef void(^TWAPIHandler)(NSData *data, NSError *error);
                       photo:(UIImage*) photo
                     handler:(CSErrorBlock) handlerBlock
 {
-    if([TWTweetComposeViewController canSendTweet])
+    if([TWTweetComposeViewController class])
     {
         TWTweetComposeViewController *viewController = [[TWTweetComposeViewController alloc] init];
         [viewController setInitialText:message];

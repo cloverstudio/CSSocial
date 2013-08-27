@@ -49,4 +49,9 @@
 
 #import "CSSocialTestOAuthViewController.h"
 
+#import "CSSocialTestTumblrLogin.h"
+
+#import "CSSocialTestEvernoteLogin.h"
+#import "CSSocialTestEvernoteCreateNote.h"
+
 #endif

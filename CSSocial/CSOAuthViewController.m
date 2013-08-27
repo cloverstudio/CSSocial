@@ -15,8 +15,8 @@
 @interface CSOAuthViewController ()
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) id<CSOAuthService> service;
-@property (nonatomic, strong) OAToken *requestToken;
-@property (nonatomic, strong) OAToken *accessToken;
+//@property (nonatomic, strong) OAToken *requestToken;
+//@property (nonatomic, strong) OAToken *accessToken;
 //@property (nonatomic, strong) OAConsumer *consumer;
 @property (nonatomic, copy) CSVoidBlock successBlock;
 @property (nonatomic, copy) CSErrorBlock errorBlock;
@@ -95,7 +95,7 @@
                                     if (ticket.didSucceed) {
                                         NSString *responseBody = [[NSString alloc] initWithData:responseData
                                                                                        encoding:NSUTF8StringEncoding];
-                                        self.requestToken = [[OAToken alloc] initWithHTTPResponseBody:responseBody];
+                                        _service.requestToken = [[OAToken alloc] initWithHTTPResponseBody:responseBody];
                                         [this loadOAuthToken];
                                     }
                                     else {
@@ -122,69 +122,37 @@
 // to send URL query parameters instead of putting the token in the HTTP Authorization
 // header as we do in all other cases.
 //
+
 -(void) loadOAuthToken {
     NSString *userLoginURLWithToken = [NSString stringWithFormat:@"%@?oauth_token=%@",
-                                       [_service.loginURL absoluteString], self.requestToken.key];
+                                       [_service.loginURL absoluteString], _service.requestToken.key];
     
     NSURL *userLoginURL = [NSURL URLWithString:userLoginURLWithToken];
     NSURLRequest *request = [NSMutableURLRequest requestWithURL: userLoginURL];
     [_webView loadRequest:request];
 }
 
-//
-// OAuth step 3:
-//
-// This method is called when our webView browser loads a URL, this happens 3 times:
-//
-//      a) Our own [webView loadRequest] message sends the user to the LinkedIn login page.
-//
-//      b) The user types in their username/password and presses 'OK', this will submit
-//         their credentials to LinkedIn
-//
-//      c) LinkedIn responds to the submit request by redirecting the browser to our callback URL
-//         If the user approves they also add two parameters to the callback URL: oauth_token and oauth_verifier.
-//         If the user does not allow access the parameter user_refused is returned.
-//
-//      Example URLs for these three load events:
-//          a) https://www.linkedin.com/uas/oauth/authorize?oauth_token=<token value>
-//
-//          b) https://www.linkedin.com/uas/oauth/authorize/submit   OR
-//             https://www.linkedin.com/uas/oauth/authenticate?oauth_token=<token value>&trk=uas-continue
-//
-//          c) hdlinked://linkedin/oauth?oauth_token=<token value>&oauth_verifier=63600     OR
-//             hdlinked://linkedin/oauth?user_refused
-//
-//
-//  We only need to handle case (c) to extract the oauth_verifier value
-//
 - (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
 {
 	NSURL *url = request.URL;
-	NSString *urlString = url.absoluteString;
-    NSString *callbackURLString = [_service.callbackURL absoluteString];
-    
-    BOOL requestForCallbackURL = ([urlString rangeOfString:callbackURLString].location != NSNotFound);
-    if ( requestForCallbackURL )
-    {
-        BOOL userAllowedAccess = ([urlString rangeOfString:@"user_refused"].location == NSNotFound);
-        if ( userAllowedAccess )
-        {
-            [self.requestToken setVerifierWithUrl:url];
+    CSLog(@"CSOAuthViewController webView url: %@", url);
+    NSError *error = nil;
+    BOOL isVerifierURL = [_service isVerifierURL:url error:&error];
+    if (isVerifierURL) {
+        if (!error) {
+            [_service.requestToken setVerifierWithUrl:url];
             [self requestAccessToken];
-        }
-        else
-        {
-            // User refused to allow our app access
-            // Notify parent and close this view
-            [self notifyAndDismissWithError:[self oAuthErrorWithMessage:@"Cancelled"
-                                                                   code:CSSocialErrorCodeUserCancelled]];
+            
+            ///we don't need any more load requests from here on.
+            return NO;
         }
     }
-    else
-    {
-        // Case (a) or (b), so ignore it
+    
+    if (error) {
+        [self notifyAndDismissWithError:error];
     }
-	return YES;
+    
+    return YES;
 }
 
 -(void) requestAccessToken {
@@ -192,7 +160,7 @@
     OAMutableURLRequest *request =
     [[OAMutableURLRequest alloc] initWithURL:_service.accessTokenURL
                                      consumer:_service.consumer
-                                        token:self.requestToken
+                                        token:_service.requestToken
                                      callback:nil
                             signatureProvider:nil];
     

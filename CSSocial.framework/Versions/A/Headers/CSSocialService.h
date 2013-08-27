@@ -38,7 +38,7 @@
 @protocol CSSocialUser;
 @protocol CSSocialParameter;
 
-@protocol CSOAuthService <NSObject>
+@protocol CSOAuthService <NSObject, UIWebViewDelegate>
 -(NSString*) apiKey;
 -(NSString*) secretKey;
 -(NSString*) realm;
@@ -48,6 +48,8 @@
 -(NSURL*) callbackURL;
 -(OAConsumer*) consumer;
 -(void) setAccessToken:(OAToken*) token;
+@property (nonatomic, strong) OAToken *requestToken;
+-(BOOL) isVerifierURL:(NSURL*) url error:(NSError**) error;
 @end
 
 ///private protocol classes
