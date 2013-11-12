@@ -34,6 +34,11 @@
 #import <Twitter/Twitter.h>
 #import <Social/Social.h>
 
+//plugins
+#import "CSTwitteriOS4Plugin.h"
+#import "CSTwitteriOS5Plugin.h"
+#import "CSTwitteriOS6Plugin.h"
+
 @implementation CSTwitterPlugin
 
 ///chooses the correct plugin based on iOS version, config settings and service availability and instantiates it
@@ -42,10 +47,10 @@
 {
     if([SLComposeViewController class])
     {
-        ///iOS 6
+        ///iOS 6+
         if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
         {
-             return [[NSClassFromString(@"CSTwitteriOS6Plugin") alloc] init];
+            return [CSTwitteriOS6Plugin new];
         }
     }
     
@@ -54,12 +59,12 @@
         ///iOS 5
         if([TWTweetComposeViewController canSendTweet])
         {
-            return [[NSClassFromString(@"CSTwitteriOS5Plugin") alloc] init];
+            return [CSTwitteriOS5Plugin new];
         }
     }
     
     ///final fallback = iOS 4
-    return [[NSClassFromString(@"CSTwitteriOS4Plugin") alloc] init];
+    return [CSTwitteriOS4Plugin new];
 }
 
 -(NSString*) consumerKey

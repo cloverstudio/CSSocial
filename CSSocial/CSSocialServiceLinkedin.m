@@ -133,7 +133,7 @@
         self.dialogHandlerBlock(error);
     }];
     
-    return nil;
+    return _loginViewController;
 }
 
 - (void)postUpdateApiCallResult:(OAServiceTicket *)ticket didFinish:(NSData *)data {

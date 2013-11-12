@@ -240,6 +240,9 @@
 		AD266FBB170605530079BDEF /* CSSocial.plist in Resources */ = {isa = PBXBuildFile; fileRef = ADECD075162859920042B7C3 /* CSSocial.plist */; };
 		AD267027170AF0C10079BDEF /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AD267026170AF0C10079BDEF /* test.jpg */; };
 		AD267028170AF0C10079BDEF /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AD267026170AF0C10079BDEF /* test.jpg */; };
+		AD36FCE41832A2F600BB55F6 /* CSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD58164517744B320064B903 /* CSKit.framework */; };
+		AD36FCE51832A32600BB55F6 /* CSSocialTestLinkedinLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF348401770742E000B915B /* CSSocialTestLinkedinLogin.m */; };
+		AD36FCE61832A32900BB55F6 /* CSSocialTestLinkedinMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF3492517709A6A000B915B /* CSSocialTestLinkedinMessage.m */; };
 		AD3A62751631411300307BF2 /* CSASIAuthenticationDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = AD3A62491631411300307BF2 /* CSASIAuthenticationDialog.h */; };
 		AD3A62761631411300307BF2 /* CSASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3A624A1631411300307BF2 /* CSASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		AD3A62771631411300307BF2 /* CSASICacheDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = AD3A624B1631411300307BF2 /* CSASICacheDelegate.h */; };
@@ -1145,6 +1148,7 @@
 				AD266FB1170601820079BDEF /* Social.framework in Frameworks */,
 				AD266FB2170601820079BDEF /* MobileCoreServices.framework in Frameworks */,
 				AD266FBA170602C30079BDEF /* libsqlite3.0.dylib in Frameworks */,
+				AD36FCE41832A2F600BB55F6 /* CSKit.framework in Frameworks */,
 				AD266FB3170601820079BDEF /* libz.1.2.5.dylib in Frameworks */,
 				AD266FB4170601820079BDEF /* SystemConfiguration.framework in Frameworks */,
 				AD266FB5170601820079BDEF /* CFNetwork.framework in Frameworks */,
@@ -2601,6 +2605,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD266F99170600D90079BDEF /* SocialUserCell.m in Sources */,
+				AD36FCE61832A32900BB55F6 /* CSSocialTestLinkedinMessage.m in Sources */,
 				AD266F9A170600D90079BDEF /* SocialFriendsTestResultsViewController.m in Sources */,
 				AD266F9B170600D90079BDEF /* CSSocialTestGoogleLogin.m in Sources */,
 				AD266F9C170600D90079BDEF /* CSSocialTestGoogleShowDialog.m in Sources */,
@@ -2618,6 +2623,7 @@
 				AD266FA8170600D90079BDEF /* CSSocialTest.m in Sources */,
 				AD266FA9170600D90079BDEF /* TestViewController.m in Sources */,
 				AD266FAA170600D90079BDEF /* TestResultsViewController.m in Sources */,
+				AD36FCE51832A32600BB55F6 /* CSSocialTestLinkedinLogin.m in Sources */,
 				AD266F891706008A0079BDEF /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2908,14 +2914,16 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Frameworks\"",
+					"$(SRCROOT)",
+					"\\\"$(SRCROOT)/Frameworks\\\"",
+					/Users/marko/Documents/CSSocial/Frameworks,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CSSocialFrameworkTest/CSSocialFrameworkTest-Prefix.pch";
 				INFOPLIST_FILE = "CSSocialFrameworkTest/CSSocialFrameworkTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -2931,14 +2939,16 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Frameworks\"",
+					"$(SRCROOT)",
+					"\\\"$(SRCROOT)/Frameworks\\\"",
+					/Users/marko/Documents/CSSocial/Frameworks,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CSSocialFrameworkTest/CSSocialFrameworkTest-Prefix.pch";
 				INFOPLIST_FILE = "CSSocialFrameworkTest/CSSocialFrameworkTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

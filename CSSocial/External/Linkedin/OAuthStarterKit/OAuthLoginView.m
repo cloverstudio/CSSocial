@@ -9,6 +9,7 @@
 #import <Foundation/NSNotificationQueue.h>
 #import "OAuthLoginView.h"
 #import "CSSocialError.h"
+#import "CSConstants.h"
 
 #define API_KEY_LENGTH 12
 #define SECRET_KEY_LENGTH 16
@@ -249,7 +250,15 @@
     [super viewDidLoad];
     [self initLinkedInApi];
     [addressBar setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    
+    //ios 7 status bar fix
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        CGRect frame = webView.frame;
+        frame.origin.y = 20;
+        frame.size.height = self.view.frame.size.height - 20;
+        webView.frame = frame;
     }
+}
 
 - (void)viewDidAppear:(BOOL)animated
 {
