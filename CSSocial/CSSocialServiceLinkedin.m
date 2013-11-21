@@ -52,6 +52,7 @@
     self.loginSuccessBlock = success;
     self.loginFailedBlock = error;
     
+    
     if (!self.isAuthenticated) {
         NSString *nibName = @"OAuthLoginView";
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
