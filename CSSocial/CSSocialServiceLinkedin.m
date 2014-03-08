@@ -55,7 +55,7 @@
         self.dialogHandlerBlock(error);
     }];
     
-    return _loginViewController;
+    return nil;
 }
 
 - (void)postUpdateApiCallResult:(OAServiceTicket *)ticket didFinish:(NSData *)data {

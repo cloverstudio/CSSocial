@@ -13,7 +13,7 @@
 
 -(void) performTest:(CSSocialResponseBlock)resultBlock {
     
-    CSOAuthViewController *viewController = [CSKit viewControllerFromString:@"CSOAuthViewController"];
+    CSOAuthViewController *viewController = (CSOAuthViewController*)[CSKit viewControllerFromString:@"CSOAuthViewController"];
     [[CSSocial viewController] presentViewController:viewController
                                             animated:NO
                                           completion:nil];

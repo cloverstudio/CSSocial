@@ -124,6 +124,7 @@
 
 -(BOOL) isCancellationURL:(NSURL*) url {
     [self doesNotRecognizeSelector:_cmd];
+    return NO;
 }
 
 - (BOOL)isVerifierURL:(NSURL *)url error:(NSError *__autoreleasing *)error {
@@ -143,10 +144,6 @@
     return NO;
     
 }
-
-
-
-
 
 -(NSError*) oAuthErrorWithMessage:(NSString*) message code:(CSSocialServiceErrorCode) code {
     return [NSError errorWithDomain:CSSocialErrorDomain
